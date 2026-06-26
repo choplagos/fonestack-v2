@@ -18,6 +18,7 @@ export default function Storefront() {
   const [isCompareOpen, setIsCompareOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState({ brand: 'all', maxPrice: 0, sort: 'newest', condition: 'all' })
+  const [visibleCount, setVisibleCount] = useState(12)
 
   useEffect(() => {
     async function load() {
@@ -26,6 +27,11 @@ export default function Storefront() {
     }
     load()
   }, [])
+
+  // Reset visible count when filters/search change
+  useEffect(() => {
+    setVisibleCount(12)
+  }, [search, filter])
 
   const filtered = products
     .filter(p => {
@@ -40,6 +46,8 @@ export default function Storefront() {
       if (filter.sort === 'price_desc') return b.price - a.price
       return 0
     })
+
+  const visible = filtered.slice(0, visibleCount)
 
   const toggleWishlist = (item: any) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])
   const toggleCompare = (item: any) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)
@@ -63,7 +71,7 @@ export default function Storefront() {
             <div className="ml-auto flex flex-wrap gap-3">
               <select value={filter.brand} onChange={e => setFilter({ ...filter, brand: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
                 <option value="all">All Brands</option>
-               {Array.from(new Set(products.map(p => p.brand))).map(b => <option key={b} value={b}>{b}</option>)}
+                {Array.from(new Set(products.map(p => p.brand))).map(b => <option key={b} value={b}>{b}</option>)}
               </select>
               <select value={filter.condition} onChange={e => setFilter({ ...filter, condition: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
                 <option value="all">All Conditions</option>
@@ -83,18 +91,34 @@ export default function Storefront() {
               {products.length === 0 ? 'Loading products...' : 'No phones match your filters.'}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filtered.map(p => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  isInWishlist={wishlist.some(w => w.id === p.id)}
-                  isInCompare={compareList.some(c => c.id === p.id)}
-                  onToggleWishlist={toggleWishlist}
-                  onToggleCompare={toggleCompare}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {visible.map(p => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    isInWishlist={wishlist.some(w => w.id === p.id)}
+                    isInCompare={compareList.some(c => c.id === p.id)}
+                    onToggleWishlist={toggleWishlist}
+                    onToggleCompare={toggleCompare}
+                  />
+                ))}
+              </div>
+
+              {filtered.length > visibleCount && (
+                <div className="flex flex-col items-center mt-12 gap-3">
+                  <button
+                    onClick={() => setVisibleCount(v => v + 12)}
+                    className="liquid-glass px-10 py-4 rounded-2xl font-bold dark:text-white hover:border-premiumYellow/30 border border-transparent transition-all hover:shadow-lg hover:shadow-premiumYellow/10"
+                  >
+                    Load More — {filtered.length - visibleCount} more phone{filtered.length - visibleCount !== 1 ? 's' : ''}
+                  </button>
+                  <span className="text-xs font-mono text-slate-500">
+                    Showing {visibleCount} of {filtered.length}
+                  </span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
