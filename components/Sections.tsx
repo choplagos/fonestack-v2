@@ -34,19 +34,50 @@ const HOW_IT_WORKS = [
 ]
 
 export function BrandsSection({ products }: { products: any[] }) {
-  const brandCounts = BRANDS.map(b => ({ ...b, count: products.filter(p => p.brand?.toLowerCase() === b.name.toLowerCase()).length }))
+  const LOGO_MAP: Record<string, string> = {
+    apple: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
+    samsung: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
+    tecno: 'https://upload.wikimedia.org/wikipedia/commons/7/7f/Tecno_Mobile_logo.svg',
+    infinix: 'https://upload.wikimedia.org/wikipedia/commons/8/8b/Infinix_logo.svg',
+    google: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+    xiaomi: 'https://upload.wikimedia.org/wikipedia/commons/2/29/Xiaomi_logo.svg',
+    oneplus: 'https://upload.wikimedia.org/wikipedia/commons/4/40/OnePlus_Logo.svg',
+    itel: 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Itel_Mobile_Logo.svg',
+    realme: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Realme_logo.svg',
+    oppo: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/OPPO_LOGO_2019.svg',
+    vivo: 'https://upload.wikimedia.org/wikipedia/commons/2/twentytwo/Vivo_logo_2019.svg',
+    nokia: 'https://upload.wikimedia.org/wikipedia/commons/0/02/Nokia_wordmark.svg',
+    motorola: 'https://upload.wikimedia.org/wikipedia/commons/4/43/Motorola-logo.svg',
+    huawei: 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Huawei_Logo.svg',
+  }
+
+  const brands = Array.from(new Set(products.map(p => p.brand).filter(Boolean)))
+    .map(name => ({
+      name,
+      logo: LOGO_MAP[name.toLowerCase()],
+      count: products.filter(p => p.brand === name).length,
+    }))
+
+  if (brands.length === 0) return null
+
   return (
     <section id="brands" className="py-20 relative">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4">// What We Carry</div>
         <h2 className="text-4xl font-display font-black dark:text-white mb-10">All Major <span className="text-premiumYellow">Brands</span></h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {brandCounts.map((b, i) => (
+          {brands.map((b, i) => (
             <motion.div key={b.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} whileHover={{ y: -4 }}
-              className="liquid-glass rounded-2xl p-6 flex flex-col items-center text-center gap-2 cursor-pointer hover:border-premiumYellow/20 transition-all border border-transparent">
-              <span className="text-3xl">{b.emoji}</span>
-              <div className="font-bold dark:text-white">{b.name}</div>
-              {b.count > 0 && <div className="text-xs font-mono text-premiumYellow">{b.count} in stock</div>}
+              className="liquid-glass rounded-2xl p-6 flex flex-col items-center text-center gap-3 cursor-pointer hover:border-premiumYellow/20 transition-all border border-transparent">
+              {b.logo ? (
+                <div className="h-10 flex items-center justify-center">
+                  <img src={b.logo} alt={b.name} className="h-8 max-w-[100px] object-contain dark:invert dark:brightness-200" />
+                </div>
+              ) : (
+                <div className="h-10 flex items-center justify-center text-2xl font-display font-black text-premiumYellow">{b.name[0]}</div>
+              )}
+              <div className="font-bold dark:text-white text-sm">{b.name}</div>
+              <div className="text-xs font-mono text-premiumYellow">{b.count} in stock</div>
             </motion.div>
           ))}
         </div>
@@ -54,7 +85,6 @@ export function BrandsSection({ products }: { products: any[] }) {
     </section>
   )
 }
-
 export function HowItWorks() {
   return (
     <section id="how" className="py-20">

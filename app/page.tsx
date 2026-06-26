@@ -28,10 +28,11 @@ export default function Storefront() {
     load()
   }, [])
 
-  // Reset visible count when filters/search change
   useEffect(() => {
     setVisibleCount(12)
   }, [search, filter])
+
+  const maxProductPrice = products.length > 0 ? Math.max(...products.map(p => p.price)) : 2000000
 
   const filtered = products
     .filter(p => {
@@ -52,6 +53,8 @@ export default function Storefront() {
   const toggleWishlist = (item: any) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])
   const toggleCompare = (item: any) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)
 
+  const sliderValue = filter.maxPrice || maxProductPrice
+
   return (
     <main className="min-h-screen">
       <Navbar wishlistCount={wishlist.length} onSearch={setSearch} />
@@ -66,23 +69,66 @@ export default function Storefront() {
       <section id="phones" className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4">// Shop</div>
-          <div className="flex flex-wrap items-center gap-4 mb-8">
+          <div className="flex flex-wrap items-center gap-3 mb-8">
             <h2 className="text-4xl font-display font-black dark:text-white">Available <span className="text-premiumYellow">Phones</span></h2>
-            <div className="ml-auto flex flex-wrap gap-3">
-              <select value={filter.brand} onChange={e => setFilter({ ...filter, brand: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
+            <div className="ml-auto flex flex-wrap gap-3 items-center">
+
+              {/* Brand filter */}
+              <select
+                value={filter.brand}
+                onChange={e => setFilter({ ...filter, brand: e.target.value })}
+                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+              >
                 <option value="all">All Brands</option>
-                {Array.from(new Set(products.map(p => p.brand))).map(b => <option key={b} value={b}>{b}</option>)}
+                {Array.from(new Set(products.map(p => p.brand))).map(b => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
               </select>
-              <select value={filter.condition} onChange={e => setFilter({ ...filter, condition: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
+
+              {/* Condition filter */}
+              <select
+                value={filter.condition}
+                onChange={e => setFilter({ ...filter, condition: e.target.value })}
+                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+              >
                 <option value="all">All Conditions</option>
                 <option value="new">New</option>
                 <option value="used">Fairly Used</option>
               </select>
-              <select value={filter.sort} onChange={e => setFilter({ ...filter, sort: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
+
+              {/* Sort */}
+              <select
+                value={filter.sort}
+                onChange={e => setFilter({ ...filter, sort: e.target.value })}
+                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+              >
                 <option value="newest">Newest</option>
                 <option value="price_asc">Price: Low → High</option>
                 <option value="price_desc">Price: High → Low</option>
               </select>
+
+              {/* Price range slider */}
+              {products.length > 0 && (
+                <div className="flex items-center gap-3 bg-black/20 border border-white/10 rounded-xl px-4 py-2">
+                  <span className="text-xs font-mono text-slate-500 whitespace-nowrap">Max:</span>
+                  <input
+                    type="range"
+                    min={Math.min(...products.map(p => p.price))}
+                    max={maxProductPrice}
+                    step={Math.max(1000, Math.round(maxProductPrice / 100))}
+                    value={sliderValue}
+                    onChange={e => {
+                      const val = Number(e.target.value)
+                      setFilter({ ...filter, maxPrice: val >= maxProductPrice ? 0 : val })
+                    }}
+                    className="w-28 accent-premiumYellow cursor-pointer"
+                  />
+                  <span className="text-xs font-mono text-premiumYellow whitespace-nowrap min-w-[60px]">
+                    {filter.maxPrice ? `₦${filter.maxPrice.toLocaleString()}` : 'Any'}
+                  </span>
+                </div>
+              )}
+
             </div>
           </div>
 
