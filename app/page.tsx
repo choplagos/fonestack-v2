@@ -63,7 +63,7 @@ export default function Storefront() {
             <div className="ml-auto flex flex-wrap gap-3">
               <select value={filter.brand} onChange={e => setFilter({ ...filter, brand: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
                 <option value="all">All Brands</option>
-                {[...new Set(products.map(p => p.brand))].map(b => <option key={b} value={b}>{b}</option>)}
+               {Array.from(new Set(products.map(p => p.brand))).map(b => <option key={b} value={b}>{b}</option>)}
               </select>
               <select value={filter.condition} onChange={e => setFilter({ ...filter, condition: e.target.value })} className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50">
                 <option value="all">All Conditions</option>
