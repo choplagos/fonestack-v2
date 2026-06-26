@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, Send, BrainCircuit, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Sparkles, Send, BrainCircuit, CheckCircle2, AlertCircle,Trophy } from 'lucide-react'
 
 export default function AICompareSection({ phones }: { phones: any[] }) {
   const [profile, setProfile] = useState('basic');
