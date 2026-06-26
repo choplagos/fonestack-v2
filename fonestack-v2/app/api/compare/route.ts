@@ -1,38 +1,48 @@
-import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
 
-export const runtime = 'edge';
+// This makes the API run at the edge (faster for Lagos users)
+export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {
-    const { phones, profile, messages } = await req.json();
+    const { phones, profile } = await req.json();
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
-    // In production, we fetch from Claude/Gemini. 
-    // Here we simulate the streaming structure Fonestack expects.
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        const send = (delta: string) => {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta })}\n\n`));
-        };
+    if (!apiKey) {
+      return NextResponse.json({ error: "API Key missing" }, { status: 500 });
+    }
 
-        // Example logic for the structured JSON the frontend expects
-        send('{"verdict": "Analyzing the specs... ",');
-        send('"scores": [');
-        phones.forEach((p: any, i: number) => {
-          send(`{"name": "${p.name}", "value_score": ${70 + i * 5}, "score_reason": "Based on market demand."}${i === phones.length - 1 ? '' : ','}`);
-        });
-        send('],');
-        send(`"recommendation": "The ${phones[0].name} wins for your ${profile} needs."}`);
-        
-        controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-        controller.close();
-      },
-    });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    return new Response(stream, {
-      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' },
+    // Custom prompt for Fonestack's Liquid Glass UI
+    const prompt = `
+      You are a world-class smartphone expert at Fonestack, Lagos. 
+      Compare these phones: ${JSON.stringify(phones)}.
+      The user profile is: ${profile}.
+      
+      Return a JSON object with exactly this structure:
+      {
+        "verdict": "A 2-sentence expert summary",
+        "scores": [{"name": "phone name", "value_score": 85, "score_reason": "why"}],
+        "recommendation": "Final advice for this specific user"
+      }
+      Do not include markdown formatting or backticks.
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    // Clean the string in case Gemini adds backticks
+    const cleanJson = text.replace(/```json|```/gi, "").trim();
+
+    return new Response(`data: ${JSON.stringify({ delta: cleanJson })}\n\ndata: [DONE]\n\n`, {
+      headers: { "Content-Type": "text/event-stream" },
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Gemini Error:", error);
+    return NextResponse.json({ error: "AI Analysis failed" }, { status: 500 });
   }
 }
