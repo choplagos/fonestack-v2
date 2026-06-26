@@ -17,11 +17,11 @@ export default function ComparisonModal({
 }) {
   if (!isOpen) return null;
 
-  const specRows = [
-    { label: 'Price', key: 'price', fmt: (v: number) => `₦${v.toLocaleString()}` },
-    { label: 'Condition', key: 'status', fmt: (v: string) => v.toUpperCase() },
-    { label: 'Brand', key: 'brand', fmt: (v: string) => v },
-    { label: 'Specifications', key: 'spec', fmt: (v: string) => v || '—' },
+  const specRows: { label: string; key: string; fmt: (v: any) => string }[] = [
+    { label: 'Price', key: 'price', fmt: (v: any) => `₦${Number(v).toLocaleString()}` },
+    { label: 'Condition', key: 'status', fmt: (v: any) => String(v ?? '').toUpperCase() },
+    { label: 'Brand', key: 'brand', fmt: (v: any) => v },
+    { label: 'Specifications', key: 'spec', fmt: (v: any) => v || '—' },
   ];
 
   return (
