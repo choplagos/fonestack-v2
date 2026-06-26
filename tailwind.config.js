@@ -17,9 +17,9 @@ module.exports = {
         wa: '#25D366'
       },
       fontFamily: {
-        display: ['var(--font-sora)', 'sans-serif'],
-        sans: ['var(--font-inter)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        display: ['Sora', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       backdropBlur: {
         '2xl': '40px',
