@@ -1,10 +1,5 @@
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
-import { Sora, Inter, JetBrains_Mono } from 'next/font/google'
-
-const sora = Sora({ subsets: ['latin'], variable: '--font-sora' })
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
 export const metadata = {
   title: 'Fonestack | Premium Phones & Repairs',
@@ -14,7 +9,15 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${sora.variable} ${inter.variable} ${mono.variable} font-sans`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
         </ThemeProvider>
