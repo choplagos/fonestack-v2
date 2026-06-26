@@ -1,0 +1,29 @@
+fonestack-v2/
+├── app/
+│   ├── globals.css           <-- Liquid Glass CSS Recipes
+│   ├── layout.tsx            <-- Theme Provider & Fonts
+│   ├── page.tsx              <-- Main Storefront (Hero + Catalog)
+│   ├── admin/
+│   │   ├── layout.tsx        <-- Glass Sidebar Layout
+│   │   └── page.tsx          <-- Admin Dashboard
+│   ├── invoice/[id]/
+│   │   └── page.tsx          <-- Public Receipt View
+│   └── api/
+│       └── compare/
+│           └── route.ts      <-- AI Streaming Logic
+├── components/
+│   ├── Navbar.tsx            <-- Glass Navigation
+│   ├── Hero.tsx              <-- Cinematic Entry
+│   ├── PhoneRig.tsx          <-- 3D Visuals
+│   ├── ProductCard.tsx       <-- Specular Tile
+│   ├── ComparisonDock.tsx    <-- Floating Compare Tray
+│   ├── ComparisonModal.tsx   <-- Spec Table
+│   ├── AICompareSection.tsx  <-- AI Verdict UI
+│   ├── RepairHub.tsx         <-- Diagnostic UI
+│   └── ThemeToggle.tsx       <-- Animated 3D Switch
+├── lib/
+│   └── supabase.ts           <-- DB Client Configuration
+├── public/                   <-- Images & Assets
+├── tailwind.config.js        <-- Obsidian & Yellow Theme Config
+├── package.json              <-- Project Dependencies
+└── .env.local                <-- API Keys (Supabase/Claude/Gemini)
