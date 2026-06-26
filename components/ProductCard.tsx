@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Bookmark, MessageCircle, Scale, Star } from 'lucide-react'
+import { Bookmark, MessageCircle, Scale, Smartphone } from 'lucide-react'
 
 interface Product {
   id: number;
@@ -30,9 +30,8 @@ export default function ProductCard({
 }) {
   const isSoldOut = (product.stock_quantity || 0) <= 0;
   
-  // Existing WhatsApp logic preserved
   const waMsg = encodeURIComponent(
-    `Hi Fonestack! 👋\nI'm interested in: *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nIs this available?`
+    `Hi Fonestack!\nI'm interested in: *${product.name}*\nPrice: ${String.fromCharCode(8358)}${product.price.toLocaleString()}\nIs this available?`
   );
 
   return (
@@ -42,11 +41,11 @@ export default function ProductCard({
       whileInView={{ opacity: 1, y: 0 }}
       whileHover={{ y: -8 }}
       viewport={{ once: true }}
-      className={`group liquid-glass rounded-3xl p-4 flex flex-col gap-4 transition-all duration-500 
+      className={`group relative liquid-glass rounded-3xl p-4 flex flex-col gap-4 transition-all duration-500 overflow-hidden
         ${isSoldOut ? 'opacity-60 grayscale' : 'hover:border-premiumYellow/40 hover:shadow-2xl hover:shadow-premiumYellow/10'}`}
     >
-      {/* Specular Shine Effect Layer */}
-      <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+      {/* Specular Shine Effect */}
+      <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-10" />
 
       {/* Top Actions */}
       <div className="flex justify-between items-start z-10">
@@ -54,7 +53,7 @@ export default function ProductCard({
           ${product.status === 'hot' ? 'bg-red-500 text-white' : 
             product.status === 'used' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 
             'bg-premiumYellow text-black'}`}>
-          {product.status === 'hot' ? '🔥 Hot Deal' : product.status === 'used' ? 'Used' : 'New'}
+          {product.status === 'hot' ? 'Hot Deal' : product.status === 'used' ? 'Used' : 'New'}
         </span>
         <button 
           onClick={() => onToggleWishlist(product)}
@@ -78,7 +77,9 @@ export default function ProductCard({
             className="h-full object-contain group-hover:scale-110 transition-transform duration-500" 
           />
         ) : (
-          <div className="text-6xl">📱</div>
+          <div className="flex items-center justify-center h-full">
+            <Smartphone className="w-16 h-16 text-slate-300 dark:text-slate-600" />
+          </div>
         )}
       </div>
 
@@ -100,15 +101,16 @@ export default function ProductCard({
         <div className="flex flex-col">
           <span className="text-xs opacity-50 dark:text-white uppercase font-mono text-[9px]">Best Price</span>
           <span className="text-lg font-display font-extrabold text-slate-900 dark:text-white">
-            ₦{product.price.toLocaleString()}
+            &#8358;{product.price.toLocaleString()}
           </span>
         </div>
         
         <a 
           href={isSoldOut ? '#' : `https://wa.me/2349029928322?text=${waMsg}`}
           target="_blank"
+          rel="noopener noreferrer"
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all
-            ${isSoldOut ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-premiumYellow text-black hover:scale-105 active:scale-95'}`}
+            ${isSoldOut ? 'bg-slate-800 text-slate-500 cursor-not-allowed pointer-events-none' : 'bg-premiumYellow text-black hover:scale-105 active:scale-95'}`}
         >
           <MessageCircle className="w-4 h-4" />
           Buy
