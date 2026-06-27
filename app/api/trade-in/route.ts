@@ -62,30 +62,45 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       contents: [{ role: 'user', parts: [{ text: buildUserPrompt(body) }] }],
       systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
-      generationConfig: { maxOutputTokens: 512, responseMimeType: 'application/json' },
+      generationConfig: { maxOutputTokens: 1024, responseMimeType: 'application/json' },
     }),
   });
 
   if (!geminiRes.ok) {
-    return Response.json({ error: 'Gemini API error' }, { status: 502 });
+    const errText = await geminiRes.text().catch(() => '');
+    return Response.json({ error: 'Gemini API error', detail: errText.slice(0, 500) }, { status: 502 });
   }
 
   const geminiData = await geminiRes.json();
   const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+  const finishReason = geminiData.candidates?.[0]?.finishReason;
 
   if (!rawText) {
-    return Response.json({ error: 'No estimate returned by AI' }, { status: 502 });
+    return Response.json({ error: 'No estimate returned by AI', finishReason }, { status: 502 });
+  }
+
+  // Strip markdown code fences if the model added them despite instructions,
+  // and trim to the outermost { ... } in case of stray leading/trailing text.
+  let cleaned = rawText.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleaned = cleaned.slice(firstBrace, lastBrace + 1);
   }
 
   let parsed: any;
   try {
-    parsed = JSON.parse(rawText);
+    parsed = JSON.parse(cleaned);
   } catch {
-    return Response.json({ error: 'Could not parse AI estimate' }, { status: 502 });
+    return Response.json(
+      { error: 'Could not parse AI estimate', raw: rawText.slice(0, 800), finishReason },
+      { status: 502 }
+    );
   }
 
   if (typeof parsed.estimate_low !== 'number' || typeof parsed.estimate_high !== 'number') {
-    return Response.json({ error: 'Malformed AI estimate' }, { status: 502 });
+    return Response.json({ error: 'Malformed AI estimate', raw: rawText.slice(0, 800) }, { status: 502 });
   }
 
   return Response.json(parsed, {
