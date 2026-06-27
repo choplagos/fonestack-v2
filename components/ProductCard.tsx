@@ -44,10 +44,8 @@ export default function ProductCard({
       className={`group relative liquid-glass rounded-xl sm:rounded-2xl md:rounded-3xl p-2 sm:p-3 md:p-4 flex flex-col gap-2 sm:gap-3 md:gap-4 transition-all duration-500
         ${isSoldOut ? 'opacity-60 grayscale' : 'hover:border-premiumYellow/40 hover:shadow-2xl hover:shadow-premiumYellow/10'}`}
     >
-      {/* Specular Shine */}
       <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl" />
 
-      {/* Top Actions */}
       <div className="flex justify-between items-start z-10">
         <span className={`px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-bold font-mono tracking-wide uppercase
           ${product.status === 'hot' ? 'bg-red-500 text-white' :
@@ -63,7 +61,6 @@ export default function ProductCard({
         </button>
       </div>
 
-      {/* Image */}
       <div className="relative h-20 sm:h-32 md:h-44 w-full flex items-center justify-center p-1 sm:p-2 md:p-4">
         {isSoldOut && (
           <div className="absolute inset-0 flex items-center justify-center z-20">
@@ -81,7 +78,6 @@ export default function ProductCard({
         )}
       </div>
 
-      {/* Info */}
       <div className="flex flex-col gap-0.5 sm:gap-1">
         <span className="text-[8px] sm:text-[9px] md:text-[10px] font-mono uppercase tracking-widest text-premiumYellow opacity-70">
           {product.brand}
@@ -94,7 +90,6 @@ export default function ProductCard({
         </p>
       </div>
 
-      {/* Footer */}
       <div className="mt-auto flex items-center justify-between pt-2 sm:pt-3 md:pt-4 border-t border-white/5">
         <div className="flex flex-col">
           <span className="text-[7px] sm:text-[8px] md:text-[9px] opacity-50 dark:text-white uppercase font-mono">Price</span>
@@ -102,8 +97,7 @@ export default function ProductCard({
             &#8358;{product.price.toLocaleString()}
           </span>
         </div>
-
-        <a
+        
           href={isSoldOut ? '#' : `https://wa.me/2349029928322?text=${waMsg}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -115,7 +109,6 @@ export default function ProductCard({
         </a>
       </div>
 
-      {/* Compare */}
       <button
         onClick={() => onToggleCompare(product)}
         className={`w-full py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-dashed transition-all text-[8px] sm:text-[9px] md:text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-1 sm:gap-2
