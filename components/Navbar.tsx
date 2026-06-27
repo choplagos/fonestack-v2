@@ -25,7 +25,7 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-[90] w-[95%] max-w-7xl px-4 md:px-6 py-3 rounded-2xl transition-all duration-500 
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-[90] w-[95%] max-w-7xl px-4 md:px-6 py-3 rounded-2xl transition-all duration-500
           ${isScrolled ? 'liquid-glass py-2' : 'bg-transparent'}`}
       >
         <div className="flex items-center justify-between gap-4 md:gap-8">
@@ -41,7 +41,8 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
               type="text"
               onChange={(e) => onSearch(e.target.value)}
               placeholder="Search iPhones, Samsung, Pixel..."
-              className="w-full bg-slate-200/50 dark:bg-white/5 border border-white/10 backdrop-blur-md rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-premiumYellow/50 transition-all"
+              style={{ fontSize: '16px' }}
+              className="w-full bg-slate-200/50 dark:bg-white/5 border border-white/10 backdrop-blur-md rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-premiumYellow/50 transition-all"
             />
           </div>
 
@@ -50,11 +51,11 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
             <NavLink href="#phones">Phones</NavLink>
             <NavLink href="#trade-in">Trade-In</NavLink>
             <NavLink href="#repair">Repairs</NavLink>
-            <button className="relative group flex items-center gap-2 text-sm font-medium hover:text-premiumYellow transition-colors dark:text-slate-300">
+            <button className="relative flex items-center gap-2 text-sm font-medium hover:text-premiumYellow transition-colors dark:text-slate-300">
               <Bookmark className="w-4 h-4" />
               <span>Saved</span>
               {wishlistCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-premiumYellow text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-lg">
+                <span className="absolute -top-2 -right-2 bg-premiumYellow text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
                   {wishlistCount}
                 </span>
               )}
@@ -69,22 +70,27 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
           </div>
 
           {/* Mobile right side */}
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2">
             {wishlistCount > 0 && (
-              <div className="relative">
+              <div className="relative p-2">
                 <Bookmark className="w-5 h-5 text-slate-900 dark:text-white" />
-                <span className="absolute -top-2 -right-2 bg-premiumYellow text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute top-0 right-0 bg-premiumYellow text-black text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                   {wishlistCount}
                 </span>
               </div>
             )}
-            <button className="text-slate-900 dark:text-white p-1" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {/* Hamburger — 44px tap target */}
+            <button
+              className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-900 dark:text-white"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar - below nav row */}
+        {/* Mobile Search Bar — explicit 16px font prevents iOS zoom */}
         <div className="md:hidden mt-3 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -92,7 +98,8 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
             value={mobileSearch}
             onChange={(e) => handleMobileSearch(e.target.value)}
             placeholder="Search phones..."
-            className="w-full bg-slate-200/50 dark:bg-white/5 border border-white/10 backdrop-blur-md rounded-xl py-2.5 pl-10 pr-4 text-base focus:outline-none focus:ring-1 focus:ring-premiumYellow/50 transition-all"
+            style={{ fontSize: '16px' }}
+            className="w-full bg-slate-200/50 dark:bg-white/5 border border-white/10 backdrop-blur-md rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-premiumYellow/50 transition-all"
           />
         </div>
       </motion.nav>
@@ -113,7 +120,10 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
             <MobileNavLink href="#how" onClick={() => setIsMobileMenuOpen(false)}>How It Works</MobileNavLink>
             <MobileNavLink href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</MobileNavLink>
             <div className="h-px bg-white/10 w-full" />
-            <a href="https://wa.me/2349029928322" className="w-full bg-premiumYellow text-black text-center py-4 rounded-2xl font-bold text-lg">
+            <a
+              href="https://wa.me/2349029928322"
+              className="w-full bg-premiumYellow text-black text-center py-4 rounded-2xl font-bold text-lg min-h-[52px] flex items-center justify-center"
+            >
               Chat on WhatsApp
             </a>
           </motion.div>
@@ -135,7 +145,7 @@ function NavLink({ href, children }: { href: string, children: React.ReactNode }
 
 function MobileNavLink({ href, children, onClick }: { href: string, children: React.ReactNode, onClick: () => void }) {
   return (
-    <a href={href} onClick={onClick} className="text-2xl font-bold text-slate-900 dark:text-white py-1">
+    <a href={href} onClick={onClick} className="text-2xl font-bold text-slate-900 dark:text-white py-1 min-h-[44px] flex items-center">
       {children}
     </a>
   )

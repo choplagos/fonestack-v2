@@ -20,6 +20,19 @@
     border-color: var(--glass-border);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1), inset 0 0 0 1px var(--specular-highlight);
   }
+
+  /* Fallback for low-end Android / browsers without backdrop-filter support */
+  @supports not (backdrop-filter: blur(1px)) {
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .dark .liquid-glass {
+      background: rgba(15, 15, 15, 0.92);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+  }
 }
 
 body {
