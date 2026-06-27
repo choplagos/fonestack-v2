@@ -49,11 +49,10 @@ export default function Storefront() {
     })
 
   const visible = filtered.slice(0, visibleCount)
+  const sliderValue = filter.maxPrice || maxProductPrice
 
   const toggleWishlist = (item: any) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])
   const toggleCompare = (item: any) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)
-
-  const sliderValue = filter.maxPrice || maxProductPrice
 
   return (
     <main className="min-h-screen">
@@ -61,23 +60,25 @@ export default function Storefront() {
 
       <Hero
         stats={{ total: products.length.toString(), brands: '12+', new: products.filter(p => p.status === 'new').length.toString() }}
-        chips={products.slice(0, 3).map(p => ({ brand: p.brand, price: `₦${p.price.toLocaleString()}` }))}
+        chips={products.slice(0, 3).map(p => ({ brand: p.brand, price: `\u20a6${p.price.toLocaleString()}` }))}
       />
 
       <BrandsSection products={products} />
 
-      <section id="phones" className="py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4">// Shop</div>
-          <div className="flex flex-wrap items-center gap-3 mb-8">
-            <h2 className="text-4xl font-display font-black dark:text-white">Available <span className="text-premiumYellow">Phones</span></h2>
-            <div className="ml-auto flex flex-wrap gap-3 items-center">
+      <section id="phones" className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
+          <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-3 md:mb-4">// Shop</div>
 
-              {/* Brand filter */}
+          {/* Filters - scroll horizontally on mobile */}
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 mb-6 md:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-black dark:text-white">
+              Available <span className="text-premiumYellow">Phones</span>
+            </h2>
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0 sm:ml-auto sm:flex-wrap">
               <select
                 value={filter.brand}
                 onChange={e => setFilter({ ...filter, brand: e.target.value })}
-                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+                className="flex-shrink-0 bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs sm:text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
               >
                 <option value="all">All Brands</option>
                 {Array.from(new Set(products.map(p => p.brand))).map(b => (
@@ -85,32 +86,29 @@ export default function Storefront() {
                 ))}
               </select>
 
-              {/* Condition filter */}
               <select
                 value={filter.condition}
                 onChange={e => setFilter({ ...filter, condition: e.target.value })}
-                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+                className="flex-shrink-0 bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs sm:text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
               >
-                <option value="all">All Conditions</option>
+                <option value="all">All</option>
                 <option value="new">New</option>
-                <option value="used">Fairly Used</option>
+                <option value="used">Used</option>
               </select>
 
-              {/* Sort */}
               <select
                 value={filter.sort}
                 onChange={e => setFilter({ ...filter, sort: e.target.value })}
-                className="bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
+                className="flex-shrink-0 bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs sm:text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
               >
                 <option value="newest">Newest</option>
-                <option value="price_asc">Price: Low → High</option>
-                <option value="price_desc">Price: High → Low</option>
+                <option value="price_asc">Low to High</option>
+                <option value="price_desc">High to Low</option>
               </select>
 
-              {/* Price range slider */}
               {products.length > 0 && (
-                <div className="flex items-center gap-3 bg-black/20 border border-white/10 rounded-xl px-4 py-2">
-                  <span className="text-xs font-mono text-slate-500 whitespace-nowrap">Max:</span>
+                <div className="flex-shrink-0 flex items-center gap-2 bg-black/20 border border-white/10 rounded-xl px-3 py-2">
+                  <span className="text-[10px] font-mono text-slate-500 whitespace-nowrap">Max:</span>
                   <input
                     type="range"
                     min={Math.min(...products.map(p => p.price))}
@@ -121,14 +119,13 @@ export default function Storefront() {
                       const val = Number(e.target.value)
                       setFilter({ ...filter, maxPrice: val >= maxProductPrice ? 0 : val })
                     }}
-                    className="w-28 accent-premiumYellow cursor-pointer"
+                    className="w-20 sm:w-28 accent-premiumYellow cursor-pointer"
                   />
-                  <span className="text-xs font-mono text-premiumYellow whitespace-nowrap min-w-[60px]">
-                    {filter.maxPrice ? `₦${filter.maxPrice.toLocaleString()}` : 'Any'}
+                  <span className="text-[10px] font-mono text-premiumYellow whitespace-nowrap min-w-[50px]">
+                    {filter.maxPrice ? `\u20a6${(filter.maxPrice / 1000).toFixed(0)}k` : 'Any'}
                   </span>
                 </div>
               )}
-
             </div>
           </div>
 
@@ -138,7 +135,8 @@ export default function Storefront() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* Fluid 3-col on mobile, 4 on tablet, 5 on desktop */}
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
                 {visible.map(p => (
                   <ProductCard
                     key={p.id}
@@ -152,10 +150,10 @@ export default function Storefront() {
               </div>
 
               {filtered.length > visibleCount && (
-                <div className="flex flex-col items-center mt-12 gap-3">
+                <div className="flex flex-col items-center mt-8 md:mt-12 gap-3">
                   <button
                     onClick={() => setVisibleCount(v => v + 12)}
-                    className="liquid-glass px-10 py-4 rounded-2xl font-bold dark:text-white hover:border-premiumYellow/30 border border-transparent transition-all hover:shadow-lg hover:shadow-premiumYellow/10"
+                    className="liquid-glass px-8 md:px-10 py-3 md:py-4 rounded-2xl font-bold dark:text-white hover:border-premiumYellow/30 border border-transparent transition-all text-sm md:text-base"
                   >
                     Load More — {filtered.length - visibleCount} more phone{filtered.length - visibleCount !== 1 ? 's' : ''}
                   </button>
@@ -190,10 +188,14 @@ export default function Storefront() {
         onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))}
       />
 
-      {/* Floating WhatsApp button */}
-      <a href="https://wa.me/2349029928322" target="_blank" rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
-        <span className="text-2xl">💬</span>
+      {/* Floating WhatsApp */}
+      <a
+        href="https://wa.me/2349029928322"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-4 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform"
+      >
+        <span className="text-xl sm:text-2xl">💬</span>
       </a>
     </main>
   )
