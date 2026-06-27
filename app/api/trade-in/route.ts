@@ -26,7 +26,7 @@ Has original box: ${body.has_box ? 'Yes' : 'No'}
 Has charger: ${body.has_charger ? 'Yes' : 'No'}
 
 Respond in EXACT JSON format (no markdown, no backticks):
-{"estimate_low": <number, Naira>, "estimate_high": <number, Naira>, "confidence": "High" | "Medium" | "Low", "reasoning": "2-3 sentence explanation of how you arrived at this range, referencing brand resale demand, condition, and any relevant factors", "red_flags": "1 sentence flagging any risk or concern from the seller's description, or omit this field entirely if there are none"}`;
+{"estimate_low": <number, Naira>, "estimate_high": <number, Naira>, "confidence": "High" | "Medium" | "Low", "reasoning": "2-3 sentence explanation of how you arrived at this range, referencing brand resale demand, condition, and any relevant factors", "red_flags": "1 sentence flagging a specific risk or concern, OR the JSON value null if there is genuinely nothing to flag — never write a sentence saying there are no red flags"}`;
 }
 
 export async function OPTIONS() {
@@ -101,6 +101,16 @@ export async function POST(req: Request) {
 
   if (typeof parsed.estimate_low !== 'number' || typeof parsed.estimate_high !== 'number') {
     return Response.json({ error: 'Malformed AI estimate', raw: rawText.slice(0, 800) }, { status: 502 });
+  }
+
+  // The model sometimes answers red_flags with a "no issues found" sentence
+  // instead of omitting the field. Treat those as no flag at all so the
+  // warning UI doesn't render a flag that says there is no flag.
+  if (typeof parsed.red_flags === 'string') {
+    const noFlagPattern = /^(none|no\s|n\/a)/i;
+    if (!parsed.red_flags.trim() || noFlagPattern.test(parsed.red_flags.trim())) {
+      delete parsed.red_flags;
+    }
   }
 
   return Response.json(parsed, {
