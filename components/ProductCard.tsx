@@ -31,7 +31,7 @@ export default function ProductCard({
   const isSoldOut = (product.stock_quantity || 0) <= 0
 
   const waMsg = encodeURIComponent(
-    `Hi Fonestack!\nI'm interested in: *${product.name}*\nPrice: \u20a6${product.price.toLocaleString()}\nIs this available?`
+    `Hi Fonestack!\nI'm interested in: *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nIs this available?`
   )
 
   return (
