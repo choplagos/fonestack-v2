@@ -109,49 +109,66 @@ export default function ComparisonModal({ isOpen, onClose, phones, onRemove }: {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="liquid-glass w-full sm:max-w-2xl lg:max-w-4xl rounded-t-[2rem] sm:rounded-[2rem] max-h-[92vh] overflow-y-auto"
+            className="liquid-glass w-full sm:max-w-2xl lg:max-w-4xl rounded-t-[2rem] sm:rounded-[2rem] max-h-[92vh] flex flex-col"
           >
-            {/* Header */}
-            <div className="sticky top-0 liquid-glass z-10 flex items-center justify-between p-5 border-b border-white/5">
+            {/* Header — sticky, 44px close button */}
+            <div className="sticky top-0 liquid-glass z-10 flex items-center justify-between p-5 border-b border-white/5 flex-shrink-0">
               <h2 className="text-lg font-display font-black dark:text-white">AI Phone Compare</h2>
-              <button onClick={handleClose} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+              <button
+                onClick={handleClose}
+                aria-label="Close"
+                className="p-3 min-h-[44px] min-w-[44px] rounded-full hover:bg-white/10 active:bg-white/20 transition-colors flex items-center justify-center"
+              >
                 <X className="w-5 h-5 dark:text-white" />
               </button>
             </div>
 
-            <div className="p-4 md:p-6 space-y-6">
-              {/* Phone Cards - horizontal scroll on mobile */}
-              <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
-                {phones.map(p => (
-                  <div key={p.id} className="snap-start flex-shrink-0 w-36 sm:w-44 liquid-glass rounded-2xl p-3 flex flex-col items-center text-center gap-2">
-                    {p.image_url
-                      ? <img src={p.image_url} alt={p.name} className="h-16 object-contain" />
-                      : <div className="h-16 w-16 rounded-xl bg-white/5 flex items-center justify-center text-2xl">📱</div>
-                    }
-                    <div className="text-xs font-bold dark:text-white line-clamp-2">{p.name}</div>
-                    <div className="text-xs text-premiumYellow font-mono">&#8358;{p.price?.toLocaleString()}</div>
-                    <button onClick={() => onRemove(p.id)} className="text-[10px] text-slate-500 hover:text-red-400 transition-colors">Remove</button>
-                  </div>
-                ))}
+            {/* Scrollable body */}
+            <div className="overflow-y-auto flex-1 p-4 md:p-6 space-y-6 pb-6">
+
+              {/* Phone Cards — horizontal scroll with fade hint */}
+              <div className="relative">
+                <div className="flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-none">
+                  {phones.map(p => (
+                    <div key={p.id} className="snap-start flex-shrink-0 w-36 sm:w-44 liquid-glass rounded-2xl p-3 flex flex-col items-center text-center gap-2 relative">
+                      {/* Remove — icon button, always tappable */}
+                      <button
+                        onClick={() => onRemove(p.id)}
+                        aria-label={`Remove ${p.name}`}
+                        className="absolute top-2 right-2 w-6 h-6 bg-red-500/80 rounded-full flex items-center justify-center"
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                      {p.image_url
+                        ? <img src={p.image_url} alt={p.name} className="h-16 object-contain mt-4" />
+                        : <div className="h-16 w-16 rounded-xl bg-white/5 flex items-center justify-center text-2xl mt-4">📱</div>
+                      }
+                      <div className="text-xs font-bold dark:text-white line-clamp-2">{p.name}</div>
+                      <div className="text-xs text-premiumYellow font-mono">&#8358;{p.price?.toLocaleString()}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Right fade — signals horizontal scroll */}
+                <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-black/20 to-transparent rounded-r-2xl" />
               </div>
 
-              {/* Specs comparison - collapsible on mobile */}
+              {/* Specs comparison — collapsible, overflow fixed */}
               <div className="liquid-glass rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setExpandedSpecs(!expandedSpecs)}
-                  className="w-full flex items-center justify-between p-4 text-left"
+                  className="w-full flex items-center justify-between p-4 text-left min-h-[44px]"
                 >
                   <span className="text-xs font-mono uppercase tracking-widest text-slate-500">Specs Comparison</span>
                   {expandedSpecs ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                 </button>
                 {expandedSpecs && (
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto min-w-0">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-t border-white/5">
                           <th className="text-left p-3 text-xs font-mono text-slate-500 uppercase tracking-widest">Spec</th>
                           {phones.map(p => (
-                            <th key={p.id} className="p-3 text-xs font-bold dark:text-white text-center">{p.name.split(' ').slice(0,2).join(' ')}</th>
+                            <th key={p.id} className="p-3 text-xs font-bold dark:text-white text-center">{p.name.split(' ').slice(0, 2).join(' ')}</th>
                           ))}
                         </tr>
                       </thead>
@@ -241,7 +258,7 @@ export default function ComparisonModal({ isOpen, onClose, phones, onRemove }: {
                     </div>
                   )}
 
-                  {/* Pros/Cons - stacked on mobile */}
+                  {/* Pros/Cons */}
                   {aiResult.pros_cons?.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {aiResult.pros_cons.map((pc: any, i: number) => (
@@ -274,25 +291,6 @@ export default function ComparisonModal({ isOpen, onClose, phones, onRemove }: {
                     </div>
                   )}
 
-                  {/* Follow-up input */}
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={followUp}
-                      onChange={e => setFollowUp(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && handleFollowUp()}
-                      placeholder={aiResult.follow_up_hint || 'Ask a follow-up question...'}
-                      className="flex-1 bg-black/20 border border-white/10 rounded-2xl px-4 py-3 text-base dark:text-white focus:outline-none focus:border-premiumYellow/50 transition-all"
-                    />
-                    <button
-                      onClick={handleFollowUp}
-                      disabled={loading || !followUp.trim()}
-                      className="px-5 py-3 rounded-2xl bg-premiumYellow text-black font-bold disabled:opacity-50 min-w-[60px] flex items-center justify-center"
-                    >
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ask'}
-                    </button>
-                  </div>
-
                   {/* WhatsApp CTA */}
                   <a
                     href={`https://wa.me/2349029928322?text=${encodeURIComponent(`Hi Fonestack! I compared ${phones.map(p => p.name).join(' vs ')} and I need help deciding.`)}`}
@@ -306,6 +304,28 @@ export default function ComparisonModal({ isOpen, onClose, phones, onRemove }: {
                 </motion.div>
               )}
             </div>
+
+            {/* Follow-up input — sticky at bottom once AI result is shown */}
+            {aiResult && (
+              <div className="sticky bottom-0 liquid-glass border-t border-white/5 p-4 flex gap-2 flex-shrink-0">
+                <input
+                  type="text"
+                  value={followUp}
+                  onChange={e => setFollowUp(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleFollowUp()}
+                  placeholder={aiResult.follow_up_hint || 'Ask a follow-up question...'}
+                  style={{ fontSize: '16px' }}
+                  className="flex-1 bg-black/20 border border-white/10 rounded-2xl px-4 py-3 dark:text-white focus:outline-none focus:border-premiumYellow/50 transition-all min-h-[44px]"
+                />
+                <button
+                  onClick={handleFollowUp}
+                  disabled={loading || !followUp.trim()}
+                  className="px-5 rounded-2xl bg-premiumYellow text-black font-bold disabled:opacity-50 min-w-[60px] min-h-[44px] flex items-center justify-center"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ask'}
+                </button>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}
