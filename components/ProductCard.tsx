@@ -144,7 +144,7 @@ export default function ProductCard({
         </button>
 
         {/* WhatsApp CTA — min-h-[48px] primary CTA */}
-        
+        <a
           href={`https://wa.me/2349029928322?text=${encodeURIComponent(`Hi, I'm interested in the ${product.name} for ₦${product.price.toLocaleString()}`)}`}
           target="_blank"
           rel="noopener noreferrer"
