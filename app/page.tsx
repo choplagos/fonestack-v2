@@ -56,7 +56,7 @@ export default function Storefront() {
 
   // Push WA FAB above comparison dock when dock is active
   const waFabBottom = compareList.length > 0
-    ? 'bottom-[7rem] sm:bottom-[5.5rem]'
+    ? 'bottom-[9.5rem] sm:bottom-[5.5rem]'
     : 'bottom-6'
 
   return (

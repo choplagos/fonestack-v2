@@ -17,10 +17,10 @@ export default function ComparisonDock({ compareList, onRemove, onClear, onOpenM
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className="fixed bottom-24 sm:bottom-8 left-1/2 -translate-x-1/2 z-[80] w-[95%] max-w-lg"
+        className="fixed bottom-24 sm:bottom-8 left-1/2 -translate-x-1/2 z-[80] w-[92%] sm:w-auto max-w-lg"
       >
         <div className="liquid-glass rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl border border-premiumYellow/20">
-          
+
           {/* Phone Avatars */}
           <div className="flex gap-2 flex-1 overflow-x-auto">
             {compareList.map(p => (
