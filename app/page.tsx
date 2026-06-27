@@ -54,9 +54,10 @@ export default function Storefront() {
   const toggleWishlist = (item: any) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])
   const toggleCompare = (item: any) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)
 
-  // Push WA FAB above comparison dock when dock is active
+  // Dock now floats bottom-left on mobile, beside the WA FAB — no vertical dodge needed there.
+  // Desktop dock is still centered, so lift the FAB slightly when it's open to avoid any overlap.
   const waFabBottom = compareList.length > 0
-    ? 'bottom-[9.5rem] sm:bottom-[5.5rem]'
+    ? 'bottom-6 sm:bottom-[5.5rem]'
     : 'bottom-6'
 
   return (
