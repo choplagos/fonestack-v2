@@ -1,61 +1,158 @@
 ﻿'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Bookmark, MessageCircle, Scale, Smartphone } from 'lucide-react'
+import { Bookmark, GitCompare, MessageCircle, Star, CheckCircle } from 'lucide-react'
 
 interface Product {
-  id: number;
-  name: string;
-  brand: string;
-  price: number;
-  status: string;
-  image_url: string;
-  spec: string;
-  stock_quantity: number;
-  rating?: number;
+  id: string
+  name: string
+  brand: string
+  price: number
+  image_url?: string
+  storage?: string
+  ram?: string
+  condition?: string
+  color?: string
+  rating?: number
+  is_available?: boolean
 }
 
-export default function ProductCard({ product, onToggleWishlist, onToggleCompare, isInWishlist, isInCompare }: { product: Product, onToggleWishlist: (p: Product) => void, onToggleCompare: (p: Product) => void, isInWishlist: boolean, isInCompare: boolean }) {
-  const isSoldOut = (product.stock_quantity || 0) <= 0
-  const price = product.price.toLocaleString()
-  const waMsg = encodeURIComponent('Hi Fonestack! I am interested in: ' + product.name + ' Price: N' + price + ' Is this available?')
+interface ProductCardProps {
+  product: Product
+  isInWishlist: boolean
+  isInCompare: boolean
+  onToggleWishlist: (item: Product) => void
+  onToggleCompare: (item: Product) => void
+}
+
+export default function ProductCard({
+  product,
+  isInWishlist,
+  isInCompare,
+  onToggleWishlist,
+  onToggleCompare,
+}: ProductCardProps) {
+  const [imgError, setImgError] = useState(false)
+
+  const conditionColor: Record<string, string> = {
+    New: 'text-emerald-400 bg-emerald-400/10',
+    'Like New': 'text-sky-400 bg-sky-400/10',
+    Good: 'text-amber-400 bg-amber-400/10',
+    Fair: 'text-orange-400 bg-orange-400/10',
+  }
+
+  const badge = product.condition ?? 'New'
+
   return (
-    <motion.div layout initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} viewport={{ once: true }}
-      className={`group relative liquid-glass rounded-xl sm:rounded-2xl md:rounded-3xl p-2 sm:p-3 md:p-4 flex flex-col gap-2 sm:gap-3 md:gap-4 transition-all duration-500 ${isSoldOut ? 'opacity-60 grayscale' : 'hover:border-premiumYellow/40 hover:shadow-2xl hover:shadow-premiumYellow/10'}`}>
-      <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl" />
-      <div className="flex justify-between items-start z-10">
-        <span className={`px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-bold font-mono tracking-wide uppercase ${product.status === 'hot' ? 'bg-red-500 text-white' : product.status === 'used' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-premiumYellow text-black'}`}>
-          {product.status === 'hot' ? 'Hot' : product.status === 'used' ? 'Used' : 'New'}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3 }}
+      className="group relative rounded-2xl liquid-glass overflow-hidden flex flex-col"
+    >
+      {/* Image */}
+      <div className="relative w-full aspect-square bg-slate-100 dark:bg-white/5 overflow-hidden">
+        {product.image_url && !imgError ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            onError={() => setImgError(true)}
+            className="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-5xl select-none">
+            📱
+          </div>
+        )}
+
+        {/* Condition badge */}
+        <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${conditionColor[badge] ?? conditionColor['New']}`}>
+          {badge}
         </span>
-        <button onClick={() => onToggleWishlist(product)} className={`p-1 sm:p-1.5 md:p-2 rounded-full liquid-glass transition-colors ${isInWishlist ? 'text-premiumYellow bg-premiumYellow/10' : 'text-slate-400'}`}>
-          <Bookmark className={`w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 ${isInWishlist ? 'fill-current' : ''}`} />
+
+        {/* Wishlist button */}
+        <button
+          onClick={() => onToggleWishlist(product)}
+          className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all
+            ${isInWishlist
+              ? 'bg-premiumYellow text-black'
+              : 'bg-white/10 text-slate-400 hover:text-premiumYellow hover:bg-white/20'}`}
+        >
+          <Bookmark className="w-4 h-4" fill={isInWishlist ? 'currentColor' : 'none'} />
         </button>
       </div>
-      <div className="relative h-20 sm:h-32 md:h-44 w-full flex items-center justify-center p-1 sm:p-2 md:p-4">
-        {isSoldOut && (<div className="absolute inset-0 flex items-center justify-center z-20"><span className="bg-black/80 text-white border border-white/20 px-2 py-1 rounded-full text-[8px] sm:text-[10px] font-bold tracking-widest">SOLD OUT</span></div>)}
-        {product.image_url ? (<img src={product.image_url} alt={product.name} className="h-full w-full object-contain group-hover:scale-110 transition-transform duration-500" />) : (<Smartphone className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 text-slate-300 dark:text-slate-600" />)}
-      </div>
-      <div className="flex flex-col gap-0.5 sm:gap-1">
-        <span className="text-[8px] sm:text-[9px] md:text-[10px] font-mono uppercase tracking-widest text-premiumYellow opacity-70">{product.brand}</span>
-        <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-premiumYellow transition-colors line-clamp-1 text-[10px] sm:text-xs md:text-sm">{product.name}</h3>
-        <p className="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 line-clamp-2 hidden sm:block">{product.spec || 'Contact for specs.'}</p>
-      </div>
-      <div className="mt-auto flex items-center justify-between pt-2 sm:pt-3 md:pt-4 border-t border-white/5">
-        <div className="flex flex-col">
-          <span className="text-[7px] sm:text-[8px] md:text-[9px] opacity-50 dark:text-white uppercase font-mono">Price</span>
-          <span className="text-[10px] sm:text-xs md:text-base font-display font-extrabold text-slate-900 dark:text-white">&#8358;{product.price.toLocaleString()}</span>
+
+      {/* Info */}
+      <div className="flex flex-col flex-1 p-4 gap-3">
+        <div>
+          <p className="text-xs text-slate-400 uppercase tracking-widest font-medium">{product.brand}</p>
+          <h3 className="font-bold text-slate-900 dark:text-white leading-tight mt-0.5 line-clamp-2">
+            {product.name}
+          </h3>
         </div>
-        <a href={isSoldOut ? '#' : 'https://wa.me/2349029928322?text=' + waMsg} target="_blank" rel="noopener noreferrer"
-          className={`flex items-center gap-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-bold transition-all ${isSoldOut ? 'bg-slate-800 text-slate-500 cursor-not-allowed pointer-events-none' : 'bg-premiumYellow text-black hover:scale-105 active:scale-95'}`}>
-          <MessageCircle className="w-3 h-3 md:w-4 md:h-4" /><span className="hidden sm:inline">Buy</span>
+
+        {/* Specs chips */}
+        {(product.storage || product.ram) && (
+          <div className="flex flex-wrap gap-1.5">
+            {product.storage && (
+              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 font-medium">
+                {product.storage}
+              </span>
+            )}
+            {product.ram && (
+              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 font-medium">
+                {product.ram} RAM
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Rating */}
+        {product.rating && (
+          <div className="flex items-center gap-1">
+            <Star className="w-3.5 h-3.5 text-premiumYellow fill-premiumYellow" />
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{product.rating.toFixed(1)}</span>
+          </div>
+        )}
+
+        {/* Price + availability */}
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
+          <div>
+            <p className="text-lg font-extrabold text-slate-900 dark:text-white">
+              ₦{product.price.toLocaleString()}
+            </p>
+            {product.is_available !== false && (
+              <p className="text-[11px] text-emerald-400 flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" /> In Stock
+              </p>
+            )}
+          </div>
+
+          {/* Compare toggle */}
+          <button
+            onClick={() => onToggleCompare(product)}
+            title={isInCompare ? 'Remove from compare' : 'Add to compare'}
+            className={`p-2 rounded-xl transition-all text-xs font-semibold flex items-center gap-1
+              ${isInCompare
+                ? 'bg-premiumYellow text-black'
+                : 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-premiumYellow'}`}
+          >
+            <GitCompare className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* WhatsApp CTA */}
+        <a
+          href={`https://wa.me/2349029928322?text=Hi, I'm interested in the ${encodeURIComponent(product.name)} for ₦${product.price.toLocaleString()}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full bg-premiumYellow text-black text-sm font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform"
+        >
+          <MessageCircle className="w-4 h-4" />
+          Buy via WhatsApp
         </a>
       </div>
-      <button onClick={() => onToggleCompare(product)}
-        className={`w-full py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-dashed transition-all text-[8px] sm:text-[9px] md:text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-1 sm:gap-2 ${isInCompare ? 'border-premiumYellow text-premiumYellow bg-premiumYellow/5' : 'border-white/10 text-slate-500 hover:border-white/30'}`}>
-        <Scale className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-        <span className="hidden sm:inline">{isInCompare ? 'In Compare' : 'Add to Compare'}</span>
-        <span className="sm:hidden">{isInCompare ? 'Added' : 'Compare'}</span>
-      </button>
     </motion.div>
   )
 }
