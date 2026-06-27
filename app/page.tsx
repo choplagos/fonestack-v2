@@ -195,7 +195,7 @@ export default function Storefront() {
       />
 
       {/* Floating WhatsApp — lifts above ComparisonDock when active */}
-      
+      <a
         href="https://wa.me/2349029928322"
         target="_blank"
         rel="noopener noreferrer"
