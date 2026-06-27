@@ -33,6 +33,14 @@
       border-color: rgba(255, 255, 255, 0.08);
     }
   }
+
+  /* Reduce glass blur cost on mobile — halves GPU composite work on Tecno/Infinix */
+  @media (max-width: 640px) {
+    .liquid-glass {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+  }
 }
 
 body {
@@ -40,3 +48,49 @@ body {
 }
 
 .preserve-3d { transform-style: preserve-3d; }
+
+/* Hide scrollbars on filter strip while keeping scroll functionality */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom range slider — larger thumb for iOS touch accuracy */
+input[type="range"].accent-premiumYellow {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"].accent-premiumYellow::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #E6FF00;
+  border: 2px solid rgba(0,0,0,0.3);
+  cursor: grab;
+  box-shadow: 0 0 0 8px transparent;
+  touch-action: manipulation;
+}
+
+input[type="range"].accent-premiumYellow::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #E6FF00;
+  border: 2px solid rgba(0,0,0,0.3);
+  cursor: grab;
+}
+
+/* Smooth FAB transitions */
+a[aria-label="Chat on WhatsApp"] {
+  transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s ease;
+}
