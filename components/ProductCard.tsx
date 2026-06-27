@@ -47,9 +47,9 @@ export default function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.3 }}
-      className="group relative rounded-2xl liquid-glass overflow-hidden flex flex-col"
+      className={`group relative rounded-2xl liquid-glass overflow-hidden flex flex-col transition-shadow ${isInCompare ? 'ring-2 ring-premiumYellow' : ''}`}
     >
       {/* Image */}
       <div className="relative w-full aspect-square bg-slate-100 dark:bg-white/5 overflow-hidden">
@@ -71,13 +71,14 @@ export default function ProductCard({
           {badge}
         </span>
 
-        {/* Wishlist button */}
+        {/* Wishlist button — 44px tap target, always visible on mobile */}
         <button
           onClick={() => onToggleWishlist(product)}
-          className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all
+          aria-label={isInWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
+          className={`absolute top-2 right-2 p-3 min-h-[44px] min-w-[44px] rounded-xl backdrop-blur-md transition-all flex items-center justify-center
             ${isInWishlist
               ? 'bg-premiumYellow text-black'
-              : 'bg-white/10 text-slate-400 hover:text-premiumYellow hover:bg-white/20'}`}
+              : 'bg-black/20 text-white active:bg-premiumYellow active:text-black'}`}
         >
           <Bookmark className="w-4 h-4" fill={isInWishlist ? 'currentColor' : 'none'} />
         </button>
@@ -92,16 +93,16 @@ export default function ProductCard({
           </h3>
         </div>
 
-        {/* Specs chips */}
+        {/* Specs chips — min 12px font */}
         {(product.storage || product.ram) && (
           <div className="flex flex-wrap gap-1.5">
             {product.storage && (
-              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 font-medium">
+              <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300 font-medium">
                 {product.storage}
               </span>
             )}
             {product.ram && (
-              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 font-medium">
+              <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-300 font-medium">
                 {product.ram} RAM
               </span>
             )}
@@ -116,38 +117,39 @@ export default function ProductCard({
           </div>
         )}
 
-        {/* Price + availability */}
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-white/5">
+        {/* Price + Compare — flex-wrap prevents collision on narrow screens */}
+        <div className="flex items-center justify-between gap-2 flex-wrap mt-auto pt-2 border-t border-white/5">
           <div>
             <p className="text-lg font-extrabold text-slate-900 dark:text-white">
               ₦{product.price.toLocaleString()}
             </p>
             {product.is_available !== false && (
-              <p className="text-[11px] text-emerald-400 flex items-center gap-1">
+              <p className="text-xs text-emerald-400 flex items-center gap-1">
                 <CheckCircle className="w-3 h-3" /> In Stock
               </p>
             )}
           </div>
 
-          {/* Compare toggle */}
+          {/* Compare toggle — visible label, solid bg, 44px tap target */}
           <button
             onClick={() => onToggleCompare(product)}
-            title={isInCompare ? 'Remove from compare' : 'Add to compare'}
-            className={`p-2 rounded-xl transition-all text-xs font-semibold flex items-center gap-1
+            aria-label={isInCompare ? 'Remove from compare' : 'Add to compare'}
+            className={`flex items-center gap-1.5 px-3 min-h-[44px] rounded-xl transition-all text-xs font-bold active:scale-95
               ${isInCompare
                 ? 'bg-premiumYellow text-black'
-                : 'bg-slate-100 dark:bg-white/5 text-slate-400 hover:text-premiumYellow'}`}
+                : 'bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-slate-300'}`}
           >
-            <GitCompare className="w-4 h-4" />
+            <GitCompare className="w-4 h-4 flex-shrink-0" />
+            <span>{isInCompare ? 'Added' : 'Compare'}</span>
           </button>
         </div>
 
-        {/* WhatsApp CTA */}
+        {/* WhatsApp CTA — fully encoded message */}
         <a
-          href={`https://wa.me/2349029928322?text=Hi, I'm interested in the ${encodeURIComponent(product.name)} for ₦${product.price.toLocaleString()}`}
+          href={`https://wa.me/2349029928322?text=${encodeURIComponent(`Hi, I'm interested in the ${product.name} for ₦${product.price.toLocaleString()}`)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full bg-premiumYellow text-black text-sm font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform"
+          className="w-full bg-premiumYellow text-black text-sm font-bold min-h-[44px] rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
         >
           <MessageCircle className="w-4 h-4" />
           Buy via WhatsApp
