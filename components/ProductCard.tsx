@@ -30,9 +30,8 @@ export default function ProductCard({
 }) {
   const isSoldOut = (product.stock_quantity || 0) <= 0
 
-  const waMsg = encodeURIComponent(
-    `Hi Fonestack!\nI'm interested in: *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nIs this available?`
-  )
+  const price = product.price.toLocaleString()
+  const waMsg = encodeURIComponent('Hi Fonestack!\nI am interested in: ' + product.name + '\nPrice: N' + price + '\nIs this available?')
 
   return (
     <motion.div
@@ -97,8 +96,8 @@ export default function ProductCard({
             &#8358;{product.price.toLocaleString()}
           </span>
         </div>
-        
-          href={isSoldOut ? '#' : `https://wa.me/2349029928322?text=${waMsg}`}
+        <a
+          href={isSoldOut ? '#' : 'https://wa.me/2349029928322?text=' + waMsg}
           target="_blank"
           rel="noopener noreferrer"
           className={`flex items-center gap-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] md:text-xs font-bold transition-all
@@ -116,7 +115,7 @@ export default function ProductCard({
       >
         <Scale className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
         <span className="hidden sm:inline">{isInCompare ? 'In Compare' : 'Add to Compare'}</span>
-        <span className="sm:hidden">{isInCompare ? '✓' : '+'}</span>
+        <span className="sm:hidden">{isInCompare ? 'Added' : 'Compare'}</span>
       </button>
     </motion.div>
   )
