@@ -6,8 +6,21 @@
   --glass-bg: rgba(255, 255, 255, 0.6);
   --glass-border: rgba(255, 255, 255, 0.4);
   --specular-highlight: rgba(255, 255, 255, 0.8);
+  --premium-yellow: #E6FF00;
 }
 
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode variables */
 .dark {
   --glass-bg: rgba(10, 10, 10, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
@@ -22,8 +35,54 @@
   }
 }
 
+/* Body styles with performance optimizations */
 body {
   @apply transition-colors duration-500 bg-slate-50 dark:bg-obsidian-900 text-slate-900 dark:text-slate-100 min-h-screen overflow-x-hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-.preserve-3d { transform-style: preserve-3d; }
+/* Font display optimization */
+@font-face {
+  font-display: swap;
+}
+
+/* Preserve 3D for animations */
+.preserve-3d { 
+  transform-style: preserve-3d; 
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Focus styles for accessibility */
+.focus-visible {
+  @apply focus:outline-none focus:ring-2 focus:ring-premiumYellow/50;
+}
+
+/* Print styles */
+@media print {
+  .liquid-glass {
+    background: white !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .bg-premiumYellow {
+    background: #E6FF00 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,4 +1,4 @@
-// File: C:\Users\HP\Documents\GitHub\fonestack-v2\app\api\compare\route.ts
+// File: c:\Users\HP\Documents\GitHub\fonestack-v2\app\api\compare\route.ts
 import * as entry from '../../../../../app/api/compare/route.js'
 import type { NextRequest } from 'next/server.js'
 

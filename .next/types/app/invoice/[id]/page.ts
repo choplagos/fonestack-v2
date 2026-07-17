@@ -1,4 +1,4 @@
-// File: C:\Users\HP\Documents\GitHub\fonestack-v2\app\invoice\[id]\page.tsx
+// File: c:\Users\HP\Documents\GitHub\fonestack-v2\app\invoice\[id]\page.tsx
 import * as entry from '../../../../../app/invoice/[id]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

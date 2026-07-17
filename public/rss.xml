@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Fonestack - Premium Phones &amp; Repairs</title>
+    <description>The best selection of new and fairly used smartphones in Computer Village, Ikeja, Lagos. Authenticity guaranteed, competitive prices, and expert repair services.</description>
+    <link>https://fonestack.vercel.app</link>
+    <atom:link href="https://fonestack.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
+    <language>en-NG</language>
+    <lastBuildDate>Wed, 15 Jan 2025 00:00:00 GMT</lastBuildDate>
+    <managingEditor>info@fonestack.com</managingEditor>
+    <webMaster>info@fonestack.com</webMaster>
+    <copyright>© 2025 Fonestack. All rights reserved.</copyright>
+    <image>
+      <url>https://fonestack.vercel.app/og-image.png</url>
+      <title>Fonestack</title>
+      <link>https://fonestack.vercel.app</link>
+    </image>
+  </channel>
+</rss>

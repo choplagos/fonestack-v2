@@ -1,4 +1,4 @@
-// File: C:\Users\HP\Documents\GitHub\fonestack-v2\app\admin\layout.tsx
+// File: c:\Users\HP\Documents\GitHub\fonestack-v2\app\admin\layout.tsx
 import * as entry from '../../../../app/admin/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

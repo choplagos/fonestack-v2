@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://fonestack.vercel.app/</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://fonestack.vercel.app/og-image.png</image:loc>
+      <image:title>Fonestack - Premium Phones & Repairs</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Phones Collection -->
+  <url>
+    <loc>https://fonestack.vercel.app/#phones</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Repair Services -->
+  <url>
+    <loc>https://fonestack.vercel.app/#repair</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Admin Dashboard */}
+  <url>
+    <loc>https://fonestack.vercel.app/admin/</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>

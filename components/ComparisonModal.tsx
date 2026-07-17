@@ -3,6 +3,7 @@ import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, MessageCircle, Trophy, Zap } from 'lucide-react'
 import AICompareSection from './AICompareSection'
+import Script from 'next/script'
 
 export default function ComparisonModal({ 
   isOpen, 
@@ -17,6 +18,26 @@ export default function ComparisonModal({
 }) {
   if (!isOpen) return null;
 
+  // Breadcrumb Schema for comparison page
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://fonestack.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Compare Phones',
+        item: 'https://fonestack.vercel.app/#phones',
+      },
+    ],
+  };
+
   const specRows: { label: string; key: string; fmt: (v: any) => string }[] = [
     { label: 'Price', key: 'price', fmt: (v: any) => `₦${Number(v).toLocaleString()}` },
     { label: 'Condition', key: 'status', fmt: (v: any) => String(v ?? '').toUpperCase() },
@@ -26,23 +47,39 @@ export default function ComparisonModal({
 
   return (
     <AnimatePresence>
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+      
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-3xl p-4 md:p-12 overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="comparison-title"
+        aria-describedby="comparison-description"
       >
         <div className="max-w-6xl mx-auto">
           {/* Modal Header */}
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-display font-extrabold dark:text-white">
+            <h2 id="comparison-title" className="text-3xl font-display font-extrabold dark:text-white">
               Phone <span className="text-premiumYellow">Comparison</span>
             </h2>
+            <p id="comparison-description" className="sr-only">
+              Compare specifications and prices of selected phones to make the best choice
+            </p>
             <button 
               onClick={onClose}
               className="w-12 h-12 rounded-full liquid-glass border-white/20 flex items-center justify-center hover:text-red-500 transition-colors"
+              aria-label="Close comparison modal"
             >
-              <X />
+              <X aria-hidden="true" />
             </button>
           </div>
 
@@ -56,7 +93,12 @@ export default function ComparisonModal({
                   {phones.map(p => (
                     <th key={p.id} className="p-6 w-1/4">
                       <div className="flex flex-col items-center gap-4 text-center">
-                        <img src={p.image_url} className="h-24 object-contain" alt={p.name} />
+                        <img 
+                          src={p.image_url} 
+                          className="h-24 object-contain" 
+                          alt={`${p.brand} ${p.name}`}
+                          loading="lazy"
+                        />
                         <div>
                           <div className="text-[10px] font-mono text-premiumYellow uppercase tracking-widest">{p.brand}</div>
                           <div className="font-bold dark:text-white text-sm line-clamp-1">{p.name}</div>
@@ -64,8 +106,9 @@ export default function ComparisonModal({
                         <a 
                           href={`https://wa.me/2349029928322?text=Hi, I compared phones and want to buy the ${p.name}`}
                           className="bg-wa text-white px-4 py-2 rounded-xl text-[10px] font-bold flex items-center gap-2"
+                          aria-label={`Buy ${p.name} on WhatsApp`}
                         >
-                          <MessageCircle className="w-3 h-3" /> Buy Now
+                          <MessageCircle className="w-3 h-3" aria-hidden="true" /> Buy Now
                         </a>
                       </div>
                     </th>
