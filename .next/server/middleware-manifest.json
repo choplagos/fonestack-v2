@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {
+    "/api/compare/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/app/api/compare/route.js"
+      ],
+      "name": "app/api/compare/route",
+      "page": "/api/compare/route",
+      "matchers": [
+        {
+          "regexp": "^/api/compare$",
+          "originalSource": "/api/compare"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "cMOctl0ASt8KmtUt1r73D",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "0EoK/yO6yrHBo2vo+RRPWbTRNUAul2Go5VmMKTLO3fI=",
+        "__NEXT_PREVIEW_MODE_ID": "730f92568d4871552b467c8420574351",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "3fdb4b5d0c4c116aacce731750fa078849a0799696e0a67151ca1e7e348f1955",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "a3f2e3c799e81a023b7381bdf28b8966165d14eeadd7b3f6326387277180d172"
+      }
+    }
+  },
+  "sortedMiddleware": []
+}
