@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import Head from 'next/head'
 import Script from 'next/script'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
@@ -65,11 +64,33 @@ export default function Storefront() {
   const [compareList, setCompareList] = useState<any[]>([])
   const [isCompareOpen, setIsCompareOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function load() {
-      const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-      if (data) setProducts(data)
+      try {
+        setLoading(true)
+        const { data, error: err } = await supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false })
+        
+        if (err) {
+          console.error('Supabase error:', err)
+          setError('Failed to load products. Check your Supabase connection.')
+          return
+        }
+        
+        if (data) {
+          setProducts(data)
+        }
+      } catch (err) {
+        console.error('Error loading products:', err)
+        setError('An unexpected error occurred while loading products.')
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -81,27 +102,6 @@ export default function Storefront() {
 
   return (
     <>
-      <Head>
-        <title>Fonestack | Premium Phones & Repairs in Ikeja, Lagos</title>
-        <meta name="description" content="The best selection of new and fairly used smartphones in Computer Village, Ikeja, Lagos. Authenticity guaranteed, competitive prices, and expert repair services." />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <link rel="canonical" href="https://fonestack.vercel.app/" />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content="Fonestack | Premium Phones & Repairs" />
-        <meta property="og:description" content="Premium smartphones and expert repair services in Computer Village, Ikeja, Lagos." />
-        <meta property="og:url" content="https://fonestack.vercel.app" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://fonestack.vercel.app/og-image.png" />
-        <meta property="og:locale" content="en_NG" />
-        
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Fonestack | Premium Phones & Repairs" />
-        <meta name="twitter:description" content="Premium smartphones and expert repair services in Ikeja, Lagos." />
-        <meta name="twitter:image" content="https://fonestack.vercel.app/og-image.png" />
-      </Head>
-
       {/* Structured Data for AI Search */}
       <Script
         id="faq-schema"
@@ -129,25 +129,67 @@ export default function Storefront() {
         <Navbar wishlistCount={wishlist.length} onSearch={setSearch} />
         
         <Hero 
-          stats={{ total: products.length.toString(), brands: '12+', new: '24' }} 
-          chips={products.slice(0, 3).map(p => ({ brand: p.brand, price: `₦${p.price.toLocaleString()}` }))}
+          stats={{ 
+            total: products.length.toString(), 
+            brands: '12+', 
+            new: '24' 
+          }} 
+          chips={products.slice(0, 3).map(p => ({ 
+            brand: p.brand, 
+            price: `₦${p.price.toLocaleString()}` 
+          }))}
         />
 
         {/* Phones Section with proper heading hierarchy */}
         <section id="phones" className="max-w-7xl mx-auto px-6 py-20" aria-labelledby="phones-heading">
           <h2 id="phones-heading" className="sr-only">Our Phone Collection</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filtered.map(p => (
-              <ProductCard 
-                key={p.id} 
-                product={p} 
-                isInWishlist={wishlist.some(w => w.id === p.id)}
-                isInCompare={compareList.some(c => c.id === p.id)}
-                onToggleWishlist={(item) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
-                onToggleCompare={(item) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
-              />
-            ))}
-          </div>
+          
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-20">
+              <p className="text-slate-600 dark:text-slate-400">Loading phones...</p>
+            </div>
+          )}
+          
+          {/* Error State */}
+          {error && !loading && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+              <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
+              <p className="text-red-500 dark:text-red-500 text-sm mt-2">
+                Check your Supabase environment variables in Vercel
+              </p>
+            </div>
+          )}
+          
+          {/* Empty State */}
+          {!loading && !error && products.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-slate-600 dark:text-slate-400">No phones available yet.</p>
+            </div>
+          )}
+          
+          {/* Products Grid */}
+          {!loading && !error && filtered.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filtered.map(p => (
+                <ProductCard 
+                  key={p.id} 
+                  product={p} 
+                  isInWishlist={wishlist.some(w => w.id === p.id)}
+                  isInCompare={compareList.some(c => c.id === p.id)}
+                  onToggleWishlist={(item) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
+                  onToggleCompare={(item) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
+                />
+              ))}
+            </div>
+          )}
+          
+          {/* No search results */}
+          {!loading && !error && products.length > 0 && filtered.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-slate-600 dark:text-slate-400">No phones match your search.</p>
+            </div>
+          )}
         </section>
 
         <RepairHub />
