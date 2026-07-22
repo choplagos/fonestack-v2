@@ -58,6 +58,8 @@ const productCollectionSchema = {
   url: 'https://fonestack.vercel.app/#phones',
 }
 
+const PRODUCTS_PER_PAGE = 12
+
 export default function Storefront() {
   const [products, setProducts] = useState<any[]>([])
   const [wishlist, setWishlist] = useState<any[]>([])
@@ -66,6 +68,7 @@ export default function Storefront() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [displayCount, setDisplayCount] = useState(PRODUCTS_PER_PAGE)
 
   useEffect(() => {
     async function load() {
@@ -99,6 +102,11 @@ export default function Storefront() {
     p.name.toLowerCase().includes(search.toLowerCase()) || 
     p.brand.toLowerCase().includes(search.toLowerCase())
   )
+
+  // Reset display count when search changes
+  useEffect(() => {
+    setDisplayCount(PRODUCTS_PER_PAGE)
+  }, [search])
 
   return (
     <>
@@ -170,18 +178,32 @@ export default function Storefront() {
           
           {/* Products Grid */}
           {!loading && !error && filtered.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filtered.map(p => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  isInWishlist={wishlist.some(w => w.id === p.id)}
-                  isInCompare={compareList.some(c => c.id === p.id)}
-                  onToggleWishlist={(item) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
-                  onToggleCompare={(item) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filtered.slice(0, displayCount).map(p => (
+                  <ProductCard 
+                    key={p.id} 
+                    product={p} 
+                    isInWishlist={wishlist.some(w => w.id === p.id)}
+                    isInCompare={compareList.some(c => c.id === p.id)}
+                    onToggleWishlist={(item) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
+                    onToggleCompare={(item) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
+                  />
+                ))}
+              </div>
+
+              {/* Show More Button */}
+              {displayCount < filtered.length && (
+                <div className="mt-12 flex justify-center">
+                  <button
+                    onClick={() => setDisplayCount(prev => prev + PRODUCTS_PER_PAGE)}
+                    className="px-8 py-3 bg-premiumYellow text-obsidian-900 font-semibold rounded-lg hover:bg-yellow-300 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    Show More Products
+                  </button>
+                </div>
+              )}
+            </>
           )}
           
           {/* No search results */}
