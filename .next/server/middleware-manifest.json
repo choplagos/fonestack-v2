@@ -9,6 +9,7 @@
         "server/next-font-manifest.js",
         "server/interception-route-rewrite-manifest.js",
         "server/edge-runtime-webpack.js",
+        "server/edge-chunks/546.js",
         "server/app/api/compare/route.js"
       ],
       "name": "app/api/compare/route",
@@ -22,11 +23,39 @@
       "wasm": [],
       "assets": [],
       "env": {
-        "__NEXT_BUILD_ID": "yBswejSLPmfl62Qi84ewy",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "jfvHV4HEdrzq+AW4oiMz2bsSrzd1YsW0eWyNIkVNTNk=",
-        "__NEXT_PREVIEW_MODE_ID": "4cc7c8f2c3c01bbbaff9675ebb238b77",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "b052c0b93ba7d1da482c8fbacbc2b0c8db6eb2e374dd0ef988a4d8034ed5a972",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "d2a38db65e89ee242bc6b1fb9faaafa7596c4a8a9ce2282f7ce2972a98c9cd5f"
+        "__NEXT_BUILD_ID": "igJWkjYcT0MIGVHs4Wem6",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "bGujylAiht7bGzGmMC2U5MnLcyrLB0PzhLiq3AJ7iH0=",
+        "__NEXT_PREVIEW_MODE_ID": "1eca61085a52839d10dd14fb18ca64f6",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "93690fa102b3331f7fbc49d3b8e8096cf74cca7fcb943c974152a5d98ab0baca",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b8042b985736dce68c903cbb2ca450b61d1cf7ba7dd56d5be8da4d69c29e0d2d"
+      }
+    },
+    "/api/trade-in/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/546.js",
+        "server/app/api/trade-in/route.js"
+      ],
+      "name": "app/api/trade-in/route",
+      "page": "/api/trade-in/route",
+      "matchers": [
+        {
+          "regexp": "^/api/trade\\-in$",
+          "originalSource": "/api/trade-in"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "igJWkjYcT0MIGVHs4Wem6",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "bGujylAiht7bGzGmMC2U5MnLcyrLB0PzhLiq3AJ7iH0=",
+        "__NEXT_PREVIEW_MODE_ID": "1eca61085a52839d10dd14fb18ca64f6",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "93690fa102b3331f7fbc49d3b8e8096cf74cca7fcb943c974152a5d98ab0baca",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b8042b985736dce68c903cbb2ca450b61d1cf7ba7dd56d5be8da4d69c29e0d2d"
       }
     }
   },
