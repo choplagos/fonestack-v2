@@ -216,7 +216,7 @@ export default function Storefront() {
         </section>
 
         <RepairHub />
-                <RepairHub />
+                
         <TradeInEstimator />
         <ComparisonDock compareList={compareList} onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))} onClear={() => setCompareList([])} onOpenModal={() => setIsCompareOpen(true)} />
 
