@@ -8,6 +8,7 @@ import ComparisonDock from '@/components/ComparisonDock'
 import ComparisonModal from '@/components/ComparisonModal'
 import RepairHub from '@/components/RepairHub'
 import { supabase } from '@/lib/supabase'
+import TradeInEstimator from '@/components/TradeInEstimator'
 
 // FAQ Schema for AI Search
 const faqSchema = {
@@ -35,7 +36,7 @@ const faqSchema = {
       name: 'What is your warranty policy?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'All our devices come with a 6-month standard warranty. Repair services also include warranty coverage. Contact us for full warranty terms.',
+        text: 'All our devices come with a 7-14 days standard warranty. Repair services also include warranty coverage. Contact us for full warranty terms.',
       },
     },
     {
@@ -215,6 +216,9 @@ export default function Storefront() {
         </section>
 
         <RepairHub />
+                <RepairHub />
+        <TradeInEstimator />
+        <ComparisonDock compareList={compareList} onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))} onClear={() => setCompareList([])} onOpenModal={() => setIsCompareOpen(true)} />
 
         <ComparisonDock 
           compareList={compareList} 
