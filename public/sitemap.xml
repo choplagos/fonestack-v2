@@ -11,7 +11,7 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://fonestack.vercel.app/og-image.png</image:loc>
-      <image:title>Fonestack - Premium Phones & Repairs</image:title>
+        <image:title>Fonestack - Premium Phones &amp; Repairs</image:title>
     </image:image>
   </url>
   
