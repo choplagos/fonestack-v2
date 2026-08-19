@@ -3,6 +3,7 @@ import { SITE_URL } from "@/lib/constants";
 
 const slugs = [
   '',
+  'blog',
   'fairly-used-iphone-price-computer-village',
   'buy-android-phone-ikeja-cheap',
   'phone-screen-repair-ikeja-price',

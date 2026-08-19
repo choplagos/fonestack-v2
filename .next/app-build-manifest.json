@@ -1,30 +1,139 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
-    ],
-    "/error": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/error.js"
-    ],
     "/not-found": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/app/not-found-92f2ce3514dbd2b6.js"
     ],
     "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/app/_not-found/page-c1bbe1b4bc8170a6.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/css/c900f0a8eef0bda9.css",
+      "static/chunks/500-48c3c63083e88668.js",
+      "static/chunks/app/layout-8b0e7d01bdc32c75.js"
+    ],
+    "/error": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/app/error-8f980eae31211cab.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/44530001-52999465abdb64c7.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/500-48c3c63083e88668.js",
+      "static/chunks/465-39cd9abd14471529.js",
+      "static/chunks/app/page-ccc39b5fbb8a7652.js"
+    ],
+    "/invoice/[id]/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/500-48c3c63083e88668.js",
+      "static/chunks/app/invoice/[id]/page-cd146af2c95ee73d.js"
+    ],
+    "/blog/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/blog/page-3c45a4d3822222e9.js"
+    ],
+    "/buy-android-phone-ikeja-cheap/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/buy-android-phone-ikeja-cheap/page-6688ca57f5588a4f.js"
+    ],
+    "/iphone-battery-replacement-ikeja/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/iphone-battery-replacement-ikeja/page-067341069e3fac4b.js"
+    ],
+    "/phone-screen-repair-ikeja-price/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/phone-screen-repair-ikeja-price/page-bf59731d5fc02270.js"
+    ],
+    "/sell-my-phone-computer-village/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/sell-my-phone-computer-village/page-bbdd25383086e855.js"
+    ],
+    "/trade-in-old-phone-lagos/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/trade-in-old-phone-lagos/page-772c02ea92084736.js"
+    ],
+    "/fairly-used-iphone-price-computer-village/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/fairly-used-iphone-price-computer-village/page-72ba45c8a757e06b.js"
+    ],
+    "/budget-smartphone-students-nigeria/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/budget-smartphone-students-nigeria/page-cf26ee7520b56559.js"
+    ],
+    "/admin/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/500-48c3c63083e88668.js",
+      "static/chunks/app/admin/page-fe0efc0f6db6bd81.js"
+    ],
+    "/admin/layout": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/230-264a2143620a8b10.js",
+      "static/chunks/app/admin/layout-58e870d42d063194.js"
     ]
   }
 }

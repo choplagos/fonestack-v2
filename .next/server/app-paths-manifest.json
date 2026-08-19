@@ -1,5 +1,18 @@
 {
-  "/sitemap.xml/[[...__metadata_id__]]/route": "app/sitemap.xml/[[...__metadata_id__]]/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/invoice/[id]/page": "app/invoice/[id]/page.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/blog/page": "app/blog/page.js",
+  "/buy-android-phone-ikeja-cheap/page": "app/buy-android-phone-ikeja-cheap/page.js",
+  "/iphone-battery-replacement-ikeja/page": "app/iphone-battery-replacement-ikeja/page.js",
+  "/phone-screen-repair-ikeja-price/page": "app/phone-screen-repair-ikeja-price/page.js",
+  "/sell-my-phone-computer-village/page": "app/sell-my-phone-computer-village/page.js",
+  "/trade-in-old-phone-lagos/page": "app/trade-in-old-phone-lagos/page.js",
+  "/fairly-used-iphone-price-computer-village/page": "app/fairly-used-iphone-price-computer-village/page.js",
+  "/budget-smartphone-students-nigeria/page": "app/budget-smartphone-students-nigeria/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/compare/route": "app/api/compare/route.js",
+  "/api/trade-in/estimate/route": "app/api/trade-in/estimate/route.js",
+  "/api/trade-in/route": "app/api/trade-in/route.js"
 }

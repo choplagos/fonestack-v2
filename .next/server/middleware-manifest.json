@@ -1,6 +1,91 @@
 {
   "version": 3,
   "middleware": {},
-  "functions": {},
+  "functions": {
+    "/api/compare/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/546.js",
+        "server/app/api/compare/route.js"
+      ],
+      "name": "app/api/compare/route",
+      "page": "/api/compare/route",
+      "matchers": [
+        {
+          "regexp": "^/api/compare$",
+          "originalSource": "/api/compare"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "NUh1T5Rr153bobXqXfo6T",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "E0Q+typ7GbN8AsShF8O+y/uXX71qpiEmK0q6bUUJIXU=",
+        "__NEXT_PREVIEW_MODE_ID": "e51d6ad47fccb18f481c52e29da98058",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "cf7d9b390530b26e93f1e57ab5df82c4ce3769b92f5b191ede7f4494ee28648f",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "cb83aeccaacf6c5b440e5158b28719c306f8e9e5f9a9bf6942e431316ef042bf"
+      }
+    },
+    "/api/trade-in/estimate/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/546.js",
+        "server/app/api/trade-in/estimate/route.js"
+      ],
+      "name": "app/api/trade-in/estimate/route",
+      "page": "/api/trade-in/estimate/route",
+      "matchers": [
+        {
+          "regexp": "^/api/trade\\-in/estimate$",
+          "originalSource": "/api/trade-in/estimate"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "NUh1T5Rr153bobXqXfo6T",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "E0Q+typ7GbN8AsShF8O+y/uXX71qpiEmK0q6bUUJIXU=",
+        "__NEXT_PREVIEW_MODE_ID": "e51d6ad47fccb18f481c52e29da98058",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "cf7d9b390530b26e93f1e57ab5df82c4ce3769b92f5b191ede7f4494ee28648f",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "cb83aeccaacf6c5b440e5158b28719c306f8e9e5f9a9bf6942e431316ef042bf"
+      }
+    },
+    "/api/trade-in/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/edge-chunks/546.js",
+        "server/app/api/trade-in/route.js"
+      ],
+      "name": "app/api/trade-in/route",
+      "page": "/api/trade-in/route",
+      "matchers": [
+        {
+          "regexp": "^/api/trade\\-in$",
+          "originalSource": "/api/trade-in"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "NUh1T5Rr153bobXqXfo6T",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "E0Q+typ7GbN8AsShF8O+y/uXX71qpiEmK0q6bUUJIXU=",
+        "__NEXT_PREVIEW_MODE_ID": "e51d6ad47fccb18f481c52e29da98058",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "cf7d9b390530b26e93f1e57ab5df82c4ce3769b92f5b191ede7f4494ee28648f",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "cb83aeccaacf6c5b440e5158b28719c306f8e9e5f9a9bf6942e431316ef042bf"
+      }
+    }
+  },
   "sortedMiddleware": []
 }
