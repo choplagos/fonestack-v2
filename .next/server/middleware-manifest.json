@@ -1,63 +1,6 @@
 {
   "version": 3,
   "middleware": {},
-  "functions": {
-    "/api/compare/route": {
-      "files": [
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/interception-route-rewrite-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/edge-chunks/546.js",
-        "server/app/api/compare/route.js"
-      ],
-      "name": "app/api/compare/route",
-      "page": "/api/compare/route",
-      "matchers": [
-        {
-          "regexp": "^/api/compare$",
-          "originalSource": "/api/compare"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "env": {
-        "__NEXT_BUILD_ID": "igJWkjYcT0MIGVHs4Wem6",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "bGujylAiht7bGzGmMC2U5MnLcyrLB0PzhLiq3AJ7iH0=",
-        "__NEXT_PREVIEW_MODE_ID": "1eca61085a52839d10dd14fb18ca64f6",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "93690fa102b3331f7fbc49d3b8e8096cf74cca7fcb943c974152a5d98ab0baca",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b8042b985736dce68c903cbb2ca450b61d1cf7ba7dd56d5be8da4d69c29e0d2d"
-      }
-    },
-    "/api/trade-in/route": {
-      "files": [
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/interception-route-rewrite-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/edge-chunks/546.js",
-        "server/app/api/trade-in/route.js"
-      ],
-      "name": "app/api/trade-in/route",
-      "page": "/api/trade-in/route",
-      "matchers": [
-        {
-          "regexp": "^/api/trade\\-in$",
-          "originalSource": "/api/trade-in"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "env": {
-        "__NEXT_BUILD_ID": "igJWkjYcT0MIGVHs4Wem6",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "bGujylAiht7bGzGmMC2U5MnLcyrLB0PzhLiq3AJ7iH0=",
-        "__NEXT_PREVIEW_MODE_ID": "1eca61085a52839d10dd14fb18ca64f6",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "93690fa102b3331f7fbc49d3b8e8096cf74cca7fcb943c974152a5d98ab0baca",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "b8042b985736dce68c903cbb2ca450b61d1cf7ba7dd56d5be8da4d69c29e0d2d"
-      }
-    }
-  },
+  "functions": {},
   "sortedMiddleware": []
 }
