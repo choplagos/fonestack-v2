@@ -1,6 +1,9 @@
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 import Script from 'next/script'
+import Footer from '@/components/Footer'
+import PoweredByOtprent from '@/components/PoweredByOtprent'
+import { BUSINESS_REGISTRATION_NUMBER } from '@/lib/constants'
 
 // Dynamic metadata configuration
 export const metadata = {
@@ -92,6 +95,11 @@ const organizationSchema = {
   sameAs: [
     'https://wa.me/2349029928322',
   ],
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'businessRegistration',
+    value: BUSINESS_REGISTRATION_NUMBER,
+  },
   image: 'https://fonestack.vercel.app/og-image.png',
 }
 
@@ -156,6 +164,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
+          <Footer />
+          <PoweredByOtprent />
         </ThemeProvider>
       </body>
     </html>
