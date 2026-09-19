@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 export default function PoweredByOtprent() {
   const [visible, setVisible] = useState(true)
   const hasScrolledRef = useRef(false)
+  const linkRef = useRef<HTMLAnchorElement | null>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -12,6 +13,10 @@ export default function PoweredByOtprent() {
       if (!hasScrolledRef.current) {
         hasScrolledRef.current = true
         setVisible(false)
+        // If the button is focused, blur it to avoid trapping focus
+        if (document.activeElement && linkRef.current && linkRef.current.contains(document.activeElement)) {
+          (document.activeElement as HTMLElement).blur()
+        }
       }
     }
 
@@ -27,11 +32,12 @@ export default function PoweredByOtprent() {
       aria-hidden={!visible}
     >
       <a
+        ref={linkRef}
         href="https://otprent.vercel.app"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Powered by Otprent"
-        className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 backdrop-blur rounded-full text-xs font-semibold hover:bg-white/10 shadow-lg"
+        className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 backdrop-blur rounded-full text-xs font-semibold hover:bg-white/10 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-premiumYellow focus-visible:ring-offset-2"
       >
         Powered by Otprent
       </a>
