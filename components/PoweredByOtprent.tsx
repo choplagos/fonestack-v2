@@ -4,24 +4,20 @@ import React, { useEffect, useRef, useState } from 'react'
 
 export default function PoweredByOtprent() {
   const [visible, setVisible] = useState(true)
-  const timerRef = useRef<number | null>(null)
-  const REAPPEAR_MS = 1200 // configurable delay after scroll stops
+  const hasScrolledRef = useRef(false)
 
   useEffect(() => {
     const onScroll = () => {
-      // Hide immediately while scrolling
-      setVisible(false)
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current)
+      // On first scroll, hide permanently
+      if (!hasScrolledRef.current) {
+        hasScrolledRef.current = true
+        setVisible(false)
       }
-      // Show after user stops scrolling for REAPPEAR_MS
-      timerRef.current = window.setTimeout(() => setVisible(true), REAPPEAR_MS)
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
-      if (timerRef.current) window.clearTimeout(timerRef.current)
     }
   }, [])
 
