@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <url>
+    <loc>https://fonestack.com.ng/</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Fonestack - Premium Phones & Repairs</image:title>
+      <image:caption>Professional phone sales and repair services in Lagos</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/logo.png</image:loc>
+      <image:title>Fonestack Logo</image:title>
+      <image:caption>Fonestack brand logo</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/blog</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Fonestack Blog</image:title>
+      <image:caption>Latest updates on phones and repair services</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/fairly-used-iphone-price-computer-village</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Fairly Used iPhone Price - Computer Village</image:title>
+      <image:caption>Affordable used iPhones in Computer Village, Ikeja</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/buy-android-phone-ikeja-cheap</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Buy Android Phone Cheap in Ikeja</image:title>
+      <image:caption>Best prices on Android phones in Ikeja, Lagos</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/phone-screen-repair-ikeja-price</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Phone Screen Repair - Ikeja Price</image:title>
+      <image:caption>Professional phone screen repair services in Ikeja</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/trade-in-old-phone-lagos</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Trade In Old Phone - Lagos</image:title>
+      <image:caption>Get instant value for your old phone in Lagos</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/budget-smartphone-students-nigeria</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Budget Smartphone for Students - Nigeria</image:title>
+      <image:caption>Affordable smartphones designed for students in Nigeria</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/sell-my-phone-computer-village</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>Sell My Phone - Computer Village</image:title>
+      <image:caption>Quick and fair evaluation of your phone in Computer Village</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/iphone-battery-replacement-ikeja</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://fonestack.com.ng/og-image.png</image:loc>
+      <image:title>iPhone Battery Replacement - Ikeja</image:title>
+      <image:caption>Professional iPhone battery replacement in Ikeja</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/admin</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://fonestack.com.ng/invoice</loc>
+    <lastmod>2024-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
