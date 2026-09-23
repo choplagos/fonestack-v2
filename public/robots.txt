@@ -1,17 +1,17 @@
 # Fonestack Robots.txt
-# https://fonestack.vercel.app
+# https://fonestack.com.ng
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://fonestack.vercel.app/sitemap.xml
+Sitemap: https://fonestack.com.ng/sitemap.xml
 
-# Disallow admin (optional - remove if you want admin indexed)
+# Disallow admin
 User-agent: *
 Disallow: /admin/
 
-# Allow specific bots for AI search
+# Allow specific bots for AI search and recommendations
 User-agent: ChatGPT-User
 Allow: /
 
@@ -24,11 +24,20 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
+User-agent: Googlebot
+Allow: /
+
 User-agent: Bingbot
 Allow: /
 
-# Crawl delay
+User-agent: Slurp
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Crawl delay for general crawlers
 Crawl-delay: 1
 
 # Host directive
-Host: fonestack.vercel.app
+Host: fonestack.com.ng

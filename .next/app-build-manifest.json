@@ -21,9 +21,9 @@
       "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
-      "static/css/8e4dc8c7c5af37af.css",
+      "static/css/f6b22ea00bb71eb2.css",
       "static/chunks/500-48c3c63083e88668.js",
-      "static/chunks/app/layout-8b0e7d01bdc32c75.js"
+      "static/chunks/app/layout-ab9c368343143d83.js"
     ],
     "/error": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -60,7 +60,7 @@
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/blog/page-221e2e4d432bde94.js"
+      "static/chunks/app/blog/page-b270bb01abf8fa12.js"
     ],
     "/budget-smartphone-students-nigeria/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -68,7 +68,7 @@
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/budget-smartphone-students-nigeria/page-3e7fcc5b70e91364.js"
+      "static/chunks/app/budget-smartphone-students-nigeria/page-c9efafdd895ecc9d.js"
     ],
     "/buy-android-phone-ikeja-cheap/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -76,7 +76,7 @@
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/buy-android-phone-ikeja-cheap/page-3d2fe9bed6a95f4e.js"
+      "static/chunks/app/buy-android-phone-ikeja-cheap/page-e691e313509d12ed.js"
     ],
     "/fairly-used-iphone-price-computer-village/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -84,7 +84,7 @@
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/fairly-used-iphone-price-computer-village/page-8d09f20f667c8091.js"
+      "static/chunks/app/fairly-used-iphone-price-computer-village/page-863238b30a3b991a.js"
     ],
     "/iphone-battery-replacement-ikeja/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -92,15 +92,7 @@
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/iphone-battery-replacement-ikeja/page-656fdba788de3d4b.js"
-    ],
-    "/phone-screen-repair-ikeja-price/page": [
-      "static/chunks/webpack-03f7c6bc932ce1e3.js",
-      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
-      "static/chunks/117-54482fa8787b0730.js",
-      "static/chunks/main-app-0468de4b390f78c7.js",
-      "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/phone-screen-repair-ikeja-price/page-87430e18f156bc66.js"
+      "static/chunks/app/iphone-battery-replacement-ikeja/page-ad7c42824b485f80.js"
     ],
     "/sell-my-phone-computer-village/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
@@ -110,13 +102,21 @@
       "static/chunks/972-d9f26a5858af92a3.js",
       "static/chunks/app/sell-my-phone-computer-village/page-b3d85c734871c691.js"
     ],
+    "/phone-screen-repair-ikeja-price/page": [
+      "static/chunks/webpack-03f7c6bc932ce1e3.js",
+      "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
+      "static/chunks/117-54482fa8787b0730.js",
+      "static/chunks/main-app-0468de4b390f78c7.js",
+      "static/chunks/972-d9f26a5858af92a3.js",
+      "static/chunks/app/phone-screen-repair-ikeja-price/page-87430e18f156bc66.js"
+    ],
     "/trade-in-old-phone-lagos/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
       "static/chunks/fd9d1056-4a9853f3fae16b4a.js",
       "static/chunks/117-54482fa8787b0730.js",
       "static/chunks/main-app-0468de4b390f78c7.js",
       "static/chunks/972-d9f26a5858af92a3.js",
-      "static/chunks/app/trade-in-old-phone-lagos/page-f0ace6a6803aa28c.js"
+      "static/chunks/app/trade-in-old-phone-lagos/page-fa227bba5d241396.js"
     ],
     "/admin/page": [
       "static/chunks/webpack-03f7c6bc932ce1e3.js",
