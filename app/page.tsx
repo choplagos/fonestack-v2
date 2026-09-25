@@ -9,6 +9,7 @@ import ComparisonModal from '@/components/ComparisonModal'
 import RepairHub from '@/components/RepairHub'
 import { supabase } from '@/lib/supabase'
 import TradeInEstimator from '@/components/TradeInEstimator'
+import BNPLSection from '@/components/BNPLSection'
 
 // FAQ Schema for AI Search
 const faqSchema = {
@@ -216,6 +217,7 @@ export default function Storefront() {
         </section>
 
         <RepairHub />
+        <BNPLSection />
                 
         <TradeInEstimator />
         <ComparisonDock compareList={compareList} onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))} onClear={() => setCompareList([])} onOpenModal={() => setIsCompareOpen(true)} />

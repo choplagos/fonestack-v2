@@ -69,6 +69,14 @@ const pageData = [
     changeFrequency: 'weekly' as const,
   },
   {
+    slug: 'bnpl',
+    images: [
+      { url: '/og-image.png', title: 'Buy Now, Pay Later Phones in Lagos', caption: 'Phone financing requirements through CreditDirect and Fonestack' },
+    ],
+    priority: 0.8,
+    changeFrequency: 'weekly' as const,
+  },
+  {
     slug: 'iphone-battery-replacement-ikeja',
     images: [
       { url: '/og-image.png', title: 'iPhone Battery Replacement - Ikeja', caption: 'Professional iPhone battery replacement in Ikeja' },
@@ -128,4 +136,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return sitemapEntries;
 }
-
