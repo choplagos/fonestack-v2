@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Bookmark, MessageCircle, Scale, Star } from 'lucide-react'
+import { Bookmark, MessageCircle, Scale } from 'lucide-react'
 import Script from 'next/script'
 
 interface Product {
@@ -116,7 +116,7 @@ export default function ProductCard({
             <img 
               src={product.image_url} 
               alt={`${product.brand} ${product.name} - ${product.spec || 'Smartphone'}`}
-              className="h-full object-contain group-hover:scale-110 transition-transform duration-500"
+              className="h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
               decoding="async"
               itemProp="image"
@@ -155,7 +155,7 @@ export default function ProductCard({
             href={isSoldOut ? '#' : `https://wa.me/2349029928322?text=${waMsg}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all
+            className={`flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all
               ${isSoldOut ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-premiumYellow text-black hover:scale-105 active:scale-95'}`}
             aria-label={isSoldOut ? 'Item sold out' : `Buy ${product.name} on WhatsApp`}
           >
@@ -167,7 +167,7 @@ export default function ProductCard({
         {/* Compare Trigger */}
         <button 
           onClick={() => onToggleCompare(product)}
-          className={`w-full py-2 rounded-xl border border-dashed transition-all text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-2
+          className={`w-full min-h-11 py-2 rounded-xl border border-dashed transition-all text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-2
             ${isInCompare ? 'border-premiumYellow text-premiumYellow bg-premiumYellow/5' : 'border-white/10 text-slate-500 hover:border-white/30'}`}
           aria-label={isInCompare ? `Remove ${product.name} from comparison` : `Add ${product.name} to comparison`}
           aria-pressed={isInCompare}

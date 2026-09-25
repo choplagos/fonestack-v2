@@ -85,7 +85,8 @@ export default function ComparisonModal({
 
           {/* Comparison Table Container */}
           <div className="liquid-glass rounded-3xl overflow-hidden border-white/10 shadow-2xl">
-            <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto" role="region" aria-label="Phone comparison details" tabIndex={0}>
+            <table className="w-full min-w-[720px] text-left border-collapse">
               {/* Sticky Table Header */}
               <thead className="sticky top-0 z-20 liquid-glass border-b border-white/10">
                 <tr>
@@ -132,6 +133,7 @@ export default function ComparisonModal({
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* AI Comparison Section below table */}
