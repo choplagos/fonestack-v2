@@ -77,6 +77,14 @@ const pageData = [
     changeFrequency: 'weekly' as const,
   },
   {
+    slug: 'easy-buy-phone-financing-lagos',
+    images: [
+      { url: '/og-image.png', title: 'Easy Buy Phone Financing in Lagos', caption: 'Fonestack Easy Buy BNPL requirements and down payment guide' },
+    ],
+    priority: 0.8,
+    changeFrequency: 'monthly' as const,
+  },
+  {
     slug: 'iphone-battery-replacement-ikeja',
     images: [
       { url: '/og-image.png', title: 'iPhone Battery Replacement - Ikeja', caption: 'Professional iPhone battery replacement in Ikeja' },

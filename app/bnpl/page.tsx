@@ -7,7 +7,7 @@ const BNPL_URL = 'https://fonestack.com.ng/bnpl'
 export const metadata: Metadata = {
   title: 'Buy Now, Pay Later Phones in Lagos | CreditDirect BNPL',
   description:
-    'Get a phone through Fonestack Buy Now, Pay Later in Lagos with CreditDirect. See the requirements, including an active bank account, ATM card, email, BVN and registered phone number.',
+    'Get a phone through Fonestack Buy Now, Pay Later in Lagos with CreditDirect. Learn about the 40–50% down payment, requirements, and how to get started.',
   keywords: [
     'buy now pay later phones Lagos',
     'BNPL phones Nigeria',
@@ -62,7 +62,7 @@ const faqSchema = {
       name: 'What do I need to qualify for Fonestack BNPL?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'You need an active bank account, an active ATM card, an active email address, and your BVN together with the phone number registered with the BVN.',
+        text: 'You need an active bank account, an active ATM card, an active email address, your BVN together with the phone number registered with the BVN, and a typical 40–50% down payment. CreditDirect confirms the final terms.',
       },
     },
     {
@@ -79,6 +79,14 @@ const faqSchema = {
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'No. The listed requirements are needed to get started, but final approval is subject to CreditDirect review.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much is the BNPL down payment?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The expected down payment is typically 40–50% of the phone price. CreditDirect confirms the final amount and terms after reviewing the application.',
       },
     },
   ],

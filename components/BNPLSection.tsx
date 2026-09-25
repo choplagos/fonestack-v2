@@ -1,4 +1,4 @@
-import { CreditCard, Landmark, Mail, MessageCircle, ShieldCheck } from 'lucide-react'
+import { CreditCard, Landmark, Mail, MessageCircle, ShieldCheck, WalletCards } from 'lucide-react'
 import { WHATSAPP_LINK } from '@/lib/constants'
 
 const REQUIREMENTS = [
@@ -21,6 +21,11 @@ const REQUIREMENTS = [
     label: 'BVN and registered phone number',
     description: 'Your BVN and the phone number registered with it.',
     icon: ShieldCheck,
+  },
+  {
+    label: '40–50% down payment',
+    description: 'Plan to pay an estimated 40–50% of the phone price upfront.',
+    icon: WalletCards,
   },
 ]
 
@@ -51,8 +56,9 @@ export default function BNPLSection() {
 
             <div className="mt-8 p-5 rounded-3xl bg-premiumYellow/10 border border-premiumYellow/20">
               <p className="text-sm text-slate-300 leading-relaxed">
-                Meeting these requirements does not guarantee approval. CreditDirect will
-                review your application and confirm your eligibility.
+                The down payment is typically 40–50% of the phone price. Meeting these
+                requirements does not guarantee approval; CreditDirect will review your
+                application and confirm the final amount and eligibility.
               </p>
             </div>
           </div>
