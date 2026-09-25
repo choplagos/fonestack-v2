@@ -17,13 +17,13 @@ export default function ComparisonDock({
   if (compareList.length === 0) return null;
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] w-fit" role="region" aria-label="Phone comparison dock">
+    <div className="fixed inset-x-3 bottom-[max(1rem,env(safe-area-inset-bottom))] z-[100] flex justify-center sm:bottom-8" role="region" aria-label="Phone comparison dock">
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="liquid-glass p-2 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.4)] border-white/20 flex items-center gap-4 px-6"
+        className="liquid-glass w-full max-w-xl p-2 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.4)] border-white/20 flex items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6"
       >
-        <div className="flex items-center gap-2 pr-4 border-r border-white/10">
+        <div className="flex items-center gap-2 pr-2 border-r border-white/10 sm:pr-4">
           <div className="w-8 h-8 rounded-full bg-premiumYellow/20 flex items-center justify-center" aria-hidden="true">
             <Scale className="w-4 h-4 text-premiumYellow" />
           </div>
@@ -34,9 +34,9 @@ export default function ComparisonDock({
         </div>
 
         {/* Selected Phone Avatars */}
-        <div className="flex gap-3" role="list" aria-label="Selected phones for comparison">
+        <div className="flex gap-1.5 sm:gap-3" role="list" aria-label="Selected phones for comparison">
           {[0, 1, 2].map((idx) => (
-            <div key={idx} className="relative w-12 h-12 rounded-2xl liquid-glass border-white/10 flex items-center justify-center overflow-hidden" role="listitem">
+            <div key={idx} className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-2xl liquid-glass border-white/10 flex items-center justify-center overflow-hidden" role="listitem">
               {compareList[idx] ? (
                 <>
                   <img 
@@ -61,15 +61,16 @@ export default function ComparisonDock({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pl-4 border-l border-white/10">
+        <div className="flex items-center gap-1 pl-2 border-l border-white/10 sm:gap-2 sm:pl-4">
           <button 
             disabled={compareList.length < 2}
             onClick={onOpenModal}
-            className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-xs transition-all
+            className={`flex items-center gap-1 px-3 py-3 rounded-2xl font-bold text-[10px] sm:gap-2 sm:px-6 sm:text-xs transition-all
               ${compareList.length >= 2 ? 'bg-premiumYellow text-black hover:scale-105 active:scale-95' : 'bg-white/5 text-white/20 cursor-not-allowed'}`}
             aria-label={compareList.length >= 2 ? 'Compare selected phones' : 'Select at least 2 phones to compare'}
           >
-            Compare Now
+            <span className="sm:hidden">Compare</span>
+            <span className="hidden sm:inline">Compare Now</span>
             <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </button>
           <button 

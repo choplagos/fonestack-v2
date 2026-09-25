@@ -102,7 +102,10 @@ export default function Navbar({ wishlistCount, onSearch }: { wishlistCount: num
                   <MobileNavLink href="#repair" onClick={() => setIsMobileMenuOpen(false)}>Repairs</MobileNavLink>
                 </li>
                 <li>
-                  <MobileNavLink href="#about" onClick={() => setIsMobileMenuOpen(false)}>About Us</MobileNavLink>
+                  <MobileNavLink href="#bnpl" onClick={() => setIsMobileMenuOpen(false)}>Buy Now, Pay Later</MobileNavLink>
+                </li>
+                <li>
+                  <MobileNavLink href="#trade-in" onClick={() => setIsMobileMenuOpen(false)}>Trade-In</MobileNavLink>
                 </li>
               </ul>
             </nav>
