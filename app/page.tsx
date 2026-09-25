@@ -11,6 +11,7 @@ import RepairHub from '@/components/RepairHub'
 import { supabase } from '@/lib/supabase'
 import TradeInEstimator from '@/components/TradeInEstimator'
 import BNPLSection from '@/components/BNPLSection'
+import { sortProductsForCatalogue, sortProductsForSearch } from '@/lib/productMerchandising'
 
 // FAQ Schema for AI Search
 const faqSchema = {
@@ -101,15 +102,15 @@ export default function Storefront() {
     load()
   }, [])
 
-  const filtered = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase()
-    if (!normalizedSearch) return products
+  const catalogueProducts = useMemo(
+    () => sortProductsForCatalogue(products, PRODUCTS_PER_PAGE),
+    [products]
+  )
 
-    return products.filter(p =>
-      p.name.toLowerCase().includes(normalizedSearch) ||
-      p.brand.toLowerCase().includes(normalizedSearch)
-    )
-  }, [products, search])
+  const filtered = useMemo(
+    () => sortProductsForSearch(catalogueProducts, search),
+    [catalogueProducts, search]
+  )
 
   // Reset display count when search changes
   useEffect(() => {
@@ -150,7 +151,7 @@ export default function Storefront() {
             brands: '12+', 
             new: '24' 
           }} 
-          chips={products.slice(0, 3).map(p => ({ 
+          chips={catalogueProducts.slice(0, 3).map(p => ({
             brand: p.brand, 
             price: `₦${p.price.toLocaleString()}` 
           }))}
