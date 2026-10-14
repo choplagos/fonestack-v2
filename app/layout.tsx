@@ -3,7 +3,7 @@ import './globals.css'
 import Script from 'next/script'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
-import { BUSINESS_REGISTRATION_NUMBER } from '@/lib/constants'
+import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL } from '@/lib/constants'
 
 // Dynamic metadata configuration
 export const metadata = {
@@ -70,6 +70,7 @@ const organizationSchema = {
   name: 'Fonestack',
   alternateName: 'Fonestack Phones & Repairs',
   url: 'https://fonestack.vercel.app',
+  hasMap: GOOGLE_BUSINESS_PROFILE_URL,
   logo: 'https://fonestack.vercel.app/logo.png',
   description: 'Premium smartphones and expert repair services in Computer Village, Ikeja, Lagos.',
   address: {

@@ -1,7 +1,9 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
+import { MapPin } from 'lucide-react'
 import PhoneRig from './PhoneRig'
+import { GOOGLE_BUSINESS_PROFILE_URL } from '@/lib/constants'
 
 export default function Hero({ stats, chips }: { 
   stats: { total: string, brands: string, new: string },
@@ -65,6 +67,16 @@ export default function Hero({ stats, chips }: {
               aria-label="Request phone repair service"
             >
               Repair Request
+            </a>
+            <a
+              href={GOOGLE_BUSINESS_PROFILE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="liquid-glass px-8 py-4 rounded-2xl font-bold dark:text-white flex items-center gap-2"
+              aria-label="Find Fonestack on Google"
+            >
+              <MapPin className="w-4 h-4" aria-hidden="true" />
+              Find us on Google
             </a>
           </motion.div>
 

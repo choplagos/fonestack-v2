@@ -1,4 +1,5 @@
-import { BUSINESS_REGISTRATION_NUMBER, SOCIAL_LINKS, SITE_URL } from '@/lib/constants'
+import { MapPin } from 'lucide-react'
+import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SOCIAL_LINKS, SITE_URL } from '@/lib/constants'
 
 export default function Footer() {
   return (
@@ -10,7 +11,17 @@ export default function Footer() {
           <div className="mt-1">&copy; {new Date().getFullYear()} Fonestack — <a href={SITE_URL} className="underline">fonestack.vercel.app</a></div>
         </div>
 
-        <nav aria-label="Social links" className="flex items-center gap-4">
+        <nav aria-label="Social and location links" className="flex items-center gap-4">
+          <a
+            href={GOOGLE_BUSINESS_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-premiumYellow focus-visible:ring-offset-2"
+          >
+            <MapPin className="w-4 h-4" aria-hidden="true" />
+            Find us on Google
+          </a>
+
           {/* Social icons */}
           <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram" className="text-slate-300 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-premiumYellow focus-visible:ring-offset-2 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden="true">
