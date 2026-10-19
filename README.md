@@ -33,11 +33,15 @@ A modern e-commerce platform for premium smartphones and expert repair services 
 
 ## 📱 Features
 
-- **Phone Store**: Browse new and used smartphones
+- **Device Store**: Browse phones, laptops, and audio products by category
 - **AI Comparison**: Compare phones with AI-powered analysis
 - **Repair Services**: Book repair services for all phone brands
 - **Invoice System**: View and download invoices
 - **Admin Dashboard**: Manage inventory and sales
+
+### Product categories
+
+Products use a `category` value of `phones`, `laptops`, or `audio`. Before adding non-phone products, run [`supabase/migrations/20261019000000_add_product_categories.sql`](./supabase/migrations/20261019000000_add_product_categories.sql) in the Supabase SQL Editor. Existing rows default to `phones`; set the category when adding new products. For safe, non-purchasable examples, optionally run [`supabase/seed_demo_products.sql`](./supabase/seed_demo_products.sql) after the migration.
 
 ## 🛠️ Tech Stack
 

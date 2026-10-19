@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase'
 import TradeInEstimator from '@/components/TradeInEstimator'
 import BNPLSection from '@/components/BNPLSection'
 import { sortProductsForCatalogue, sortProductsForSearch } from '@/lib/productMerchandising'
+import { PRODUCT_CATEGORIES, getProductCategory, type ProductCategory } from '@/lib/productCategories'
 
 // FAQ Schema for AI Search
 const faqSchema = {
@@ -20,10 +21,10 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'What types of phones do you sell?',
+      name: 'What types of devices do you sell?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'We sell a wide selection of new and fairly used smartphones including iPhones, Samsung Galaxy series, Google Pixel, and other premium brands. All devices are authenticity guaranteed.',
+        text: 'We sell new and fairly used smartphones, laptops, and audio products from premium brands. All devices are authenticity guaranteed.',
       },
     },
     {
@@ -57,19 +58,31 @@ const faqSchema = {
 const productCollectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProductCollection',
-  name: 'Fonestack Phone Collection',
-  description: 'Premium selection of new and fairly used smartphones in Ikeja, Lagos.',
-  url: 'https://fonestack.vercel.app/#phones',
+  name: 'Fonestack Device Collection',
+  description: 'Premium selection of phones, laptops, and audio products in Ikeja, Lagos.',
+  url: 'https://fonestack.vercel.app/#products',
 }
 
 const PRODUCTS_PER_PAGE = 12
+type StoreProduct = {
+  id: number
+  name: string
+  brand: string
+  price: number
+  status: string
+  image_url: string
+  spec: string
+  stock_quantity: number
+  category?: ProductCategory
+}
 
 export default function Storefront() {
-  const [products, setProducts] = useState<any[]>([])
-  const [wishlist, setWishlist] = useState<any[]>([])
-  const [compareList, setCompareList] = useState<any[]>([])
+  const [products, setProducts] = useState<StoreProduct[]>([])
+  const [wishlist, setWishlist] = useState<StoreProduct[]>([])
+  const [compareList, setCompareList] = useState<StoreProduct[]>([])
   const [isCompareOpen, setIsCompareOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<'all' | ProductCategory>('all')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [displayCount, setDisplayCount] = useState(PRODUCTS_PER_PAGE)
@@ -90,7 +103,10 @@ export default function Storefront() {
         }
         
         if (data) {
-          setProducts(data)
+          setProducts(data.map(product => ({
+            ...product,
+            category: getProductCategory(product.category),
+          })))
         }
       } catch (err) {
         console.error('Error loading products:', err)
@@ -107,15 +123,22 @@ export default function Storefront() {
     [products]
   )
 
+  const categoryProducts = useMemo(
+    () => selectedCategory === 'all'
+      ? catalogueProducts
+      : catalogueProducts.filter(product => product.category === selectedCategory),
+    [catalogueProducts, selectedCategory]
+  )
+
   const filtered = useMemo(
-    () => sortProductsForSearch(catalogueProducts, search),
-    [catalogueProducts, search]
+    () => sortProductsForSearch(categoryProducts, search),
+    [categoryProducts, search]
   )
 
   // Reset display count when search changes
   useEffect(() => {
     setDisplayCount(PRODUCTS_PER_PAGE)
-  }, [search])
+  }, [search, selectedCategory])
 
   return (
     <>
@@ -157,27 +180,26 @@ export default function Storefront() {
           }))}
         />
 
-        {/* Phones Section with proper heading hierarchy */}
-        <section id="phones" className="max-w-7xl mx-auto px-6 py-20" aria-labelledby="phones-heading">
+        <section id="products" className="max-w-7xl mx-auto px-6 py-20" aria-labelledby="products-heading">
           <div className="flex flex-col gap-6 mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-3">
-                // Phone Collection
+                // Device Collection
               </div>
-              <h2 id="phones-heading" className="text-3xl md:text-4xl font-display font-black dark:text-white">
-                Find your next phone
+              <h2 id="products-heading" className="text-3xl md:text-4xl font-display font-black dark:text-white">
+                Find your next device
               </h2>
             </div>
             <div className="w-full sm:max-w-sm">
-              <label htmlFor="phone-catalog-search" className="sr-only">Search the phone collection</label>
+              <label htmlFor="product-catalog-search" className="sr-only">Search the product collection</label>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
                 <input
-                  id="phone-catalog-search"
+                  id="product-catalog-search"
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search phones by name or brand"
+                  placeholder="Search products by name or brand"
                   className="w-full rounded-2xl border border-white/10 bg-black/10 py-3.5 pl-11 pr-11 text-sm dark:text-white focus:outline-none focus:border-premiumYellow/50"
                 />
                 {search && (
@@ -185,22 +207,44 @@ export default function Storefront() {
                     type="button"
                     onClick={() => setSearch('')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-slate-400 hover:text-white"
-                    aria-label="Clear phone search"
+                    aria-label="Clear product search"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
               </div>
               <p className="mt-2 text-xs text-slate-500" aria-live="polite">
-                {loading ? 'Loading phones…' : `${filtered.length} ${filtered.length === 1 ? 'phone' : 'phones'} available`}
+                {loading ? 'Loading products…' : `${filtered.length} ${filtered.length === 1 ? 'product' : 'products'} available`}
               </p>
             </div>
+          </div>
+
+          <div className="mb-8 flex flex-wrap gap-3" role="group" aria-label="Filter products by category">
+            <button
+              type="button"
+              onClick={() => setSelectedCategory('all')}
+              aria-pressed={selectedCategory === 'all'}
+              className={`rounded-full px-5 py-2.5 text-sm font-bold transition-colors ${selectedCategory === 'all' ? 'bg-premiumYellow text-black' : 'liquid-glass text-slate-500 dark:text-white'}`}
+            >
+              All products
+            </button>
+            {PRODUCT_CATEGORIES.map(category => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => setSelectedCategory(category.id)}
+                aria-pressed={selectedCategory === category.id}
+                className={`rounded-full px-5 py-2.5 text-sm font-bold transition-colors ${selectedCategory === category.id ? 'bg-premiumYellow text-black' : 'liquid-glass text-slate-500 dark:text-white'}`}
+              >
+                {category.label}
+              </button>
+            ))}
           </div>
           
           {/* Loading State */}
           {loading && (
             <div className="py-10 sm:py-20" aria-live="polite" aria-busy="true">
-              <p className="text-center text-slate-600 dark:text-slate-400">Loading phones...</p>
+              <p className="text-center text-slate-600 dark:text-slate-400">Loading products...</p>
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" aria-hidden="true">
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div key={index} className="liquid-glass rounded-3xl p-4 h-80 animate-pulse">
@@ -227,7 +271,7 @@ export default function Storefront() {
           {/* Empty State */}
           {!loading && !error && products.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-slate-600 dark:text-slate-400">No phones available yet.</p>
+              <p className="text-slate-600 dark:text-slate-400">No products available yet.</p>
             </div>
           )}
           
@@ -239,10 +283,11 @@ export default function Storefront() {
                   <ProductCard 
                     key={p.id} 
                     product={p} 
+                    showCompare={p.category === 'phones'}
                     isInWishlist={wishlist.some(w => w.id === p.id)}
                     isInCompare={compareList.some(c => c.id === p.id)}
-                    onToggleWishlist={(item) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
-                    onToggleCompare={(item) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
+                    onToggleWishlist={(item: StoreProduct) => setWishlist(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : [...prev, item])}
+                    onToggleCompare={(item: StoreProduct) => setCompareList(prev => prev.some(x => x.id === item.id) ? prev.filter(x => x.id !== item.id) : prev.length < 3 ? [...prev, item] : prev)}
                   />
                 ))}
               </div>
@@ -264,14 +309,20 @@ export default function Storefront() {
           {/* No search results */}
           {!loading && !error && products.length > 0 && filtered.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-slate-600 dark:text-slate-400">No phones match your search.</p>
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="mt-4 rounded-xl bg-premiumYellow px-5 py-3 text-sm font-bold text-black"
-              >
-                Clear search
-              </button>
+              <p className="text-slate-600 dark:text-slate-400">
+                {search
+                  ? `No ${selectedCategory === 'all' ? 'products' : PRODUCT_CATEGORIES.find(category => category.id === selectedCategory)?.label.toLowerCase()} match your search.`
+                  : `No ${selectedCategory === 'all' ? 'products' : PRODUCT_CATEGORIES.find(category => category.id === selectedCategory)?.label.toLowerCase()} available yet.`}
+              </p>
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="mt-4 rounded-xl bg-premiumYellow px-5 py-3 text-sm font-bold text-black"
+                >
+                  Clear search
+                </button>
+              )}
             </div>
           )}
         </section>

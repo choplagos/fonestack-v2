@@ -1,6 +1,7 @@
 export interface MerchandisingProduct {
   brand?: string | null
   image_url?: string | null
+  spec?: string | null
 }
 
 const DEFAULT_PAGE_SIZE = 12
@@ -82,7 +83,8 @@ export function sortProductsForSearch<T extends MerchandisingProduct>(
     .filter(product => {
       const name = 'name' in product && typeof product.name === 'string' ? product.name : ''
       const brand = product.brand ?? ''
-      return `${name} ${brand}`.toLowerCase().includes(normalizedQuery)
+      const spec = product.spec ?? ''
+      return `${name} ${brand} ${spec}`.toLowerCase().includes(normalizedQuery)
     })
     .sort((left, right) => Number(hasProductImage(right)) - Number(hasProductImage(left)))
 }

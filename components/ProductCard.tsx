@@ -13,6 +13,7 @@ interface Product {
   image_url: string;
   spec: string;
   stock_quantity: number;
+  category?: 'phones' | 'laptops' | 'audio';
   rating?: number;
 }
 
@@ -21,15 +22,20 @@ export default function ProductCard({
   onToggleWishlist, 
   onToggleCompare, 
   isInWishlist, 
-  isInCompare 
+  isInCompare,
+  showCompare = true,
 }: { 
   product: Product, 
   onToggleWishlist: (p: Product) => void,
   onToggleCompare: (p: Product) => void,
   isInWishlist: boolean,
-  isInCompare: boolean
+  isInCompare: boolean,
+  showCompare?: boolean
 }) {
-  const isSoldOut = (product.stock_quantity || 0) <= 0;
+  const isDemo = product.status === 'demo';
+  const isSoldOut = isDemo || (product.stock_quantity || 0) <= 0;
+  const category = product.category ?? 'phones'
+  const categoryLabel = category === 'audio' ? 'audio product' : category === 'laptops' ? 'laptop' : 'smartphone'
   
   // Product Schema for SEO
   const productSchema = {
@@ -40,8 +46,8 @@ export default function ProductCard({
       '@type': 'Brand',
       name: product.brand,
     },
-    description: product.spec || `${product.brand} ${product.name} - Premium smartphone available at Fonestack, Computer Village Ikeja.`,
-    offers: {
+    description: product.spec || `${product.brand} ${product.name} - Premium ${categoryLabel} available at Fonestack, Computer Village Ikeja.`,
+    offers: isDemo ? undefined : {
       '@type': 'Offer',
       priceCurrency: 'NGN',
       price: product.price,
@@ -50,7 +56,7 @@ export default function ProductCard({
         '@type': 'LocalBusiness',
         name: 'Fonestack',
       },
-      url: `https://fonestack.vercel.app/#phones`,
+      url: `https://fonestack.vercel.app/#products`,
     },
     image: product.image_url ? [product.image_url] : [],
   };
@@ -88,14 +94,15 @@ export default function ProductCard({
         {/* Top Actions */}
         <div className="flex justify-between items-start z-10">
           <span className={`px-3 py-1 rounded-full text-[10px] font-bold font-mono tracking-widest uppercase
-            ${product.status === 'hot' ? 'bg-red-500 text-white' : 
-              product.status === 'used' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 
+            ${isDemo ? 'bg-slate-700 text-white' :
+              product.status === 'hot' ? 'bg-red-500 text-white' :
+              product.status === 'used' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
               'bg-premiumYellow text-black'}`}
-            aria-label={`Status: ${product.status === 'hot' ? 'Hot Deal' : product.status === 'used' ? 'Used' : 'New'}`}
+            aria-label={`Status: ${isDemo ? 'Demo listing, not for sale' : product.status === 'hot' ? 'Hot Deal' : product.status === 'used' ? 'Used' : 'New'}`}
           >
-            {product.status === 'hot' ? '🔥 Hot Deal' : product.status === 'used' ? 'Used' : 'New'}
+            {isDemo ? 'Demo only' : product.status === 'hot' ? '🔥 Hot Deal' : product.status === 'used' ? 'Used' : 'New'}
           </span>
-          <button 
+          <button
             onClick={() => onToggleWishlist(product)}
             className={`p-2 rounded-full liquid-glass transition-colors ${isInWishlist ? 'text-premiumYellow bg-premiumYellow/10' : 'text-slate-400'}`}
             aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
@@ -109,13 +116,15 @@ export default function ProductCard({
         <div className="relative h-48 w-full flex items-center justify-center p-4">
           {isSoldOut && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
-              <span className="bg-black/80 text-white border border-white/20 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest">SOLD OUT</span>
+              <span className="bg-black/80 text-white border border-white/20 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest">
+                {isDemo ? 'DEMO ONLY' : 'SOLD OUT'}
+              </span>
             </div>
           )}
           {product.image_url ? (
             <img 
               src={product.image_url} 
-              alt={`${product.brand} ${product.name} - ${product.spec || 'Smartphone'}`}
+              alt={`${product.brand} ${product.name} - ${product.spec || categoryLabel}`}
               className="h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
               decoding="async"
@@ -123,7 +132,7 @@ export default function ProductCard({
             />
           ) : (
             <div className="text-6xl" role="img" aria-label={`${product.brand} ${product.name}`}>
-              📱
+            {category === 'audio' ? '🎧' : category === 'laptops' ? '💻' : '📱'}
             </div>
           )}
         </div>
@@ -144,10 +153,14 @@ export default function ProductCard({
         {/* Footer */}
         <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
           <div className="flex flex-col">
-            <span className="text-xs opacity-50 dark:text-white uppercase font-mono text-[9px]">Best Price</span>
-            <span className="text-lg font-display font-extrabold text-slate-900 dark:text-white" itemProp="offers" itemScope itemType="https://schema.org/Offer">
-              <span itemProp="priceCurrency" content="NGN">₦</span>
-              <span itemProp="price" content={product.price.toString()}>{product.price.toLocaleString()}</span>
+            <span className="text-xs opacity-50 dark:text-white uppercase font-mono text-[9px]">{isDemo ? 'Demo listing' : 'Best Price'}</span>
+            <span className="text-lg font-display font-extrabold text-slate-900 dark:text-white" itemProp={isDemo ? undefined : 'offers'} itemScope={isDemo ? undefined : true} itemType={isDemo ? undefined : 'https://schema.org/Offer'}>
+              {isDemo ? 'Price not set' : (
+                <>
+                  <span itemProp="priceCurrency" content="NGN">₦</span>
+                  <span itemProp="price" content={product.price.toString()}>{product.price.toLocaleString()}</span>
+                </>
+              )}
             </span>
           </div>
           
@@ -165,16 +178,18 @@ export default function ProductCard({
         </div>
 
         {/* Compare Trigger */}
-        <button 
-          onClick={() => onToggleCompare(product)}
-          className={`w-full min-h-11 py-2 rounded-xl border border-dashed transition-all text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-2
-            ${isInCompare ? 'border-premiumYellow text-premiumYellow bg-premiumYellow/5' : 'border-white/10 text-slate-500 hover:border-white/30'}`}
-          aria-label={isInCompare ? `Remove ${product.name} from comparison` : `Add ${product.name} to comparison`}
-          aria-pressed={isInCompare}
-        >
-          <Scale className="w-3 h-3" aria-hidden="true" />
-          {isInCompare ? 'In Compare' : 'Add to Compare'}
-        </button>
+        {showCompare && (
+          <button
+            onClick={() => onToggleCompare(product)}
+            className={`w-full min-h-11 py-2 rounded-xl border border-dashed transition-all text-[10px] font-mono uppercase tracking-widest flex items-center justify-center gap-2
+              ${isInCompare ? 'border-premiumYellow text-premiumYellow bg-premiumYellow/5' : 'border-white/10 text-slate-500 hover:border-white/30'}`}
+            aria-label={isInCompare ? `Remove ${product.name} from comparison` : `Add ${product.name} to comparison`}
+            aria-pressed={isInCompare}
+          >
+            <Scale className="w-3 h-3" aria-hidden="true" />
+            {isInCompare ? 'In Compare' : 'Add to Compare'}
+          </button>
+        )}
       </motion.article>
     </>
   )

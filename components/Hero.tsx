@@ -35,7 +35,7 @@ export default function Hero({ stats, chips }: {
             className="text-5xl md:text-7xl font-display font-extrabold leading-[1.1] dark:text-white"
           >
             YOUR NEXT <br />
-            <span className="text-premiumYellow">PHONE</span> <br />
+            <span className="text-premiumYellow">DEVICE</span> <br />
             <span className="opacity-40">STARTS HERE</span>
           </motion.h1>
 
@@ -45,7 +45,7 @@ export default function Hero({ stats, chips }: {
              transition={{ delay: 0.4 }}
              className="mt-8 text-lg text-slate-600 dark:text-slate-400 max-w-md leading-relaxed"
           >
-            Premium selection of new and fairly used smartphones. Authenticity guaranteed, localized prices.
+            Shop new and fairly used phones, laptops, and audio products. Authenticity guaranteed, localized prices.
           </motion.p>
 
           <motion.div 
@@ -55,9 +55,9 @@ export default function Hero({ stats, chips }: {
             className="mt-10 flex flex-wrap gap-4"
           >
             <a 
-              href="#phones" 
+              href="#products"
               className="bg-slate-900 dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-premiumYellow/20 transition-all"
-              aria-label="Browse our phone collection"
+              aria-label="Browse our product collection"
             >
               Browse Store
             </a>
