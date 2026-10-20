@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Phone Screen Repair Price in Ikeja: What It Actually Costs (And Why the Cheapest Quote Isn't Always Best)",
   description: "Real-world screen repair prices in Ikeja for 2026, signs of bad aftermarket screens, and how Fonestack handles OEM-grade replacements and warranty.",
-  alternates: { canonical: "https://fonestack.vercel.app/phone-screen-repair-ikeja-price" },
+  alternates: { canonical: `${SITE_URL}/phone-screen-repair-ikeja-price` },
 };
 
 const faqs: FAQ[] = [

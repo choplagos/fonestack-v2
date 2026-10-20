@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery",
   description: "iPhone battery replacement prices in Ikeja for 2026, signs you need replacement, and how to avoid low-quality batteries or bad installs.",
-  alternates: { canonical: "https://fonestack.vercel.app/iphone-battery-replacement-ikeja" },
+  alternates: { canonical: `${SITE_URL}/iphone-battery-replacement-ikeja` },
 };
 
 const faqs: FAQ[] = [

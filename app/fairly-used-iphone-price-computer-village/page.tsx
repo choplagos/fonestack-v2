@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)",
   description: "Fairly used iPhone prices in Computer Village for 2026 — honest ranges, tips to avoid swapped parts, and where Fonestack stands for tested, warranted units.",
-  alternates: { canonical: "https://fonestack.vercel.app/fairly-used-iphone-price-computer-village" },
+  alternates: { canonical: `${SITE_URL}/fairly-used-iphone-price-computer-village` },
 };
 
 const faqs: FAQ[] = [

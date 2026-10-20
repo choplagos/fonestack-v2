@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import SeoArticle, { FAQ, Section } from '@/components/SeoArticle'
 import { buildFaqSchema } from '@/lib/faqSchema'
+import { SITE_URL } from '@/lib/constants'
 
-const ARTICLE_URL = 'https://fonestack.com.ng/easy-buy-phone-financing-lagos'
+const ARTICLE_URL = `${SITE_URL}/easy-buy-phone-financing-lagos`
 
 export const metadata: Metadata = {
   title: 'Easy Buy Phone Financing in Lagos: BNPL Requirements and Down Payment',
@@ -123,8 +124,8 @@ const articleSchema = {
   description: metadata.description,
   url: ARTICLE_URL,
   dateModified: '2026-09-25',
-  author: { '@type': 'Organization', name: 'Fonestack', url: 'https://fonestack.com.ng' },
-  publisher: { '@type': 'Organization', name: 'Fonestack', url: 'https://fonestack.com.ng' },
+  author: { '@type': 'Organization', name: 'Fonestack', url: SITE_URL },
+  publisher: { '@type': 'Organization', name: 'Fonestack', url: SITE_URL },
   about: {
     '@type': 'Service',
     name: 'Fonestack Easy Buy Phone Financing',

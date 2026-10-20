@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import BNPLSection from '@/components/BNPLSection'
+import { SITE_URL } from '@/lib/constants'
 
-const BNPL_URL = 'https://fonestack.com.ng/bnpl'
+const BNPL_URL = `${SITE_URL}/bnpl`
 
 export const metadata: Metadata = {
   title: 'Buy Now, Pay Later Phones in Lagos | CreditDirect BNPL',
@@ -36,7 +37,7 @@ const serviceSchema = {
   provider: {
     '@type': 'LocalBusiness',
     name: 'Fonestack',
-    url: 'https://fonestack.com.ng',
+    url: SITE_URL,
     areaServed: {
       '@type': 'Place',
       name: 'Lagos, Nigeria',

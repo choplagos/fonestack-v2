@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Smartphone, Battery, Zap, Droplets, Camera, Speaker, Wrench, MessageCircle } from 'lucide-react'
 import Script from 'next/script'
+import { SITE_URL } from '@/lib/constants'
 
 const REPAIR_TYPES = [
   { id: 'screen', label: 'Screen', icon: Smartphone, desc: 'Cracked or bleeding display' },
@@ -21,7 +22,7 @@ const repairServiceSchema = {
   provider: {
     '@type': 'LocalBusiness',
     name: 'Fonestack',
-    url: 'https://fonestack.vercel.app',
+    url: SITE_URL,
   },
   areaServed: {
     '@type': 'Place',

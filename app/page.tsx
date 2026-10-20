@@ -13,6 +13,7 @@ import TradeInEstimator from '@/components/TradeInEstimator'
 import BNPLSection from '@/components/BNPLSection'
 import { sortProductsForCatalogue, sortProductsForSearch } from '@/lib/productMerchandising'
 import { PRODUCT_CATEGORIES, getProductCategory, type ProductCategory } from '@/lib/productCategories'
+import { SITE_URL } from '@/lib/constants'
 
 // FAQ Schema for AI Search
 const faqSchema = {
@@ -60,7 +61,7 @@ const productCollectionSchema = {
   '@type': 'ProductCollection',
   name: 'Fonestack Device Collection',
   description: 'Premium selection of phones, laptops, and audio products in Ikeja, Lagos.',
-  url: 'https://fonestack.vercel.app/#products',
+  url: `${SITE_URL}/#products`,
 }
 
 const PRODUCTS_PER_PAGE = 12

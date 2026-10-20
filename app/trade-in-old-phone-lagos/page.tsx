@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Trade In Your Old Phone in Lagos: How to Actually Get a Fair Value (Not 'Mumu' Price)",
   description: "How to trade in your old phone in Lagos for fair credit — what affects value, realistic ranges, and tips to avoid lowball offers.",
-  alternates: { canonical: "https://fonestack.vercel.app/trade-in-old-phone-lagos" },
+  alternates: { canonical: `${SITE_URL}/trade-in-old-phone-lagos` },
 };
 
 const faqs: FAQ[] = [

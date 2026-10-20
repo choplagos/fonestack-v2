@@ -1,11 +1,11 @@
 # Fonestack Robots.txt
-# https://fonestack.com.ng
+# https://www.fonestack.com.ng
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://fonestack.com.ng/sitemap.xml
+Sitemap: https://www.fonestack.com.ng/sitemap.xml
 
 # Disallow admin
 User-agent: *
@@ -40,4 +40,4 @@ Allow: /
 Crawl-delay: 1
 
 # Host directive
-Host: fonestack.com.ng
+Host: www.fonestack.com.ng

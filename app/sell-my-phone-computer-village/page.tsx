@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Sell My Phone in Computer Village: How to Get Paid Fair and Fast (Without the Runaround)",
   description: "Sell your phone in Computer Village with confidence — realistic resale values, negotiation tips, and how to avoid being lowballed.",
-  alternates: { canonical: "https://fonestack.vercel.app/sell-my-phone-computer-village" },
+  alternates: { canonical: `${SITE_URL}/sell-my-phone-computer-village` },
 };
 
 const faqs: FAQ[] = [

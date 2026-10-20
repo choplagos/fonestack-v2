@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Buy Android Phone in Ikeja Cheap — Without Landing a Fake or 'Half-Dead' Unit",
   description: "Find honest cheap Android phones in Ikeja for 2026. Price ranges, on-spot checks, and Fonestack's warranty-backed listings to avoid 'cheap today, expensive tomorrow'.",
-  alternates: { canonical: "https://fonestack.vercel.app/buy-android-phone-ikeja-cheap" },
+  alternates: { canonical: `${SITE_URL}/buy-android-phone-ikeja-cheap` },
 };
 
 const faqs: FAQ[] = [

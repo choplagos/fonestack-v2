@@ -8,10 +8,10 @@ import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } f
 // Dynamic metadata configuration
 export const metadata = {
   title: {
-    default: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
+    default: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
     template: `%s | Fonestack - Premium Phones & Repairs`,
   },
-  description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
+  description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
   keywords: 'smartphones, phones, iPhone, Samsung, repair, BNPL, buy now pay later phones, CreditDirect, phone financing, Ikeja, Lagos, Computer Village, mobile phones, used phones, new phones, phone repair, screen repair, battery replacement',
   authors: [{ name: 'Fonestack' }],
   creator: 'Fonestack',
@@ -30,8 +30,8 @@ export const metadata = {
     type: 'website',
     locale: 'en_NG',
     url: SITE_URL,
-    title: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
-    description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
+    title: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
+    description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
     siteName: 'Fonestack',
     images: [
       {
@@ -44,8 +44,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
-    description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
+    title: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
+    description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
     creator: '@fonestack',
     site: '@fonestack',
     images: [
@@ -72,6 +72,7 @@ export const metadata = {
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
+  additionalType: 'https://schema.org/ElectronicsStore',
   '@id': `${SITE_URL}/#organization`,
   name: 'Fonestack',
   alternateName: 'Fonestack Phones & Repairs',
@@ -134,7 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonestack.vercel.app" />
+        <link rel="preconnect" href={SITE_URL} />
         
         {/* Fonts */}
         <link

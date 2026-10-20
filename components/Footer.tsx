@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="text-sm text-slate-400">
           <div className="font-medium text-white">Fonestack</div>
           <div className="mt-1">Business Registration: <span className="font-mono">{BUSINESS_REGISTRATION_NUMBER}</span></div>
-          <div className="mt-1">&copy; {new Date().getFullYear()} Fonestack — <a href={SITE_URL} className="underline">fonestack.vercel.app</a></div>
+          <div className="mt-1">&copy; {new Date().getFullYear()} Fonestack — <a href={SITE_URL} className="underline">www.fonestack.com.ng</a></div>
         </div>
 
         <nav aria-label="Social and location links" className="flex items-center gap-4">

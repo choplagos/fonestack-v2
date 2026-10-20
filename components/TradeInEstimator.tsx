@@ -10,6 +10,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import Script from 'next/script'
+import { SITE_URL } from '@/lib/constants'
 
 const CONDITIONS = [
   { id: 'excellent', label: 'Excellent', desc: 'Like new, no visible wear' },
@@ -22,7 +23,7 @@ const tradeInServiceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   serviceType: 'Phone Trade-In',
-  provider: { '@type': 'LocalBusiness', name: 'Fonestack', url: 'https://fonestack.vercel.app' },
+  provider: { '@type': 'LocalBusiness', name: 'Fonestack', url: SITE_URL },
   areaServed: { '@type': 'Place', name: 'Ikeja, Lagos, Nigeria' },
 }
 

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
   description: "Practical guides and local price guides from Fonestack — Computer Village, Ikeja and Lagos-focused posts to help you buy, sell and repair phones without wahala.",
-  alternates: { canonical: "https://fonestack.vercel.app/blog" },
+  alternates: { canonical: `${SITE_URL}/blog` },
 };
 
 const posts = [

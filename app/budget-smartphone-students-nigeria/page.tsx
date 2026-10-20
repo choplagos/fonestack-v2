@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
 import { buildFaqSchema } from "@/lib/faqSchema";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Best Budget Smartphones for Students in Nigeria (2026): Good Enough for School, Not Painful for Your Pocket",
   description: "Student-friendly budget smartphone guide for Nigeria in 2026 — specs, price ranges, and what to avoid so your phone lasts a semester.",
-  alternates: { canonical: "https://fonestack.vercel.app/budget-smartphone-students-nigeria" },
+  alternates: { canonical: `${SITE_URL}/budget-smartphone-students-nigeria` },
 };
 
 const faqs: FAQ[] = [
