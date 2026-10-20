@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Scale, ArrowRight } from 'lucide-react'
 
@@ -39,12 +40,20 @@ export default function ComparisonDock({
             <div key={idx} className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-2xl liquid-glass border-white/10 flex items-center justify-center overflow-hidden" role="listitem">
               {compareList[idx] ? (
                 <>
-                  <img 
-                    src={compareList[idx].image_url} 
-                    className="w-8 h-8 object-contain" 
-                    alt={`${compareList[idx].brand} ${compareList[idx].name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
-                    loading="lazy"
-                  />
+                  {compareList[idx].image_url ? (
+                    <Image
+                      src={compareList[idx].image_url}
+                      width={48}
+                      height={48}
+                      sizes="48px"
+                      className="w-8 h-8 object-contain"
+                      alt={`${compareList[idx].brand} ${compareList[idx].name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
+                    />
+                  ) : (
+                    <span className="text-lg" role="img" aria-label={`${compareList[idx].brand} ${compareList[idx].name}`}>
+                      📱
+                    </span>
+                  )}
                   <button 
                     onClick={() => onRemove(compareList[idx].id)}
                     className="absolute top-0 right-0 p-0.5 bg-red-500 text-white rounded-bl-lg"

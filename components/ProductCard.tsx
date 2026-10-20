@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Bookmark, MessageCircle, Scale } from 'lucide-react'
 import Script from 'next/script'
@@ -123,12 +124,13 @@ export default function ProductCard({
             </div>
           )}
           {product.image_url ? (
-            <img 
+            <Image
               src={product.image_url} 
+              fill
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
               alt={`${product.brand} ${product.name} ${categoryLabel} at Fonestack, Computer Village, Ikeja, Lagos`}
-              className="h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
+              className="p-4 object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
-              decoding="async"
               itemProp="image"
             />
           ) : (

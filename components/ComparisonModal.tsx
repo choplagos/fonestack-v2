@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, MessageCircle, Trophy, Zap } from 'lucide-react'
 import AICompareSection from './AICompareSection'
@@ -95,12 +96,24 @@ export default function ComparisonModal({
                   {phones.map(p => (
                     <th key={p.id} className="p-6 w-1/4">
                       <div className="flex flex-col items-center gap-4 text-center">
-                        <img 
-                          src={p.image_url} 
-                          className="h-24 object-contain" 
-                          alt={`${p.brand} ${p.name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
-                          loading="lazy"
-                        />
+                        {p.image_url ? (
+                          <Image
+                            src={p.image_url}
+                            width={128}
+                            height={128}
+                            sizes="96px"
+                            className="h-24 w-24 object-contain"
+                            alt={`${p.brand} ${p.name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
+                          />
+                        ) : (
+                          <div
+                            className="flex h-24 w-24 items-center justify-center text-4xl"
+                            role="img"
+                            aria-label={`${p.brand} ${p.name} smartphone`}
+                          >
+                            📱
+                          </div>
+                        )}
                         <div>
                           <div className="text-[10px] font-mono text-premiumYellow uppercase tracking-widest">{p.brand}</div>
                           <div className="font-bold dark:text-white text-sm line-clamp-1">{p.name}</div>
