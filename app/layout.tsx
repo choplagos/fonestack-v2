@@ -3,15 +3,15 @@ import './globals.css'
 import Script from 'next/script'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
-import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL } from '@/lib/constants'
+import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
 // Dynamic metadata configuration
 export const metadata = {
   title: {
-    default: 'Fonestack | Premium Phones & Repairs in Ikeja, Lagos',
+    default: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
     template: `%s | Fonestack - Premium Phones & Repairs`,
   },
-  description: 'The best selection of new and fairly used smartphones, phone repairs, and Buy Now, Pay Later options through CreditDirect in Computer Village, Ikeja, Lagos.',
+  description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
   keywords: 'smartphones, phones, iPhone, Samsung, repair, BNPL, buy now pay later phones, CreditDirect, phone financing, Ikeja, Lagos, Computer Village, mobile phones, used phones, new phones, phone repair, screen repair, battery replacement',
   authors: [{ name: 'Fonestack' }],
   creator: 'Fonestack',
@@ -22,32 +22,38 @@ export const metadata = {
     address: true,
     email: true,
   },
-  metadataBase: new URL('https://fonestack.vercel.app'),
+  metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_NG',
-    url: 'https://fonestack.vercel.app',
-    title: 'Fonestack | Premium Phones & Repairs in Ikeja, Lagos',
-    description: 'The best selection of new and fairly used smartphones in Computer Village, Ikeja, Lagos. Authenticity guaranteed, competitive prices, and expert repair services.',
+    url: SITE_URL,
+    title: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
+    description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
     siteName: 'Fonestack',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Fonestack - Premium Phones & Repairs',
+        alt: 'Fonestack smartphones and phone repairs in Computer Village, Ikeja, Lagos',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Fonestack | Premium Phones & Repairs in Ikeja, Lagos',
-    description: 'The best selection of new and fairly used smartphones in Computer Village, Ikeja, Lagos.',
+    title: 'Fonestack | Buy New & Fairly Used Phones, Repairs in Ikeja, Lagos',
+    description: 'Shop verified new and fairly used iPhones, Samsung, and Pixel phones in Computer Village, Ikeja. Get fast repairs, BNPL options, and best prices.',
     creator: '@fonestack',
-    images: ['/og-image.png'],
+    site: '@fonestack',
+    images: [
+      {
+        url: '/og-image.png',
+        alt: 'Fonestack smartphones and phone repairs in Computer Village, Ikeja, Lagos',
+      },
+    ],
   },
   robots: {
     index: true,
@@ -66,12 +72,12 @@ export const metadata = {
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  '@id': 'https://fonestack.vercel.app/#organization',
+  '@id': `${SITE_URL}/#organization`,
   name: 'Fonestack',
   alternateName: 'Fonestack Phones & Repairs',
-  url: 'https://fonestack.vercel.app',
+  url: SITE_URL,
   hasMap: GOOGLE_BUSINESS_PROFILE_URL,
-  logo: 'https://fonestack.vercel.app/logo.png',
+  logo: `${SITE_URL}/logo.png`,
   description: 'Premium smartphones and expert repair services in Computer Village, Ikeja, Lagos.',
   address: {
     '@type': 'PostalAddress',
@@ -101,19 +107,19 @@ const organizationSchema = {
     propertyID: 'businessRegistration',
     value: BUSINESS_REGISTRATION_NUMBER,
   },
-  image: 'https://fonestack.vercel.app/og-image.png',
+  image: `${SITE_URL}/og-image.png`,
 }
 
 // Website Schema
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': 'https://fonestack.vercel.app/#website',
-  url: 'https://fonestack.vercel.app',
+  '@id': `${SITE_URL}/#website`,
+  url: SITE_URL,
   name: 'Fonestack',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://fonestack.vercel.app/?search={search_term_string}',
+    target: `${SITE_URL}/?search={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
 }

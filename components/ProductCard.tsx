@@ -3,6 +3,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Bookmark, MessageCircle, Scale } from 'lucide-react'
 import Script from 'next/script'
+import { SITE_URL } from '@/lib/constants'
 
 interface Product {
   id: number;
@@ -56,7 +57,7 @@ export default function ProductCard({
         '@type': 'LocalBusiness',
         name: 'Fonestack',
       },
-      url: `https://fonestack.vercel.app/#products`,
+      url: `${SITE_URL}/#products`,
     },
     image: product.image_url ? [product.image_url] : [],
   };
@@ -124,14 +125,18 @@ export default function ProductCard({
           {product.image_url ? (
             <img 
               src={product.image_url} 
-              alt={`${product.brand} ${product.name} - ${product.spec || categoryLabel}`}
+              alt={`${product.brand} ${product.name} ${categoryLabel} at Fonestack, Computer Village, Ikeja, Lagos`}
               className="h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
               decoding="async"
               itemProp="image"
             />
           ) : (
-            <div className="text-6xl" role="img" aria-label={`${product.brand} ${product.name}`}>
+            <div
+              className="text-6xl"
+              role="img"
+              aria-label={`${product.brand} ${product.name} ${categoryLabel} at Fonestack, Computer Village, Ikeja, Lagos`}
+            >
             {category === 'audio' ? '🎧' : category === 'laptops' ? '💻' : '📱'}
             </div>
           )}

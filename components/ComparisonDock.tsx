@@ -42,7 +42,7 @@ export default function ComparisonDock({
                   <img 
                     src={compareList[idx].image_url} 
                     className="w-8 h-8 object-contain" 
-                    alt={compareList[idx].name}
+                    alt={`${compareList[idx].brand} ${compareList[idx].name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
                     loading="lazy"
                   />
                   <button 

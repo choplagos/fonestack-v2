@@ -32,11 +32,11 @@ export default function Hero({ stats, chips }: {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-display font-extrabold leading-[1.1] dark:text-white"
+            className="text-4xl md:text-6xl font-display font-extrabold leading-[1.1] dark:text-white"
           >
-            YOUR NEXT <br />
-            <span className="text-premiumYellow">DEVICE</span> <br />
-            <span className="opacity-40">STARTS HERE</span>
+            Premium Smartphones <br />
+            <span className="text-premiumYellow">&amp; Device Repairs</span> <br />
+            <span className="opacity-70">in Ikeja, Lagos</span>
           </motion.h1>
 
           <motion.p 

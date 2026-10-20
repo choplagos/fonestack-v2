@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, MessageCircle, Trophy, Zap } from 'lucide-react'
 import AICompareSection from './AICompareSection'
 import Script from 'next/script'
+import { SITE_URL } from '@/lib/constants'
 
 export default function ComparisonModal({ 
   isOpen, 
@@ -27,13 +28,13 @@ export default function ComparisonModal({
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://fonestack.vercel.app',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Compare Phones',
-        item: 'https://fonestack.vercel.app/#phones',
+        item: `${SITE_URL}/#phones`,
       },
     ],
   };
@@ -97,7 +98,7 @@ export default function ComparisonModal({
                         <img 
                           src={p.image_url} 
                           className="h-24 object-contain" 
-                          alt={`${p.brand} ${p.name}`}
+                          alt={`${p.brand} ${p.name} smartphone at Fonestack, Computer Village, Ikeja, Lagos`}
                           loading="lazy"
                         />
                         <div>
