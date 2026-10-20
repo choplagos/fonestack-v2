@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Sell My Phone in Computer Village: How to Get Paid Fair and Fast (Without the Runaround)",
   description: "Sell your phone in Computer Village with confidence — realistic resale values, negotiation tips, and how to avoid being lowballed.",
   alternates: { canonical: `${SITE_URL}/sell-my-phone-computer-village` },
+  openGraph: {
+    title: "Sell My Phone in Computer Village: How to Get Paid Fair and Fast (Without the Runaround)",
+    description: "Sell your phone in Computer Village with confidence — realistic resale values, negotiation tips, and how to avoid being lowballed.",
+    url: `${SITE_URL}/sell-my-phone-computer-village`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -56,7 +62,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Walking Computer Village to sell a phone can feel like a runaround — different lowball offers, some asking you to wait for resale. Here\'s how to sell fast and fair.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'Walking Computer Village to sell a phone can feel like a runaround — different lowball offers, some asking you to wait for resale. Here\'s how to sell fast and fair.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/sell-my-phone-computer-village`} />
     </>
   );
 }

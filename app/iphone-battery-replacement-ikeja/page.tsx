@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery",
   description: "iPhone battery replacement prices in Ikeja for 2026, signs you need replacement, and how to avoid low-quality batteries or bad installs.",
   alternates: { canonical: `${SITE_URL}/iphone-battery-replacement-ikeja` },
+  openGraph: {
+    title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery",
+    description: "iPhone battery replacement prices in Ikeja for 2026, signs you need replacement, and how to avoid low-quality batteries or bad installs.",
+    url: `${SITE_URL}/iphone-battery-replacement-ikeja`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -63,7 +69,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Battery dropping fast? Scared of a fake battery job? Here\'s how to check, price expectations, and what to demand from any repairer in Ikeja.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'Battery dropping fast? Scared of a fake battery job? Here\'s how to check, price expectations, and what to demand from any repairer in Ikeja.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/iphone-battery-replacement-ikeja`} />
     </>
   );
 }

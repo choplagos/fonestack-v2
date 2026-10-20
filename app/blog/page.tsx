@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
   description: "Practical guides and local price guides from Fonestack — Computer Village, Ikeja and Lagos-focused posts to help you buy, sell and repair phones without wahala.",
   alternates: { canonical: `${SITE_URL}/blog` },
+  openGraph: {
+    title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
+    description: "Practical guides and local price guides from Fonestack — Computer Village, Ikeja and Lagos-focused posts to help you buy, sell and repair phones without wahala.",
+    url: `${SITE_URL}/blog`,
+    type: "website",
+  },
 };
 
 const posts = [
@@ -22,7 +28,7 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-black text-white px-6 py-12 md:px-20 md:py-20">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-lime-400">Fonestack Guides & Local Price Posts</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-lime-400">Phone Buying Guides & Repairs in Ikeja, Lagos</h1>
         <p className="mt-3 text-gray-300">Practical, Lagos-focused posts to help you buy, sell and repair phones without the wahala.</p>
 
         <ul className="mt-8 space-y-4">

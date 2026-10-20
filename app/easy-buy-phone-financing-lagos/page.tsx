@@ -116,33 +116,11 @@ const sections: Section[] = [
   },
 ]
 
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  '@id': `${ARTICLE_URL}#article`,
-  headline: 'Easy Buy Phone Financing in Lagos: BNPL Requirements and Down Payment',
-  description: metadata.description,
-  url: ARTICLE_URL,
-  dateModified: '2026-09-25',
-  author: { '@type': 'Organization', name: 'Fonestack', url: SITE_URL },
-  publisher: { '@type': 'Organization', name: 'Fonestack', url: SITE_URL },
-  about: {
-    '@type': 'Service',
-    name: 'Fonestack Easy Buy Phone Financing',
-    provider: { '@type': 'Organization', name: 'CreditDirect' },
-  },
-}
-
 export default function EasyBuyArticle() {
   const faqSchema = buildFaqSchema(faqs)
 
   return (
     <>
-      <Script
-        id="easy-buy-article-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
-      />
       <Script
         id="easy-buy-faq-schema"
         type="application/ld+json"
@@ -153,6 +131,9 @@ export default function EasyBuyArticle() {
         hook="Want a new phone but prefer to spread the cost? Here is how Fonestack Easy Buy works, what you need to get started, and why you should plan for a 40–50% down payment."
         sections={sections}
         faqs={faqs}
+        description={metadata.description as string}
+        canonicalUrl={ARTICLE_URL}
+        dateModified="2026-09-25"
       />
     </>
   )

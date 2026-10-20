@@ -113,6 +113,14 @@ export default function BNPLPage() {
             <li aria-current="page">Buy Now, Pay Later</li>
           </ol>
         </nav>
+        <header className="mx-auto max-w-7xl px-6 pt-16">
+          <h1 className="text-4xl font-display font-black text-white">
+            Buy Now, Pay Later Phones in Lagos with CreditDirect
+          </h1>
+          <p className="mt-3 max-w-2xl text-slate-400">
+            Explore Fonestack phone financing options for eligible customers in Lagos.
+          </p>
+        </header>
         <BNPLSection />
       </main>
     </>

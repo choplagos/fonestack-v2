@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)",
   description: "Fairly used iPhone prices in Computer Village for 2026 — honest ranges, tips to avoid swapped parts, and where Fonestack stands for tested, warranted units.",
   alternates: { canonical: `${SITE_URL}/fairly-used-iphone-price-computer-village` },
+  openGraph: {
+    title: "Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)",
+    description: "Fairly used iPhone prices in Computer Village for 2026 — honest ranges, tips to avoid swapped parts, and where Fonestack stands for tested, warranted units.",
+    url: `${SITE_URL}/fairly-used-iphone-price-computer-village`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -63,7 +69,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={"Computer Village hustle — it’s hard to tell a genuine fairly used iPhone from a swapped-parts phone. Here’s how to shop smart."} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={"Computer Village hustle — it’s hard to tell a genuine fairly used iPhone from a swapped-parts phone. Here’s how to shop smart."} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/fairly-used-iphone-price-computer-village`} />
     </>
   );
 }

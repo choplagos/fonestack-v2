@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Buy Android Phone in Ikeja Cheap — Without Landing a Fake or 'Half-Dead' Unit",
   description: "Find honest cheap Android phones in Ikeja for 2026. Price ranges, on-spot checks, and Fonestack's warranty-backed listings to avoid 'cheap today, expensive tomorrow'.",
   alternates: { canonical: `${SITE_URL}/buy-android-phone-ikeja-cheap` },
+  openGraph: {
+    title: "Buy Android Phone in Ikeja Cheap — Without Landing a Fake or 'Half-Dead' Unit",
+    description: "Find honest cheap Android phones in Ikeja for 2026. Price ranges, on-spot checks, and Fonestack's warranty-backed listings to avoid 'cheap today, expensive tomorrow'.",
+    url: `${SITE_URL}/buy-android-phone-ikeja-cheap`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -59,7 +65,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'"Cheap" can mean a good deal, or a phone you’re back to selling in three weeks — here’s how to spot the difference.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'"Cheap" can mean a good deal, or a phone you’re back to selling in three weeks — here’s how to spot the difference.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/buy-android-phone-ikeja-cheap`} />
     </>
   );
 }

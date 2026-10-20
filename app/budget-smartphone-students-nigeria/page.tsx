@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Best Budget Smartphones for Students in Nigeria (2026): Good Enough for School, Not Painful for Your Pocket",
   description: "Student-friendly budget smartphone guide for Nigeria in 2026 — specs, price ranges, and what to avoid so your phone lasts a semester.",
   alternates: { canonical: `${SITE_URL}/budget-smartphone-students-nigeria` },
+  openGraph: {
+    title: "Best Budget Smartphones for Students in Nigeria (2026): Good Enough for School, Not Painful for Your Pocket",
+    description: "Student-friendly budget smartphone guide for Nigeria in 2026 — specs, price ranges, and what to avoid so your phone lasts a semester.",
+    url: `${SITE_URL}/budget-smartphone-students-nigeria`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -58,7 +64,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Tight on cash but need a phone that actually lasts classes and calls? Here\'s a student-friendly guide that skips hype and gives practical picks.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'Tight on cash but need a phone that actually lasts classes and calls? Here\'s a student-friendly guide that skips hype and gives practical picks.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/budget-smartphone-students-nigeria`} />
     </>
   );
 }

@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Trade In Your Old Phone in Lagos: How to Actually Get a Fair Value (Not 'Mumu' Price)",
   description: "How to trade in your old phone in Lagos for fair credit — what affects value, realistic ranges, and tips to avoid lowball offers.",
   alternates: { canonical: `${SITE_URL}/trade-in-old-phone-lagos` },
+  openGraph: {
+    title: "Trade In Your Old Phone in Lagos: How to Actually Get a Fair Value (Not 'Mumu' Price)",
+    description: "How to trade in your old phone in Lagos for fair credit — what affects value, realistic ranges, and tips to avoid lowball offers.",
+    url: `${SITE_URL}/trade-in-old-phone-lagos`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -63,7 +69,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Not knowing your old phone\'s worth can leave you feeling lowballed. Here\'s a practical Lagos guide to get fair trade-in credit.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'Not knowing your old phone\'s worth can leave you feeling lowballed. Here\'s a practical Lagos guide to get fair trade-in credit.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/trade-in-old-phone-lagos`} />
     </>
   );
 }

@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Phone Screen Repair Price in Ikeja: What It Actually Costs (And Why the Cheapest Quote Isn't Always Best)",
   description: "Real-world screen repair prices in Ikeja for 2026, signs of bad aftermarket screens, and how Fonestack handles OEM-grade replacements and warranty.",
   alternates: { canonical: `${SITE_URL}/phone-screen-repair-ikeja-price` },
+  openGraph: {
+    title: "Phone Screen Repair Price in Ikeja: What It Actually Costs (And Why the Cheapest Quote Isn't Always Best)",
+    description: "Real-world screen repair prices in Ikeja for 2026, signs of bad aftermarket screens, and how Fonestack handles OEM-grade replacements and warranty.",
+    url: `${SITE_URL}/phone-screen-repair-ikeja-price`,
+    type: "article",
+  },
 };
 
 const faqs: FAQ[] = [
@@ -61,7 +67,7 @@ export default function Page() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Cracked screen panic is real — and so is the risk of a poor aftermarket replacement from a roadside engineer. Here’s what to watch.'} sections={sections} faqs={faqs} />
+      <SeoArticle h1={metadata.title as string} hook={'Cracked screen panic is real — and so is the risk of a poor aftermarket replacement from a roadside engineer. Here’s what to watch.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/phone-screen-repair-ikeja-price`} />
     </>
   );
 }
