@@ -60,15 +60,15 @@ npm run dev
 
 ## 🌐 Custom domain and AdSense
 
-The canonical site URL is `https://fonestack.com.ng`; the `www.fonestack.com.ng` host redirects to the apex domain. Add both domains to the Vercel project and point their DNS records to Vercel so the redirect can be served.
+The canonical site URL is `https://fonestack.com.ng`; the app redirects `www.fonestack.com.ng` to the apex domain. Set the apex domain as the primary domain in Vercel and configure both domain DNS records to avoid a host redirect loop.
 
-To enable Google's AdSense verification script, configure this public environment variable with the publisher ID from your AdSense account:
+The AdSense script, account metadata, and `public/ads.txt` use the same publisher ID. Replace the `XXXXXXXXXXXXXXXX` placeholder in those files with the publisher ID from your AdSense account before deploying. The placeholder shown below is not a valid publisher ID:
 
-```env
-NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1578175878674137
+```text
+ca-pub-XXXXXXXXXXXXXXXX
 ```
 
-The supplied publisher ID is used by default; setting this environment variable overrides it. The script is emitted only when the configured ID matches `ca-pub-` followed by digits. Technical setup and policy pages do not guarantee AdSense approval; Google also reviews site content and policy compliance.
+Technical setup and policy pages do not guarantee AdSense approval; Google also reviews site content and policy compliance.
 
 ## 📊 SEO Audit Checklist
 

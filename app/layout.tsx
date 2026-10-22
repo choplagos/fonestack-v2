@@ -6,11 +6,6 @@ import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
 import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
-const adsensePublisherId =
-  process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID ?? 'ca-pub-1578175878674137'
-const validAdsensePublisherId =
-  /^ca-pub-\d+$/.test(adsensePublisherId) ? adsensePublisherId : undefined
-
 // Dynamic metadata configuration
 export const metadata: Metadata = {
   title: {
@@ -22,6 +17,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Fonestack' }],
   creator: 'Fonestack',
   publisher: 'Fonestack',
+  other: {
+    'google-adsense-account': 'ca-pub-XXXXXXXXXXXXXXXX',
+  },
   formatDetection: {
     telephone: true,
     date: true,
@@ -135,15 +133,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="bCa9t2i35MLBQeEsscB2atPqhE1UN0i_XRvJLoguSr4" />
 
-        {validAdsensePublisherId && (
-          <Script
-            id="google-adsense"
-            strategy="beforeInteractive"
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${validAdsensePublisherId}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          crossOrigin="anonymous"
+        />
         
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
