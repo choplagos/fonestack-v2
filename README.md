@@ -65,10 +65,10 @@ The canonical site URL is `https://fonestack.com.ng`; the `www.fonestack.com.ng`
 To enable Google's AdSense verification script, configure this public environment variable with the publisher ID from your AdSense account:
 
 ```env
-NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-XXXXXXXXXXXXXXXX
+NEXT_PUBLIC_ADSENSE_PUBLISHER_ID=ca-pub-1578175878674137
 ```
 
-The script is omitted unless the value matches `ca-pub-` followed by digits. Leave it unset until a real publisher ID is available. Technical setup and policy pages do not guarantee AdSense approval; Google also reviews site content and policy compliance.
+The supplied publisher ID is used by default; setting this environment variable overrides it. The script is emitted only when the configured ID matches `ca-pub-` followed by digits. Technical setup and policy pages do not guarantee AdSense approval; Google also reviews site content and policy compliance.
 
 ## 📊 SEO Audit Checklist
 

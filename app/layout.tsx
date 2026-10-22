@@ -6,8 +6,10 @@ import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
 import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
-const adsensePublisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID
-const validAdsensePublisherId = adsensePublisherId && /^ca-pub-\d+$/.test(adsensePublisherId)
+const adsensePublisherId =
+  process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID ?? 'ca-pub-1578175878674137'
+const validAdsensePublisherId =
+  /^ca-pub-\d+$/.test(adsensePublisherId) ? adsensePublisherId : undefined
 
 // Dynamic metadata configuration
 export const metadata: Metadata = {
