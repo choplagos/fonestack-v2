@@ -74,6 +74,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.fonestack.com.ng' }],
+        destination: 'https://fonestack.com.ng/:path*',
+        permanent: true,
+      },
+      {
         source: '/admin',
         destination: '/admin/',
         permanent: true,

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/constants";
+import { BLOG_POSTS } from "@/lib/blogPosts";
 
 export const metadata: Metadata = {
   title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
@@ -36,6 +37,12 @@ export default function Page() {
             <li key={p.slug} className="p-4 rounded-md border border-lime-400/10 hover:bg-white/2">
               <Link href={`/${p.slug}`} className="text-lg font-semibold text-lime-400">{p.title}</Link>
               <div className="mt-1 text-gray-300"><Link href={`/${p.slug}`} className="underline">Read post</Link></div>
+            </li>
+          ))}
+          {BLOG_POSTS.map((post) => (
+            <li key={post.slug} className="p-4 rounded-md border border-lime-400/10 hover:bg-white/2">
+              <Link href={`/blog/${post.slug}`} className="text-lg font-semibold text-lime-400">{post.title}</Link>
+              <p className="mt-1 text-gray-300">{post.description}</p>
             </li>
           ))}
         </ul>

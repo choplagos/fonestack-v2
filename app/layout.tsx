@@ -1,12 +1,16 @@
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 import Script from 'next/script'
+import type { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
 import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
+const adsensePublisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID
+const validAdsensePublisherId = adsensePublisherId && /^ca-pub-\d+$/.test(adsensePublisherId)
+
 // Dynamic metadata configuration
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
     template: `%s | Fonestack - Premium Phones & Repairs`,
@@ -23,9 +27,6 @@ export const metadata = {
     email: true,
   },
   metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     locale: 'en_NG',
@@ -131,6 +132,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="bCa9t2i35MLBQeEsscB2atPqhE1UN0i_XRvJLoguSr4" />
+
+        {validAdsensePublisherId && (
+          <Script
+            id="google-adsense"
+            strategy="beforeInteractive"
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${validAdsensePublisherId}`}
+            crossOrigin="anonymous"
+          />
+        )}
         
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -21,6 +21,30 @@ const pageData = [
     changeFrequency: 'weekly' as const,
   },
   {
+    slug: 'blog/how-to-check-a-used-phone-before-buying-nigeria',
+    images: [],
+    priority: 0.8,
+    changeFrequency: 'monthly' as const,
+  },
+  {
+    slug: 'privacy-policy',
+    images: [],
+    priority: 0.3,
+    changeFrequency: 'yearly' as const,
+  },
+  {
+    slug: 'terms',
+    images: [],
+    priority: 0.3,
+    changeFrequency: 'yearly' as const,
+  },
+  {
+    slug: 'contact',
+    images: [],
+    priority: 0.5,
+    changeFrequency: 'yearly' as const,
+  },
+  {
     slug: 'fairly-used-iphone-price-computer-village',
     images: [
       { url: '/og-image.png', title: 'Fairly Used iPhone Price - Computer Village', caption: 'Affordable used iPhones in Computer Village, Ikeja' },
@@ -91,18 +115,6 @@ const pageData = [
     ],
     priority: 0.8,
     changeFrequency: 'weekly' as const,
-  },
-  {
-    slug: 'admin',
-    images: [],
-    priority: 0.3,
-    changeFrequency: 'monthly' as const,
-  },
-  {
-    slug: 'invoice',
-    images: [],
-    priority: 0.3,
-    changeFrequency: 'monthly' as const,
   },
 ];
 

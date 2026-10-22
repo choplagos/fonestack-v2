@@ -2,9 +2,9 @@
 
 ## Your Setup Details
 
-**Domain**: fonestack.vercel.app  
+**Domain**: fonestack.com.ng
 **IndexNow API Key**: f1300c4472f44e86b1455c5ab97e52a1  
-**Key File Location**: https://fonestack.vercel.app/f1300c4472f44e86b1455c5ab97e52a1.txt
+**Key File Location**: https://fonestack.com.ng/f1300c4472f44e86b1455c5ab97e52a1.txt
 
 ---
 
@@ -15,13 +15,13 @@ Create `.env.local` in your project root:
 
 ```env
 INDEXNOW_API_KEY=f1300c4472f44e86b1455c5ab97e52a1
-NEXT_PUBLIC_SITE_URL=https://fonestack.vercel.app
+NEXT_PUBLIC_SITE_URL=https://fonestack.com.ng
 ```
 
 ### Step 2: Verify Key File is Accessible
 After deploying, your API key file should be accessible at:
 ```
-https://fonestack.vercel.app/f1300c4472f44e86b1455c5ab97e52a1.txt
+https://fonestack.com.ng/f1300c4472f44e86b1455c5ab97e52a1.txt
 ```
 
 **To test locally:**
@@ -39,8 +39,8 @@ curl -X POST http://localhost:3000/api/indexnow/submit \
   -H "Content-Type: application/json" \
   -d '{
     "urls": [
-      "https://fonestack.vercel.app/blog",
-      "https://fonestack.vercel.app/trade-in-old-phone-lagos"
+      "https://fonestack.com.ng/blog",
+      "https://fonestack.com.ng/trade-in-old-phone-lagos"
     ]
   }'
 ```
@@ -65,7 +65,7 @@ import { submitUrlToIndexNow } from '@/lib/indexnow';
 async function publishBlogPost(slug: string) {
   // Create post...
   
-  const postUrl = `https://fonestack.vercel.app/blog/${slug}`;
+  const postUrl = `https://fonestack.com.ng/blog/${slug}`;
   await submitUrlToIndexNow(postUrl);
   console.log('✓ Indexed:', postUrl);
 }
@@ -73,7 +73,7 @@ async function publishBlogPost(slug: string) {
 
 ### Example 2: Submit Product Page
 ```typescript
-const productUrl = 'https://fonestack.vercel.app/buy-android-phone-ikeja-cheap';
+const productUrl = 'https://fonestack.com.ng/buy-android-phone-ikeja-cheap';
 await submitUrlToIndexNow(productUrl);
 ```
 
@@ -82,11 +82,11 @@ await submitUrlToIndexNow(productUrl);
 import { submitUrlsToIndexNow } from '@/lib/indexnow';
 
 const urls = [
-  'https://fonestack.vercel.app/',
-  'https://fonestack.vercel.app/blog',
-  'https://fonestack.vercel.app/trade-in-old-phone-lagos',
-  'https://fonestack.vercel.app/buy-android-phone-ikeja-cheap',
-  'https://fonestack.vercel.app/phone-screen-repair-ikeja-price',
+  'https://fonestack.com.ng/',
+  'https://fonestack.com.ng/blog',
+  'https://fonestack.com.ng/trade-in-old-phone-lagos',
+  'https://fonestack.com.ng/buy-android-phone-ikeja-cheap',
+  'https://fonestack.com.ng/phone-screen-repair-ikeja-price',
 ];
 
 await submitUrlsToIndexNow(urls);
@@ -104,7 +104,7 @@ export function SubmitUrlForm() {
   return (
     <div>
       <button onClick={() => submitUrls([
-        'https://fonestack.vercel.app/my-new-page'
+        'https://fonestack.com.ng/my-new-page'
       ])}>
         Submit to IndexNow
       </button>
@@ -130,32 +130,32 @@ curl https://localhost:3000/f1300c4472f44e86b1455c5ab97e52a1.txt
 
 curl -X POST http://localhost:3000/api/indexnow/submit \
   -H "Content-Type: application/json" \
-  -d '{"urls": ["https://fonestack.vercel.app/test"]}'
+  -d '{"urls": ["https://fonestack.com.ng/test"]}'
 # Should return success response
 ```
 
 ### 2. Production Deployment
 1. Add to Vercel Environment Variables:
    - `INDEXNOW_API_KEY=f1300c4472f44e86b1455c5ab97e52a1`
-   - `NEXT_PUBLIC_SITE_URL=https://fonestack.vercel.app`
+   - `NEXT_PUBLIC_SITE_URL=https://fonestack.com.ng`
 
 2. Deploy your project
 
 3. Verify key file is accessible:
    ```bash
-   curl https://fonestack.vercel.app/f1300c4472f44e86b1455c5ab97e52a1.txt
+   curl https://fonestack.com.ng/f1300c4472f44e86b1455c5ab97e52a1.txt
    ```
 
 4. Test URL submission:
    ```bash
-   curl -X POST https://fonestack.vercel.app/api/indexnow/submit \
+   curl -X POST https://fonestack.com.ng/api/indexnow/submit \
      -H "Content-Type: application/json" \
-     -d '{"urls": ["https://fonestack.vercel.app/"]}'
+     -d '{"urls": ["https://fonestack.com.ng/"]}'
    ```
 
 ### 3. Verify in Bing Webmaster Tools
 1. Go to: https://www.bing.com/webmastertools
-2. Add your domain: fonestack.vercel.app
+2. Add your domain: fonestack.com.ng
 3. Verify ownership (choose any method)
 4. Check "Crawl & Index" section to see submitted URLs
 
@@ -167,16 +167,16 @@ Suggested URLs to submit initially:
 
 ```typescript
 const fonestackUrls = [
-  'https://fonestack.vercel.app/',                           // Homepage
-  'https://fonestack.vercel.app/blog',                       // Blog
-  'https://fonestack.vercel.app/admin',                      // Admin
-  'https://fonestack.vercel.app/budget-smartphone-students-nigeria',
-  'https://fonestack.vercel.app/buy-android-phone-ikeja-cheap',
-  'https://fonestack.vercel.app/fairly-used-iphone-price-computer-village',
-  'https://fonestack.vercel.app/iphone-battery-replacement-ikeja',
-  'https://fonestack.vercel.app/phone-screen-repair-ikeja-price',
-  'https://fonestack.vercel.app/sell-my-phone-computer-village',
-  'https://fonestack.vercel.app/trade-in-old-phone-lagos',
+  'https://fonestack.com.ng/',                           // Homepage
+  'https://fonestack.com.ng/blog',                       // Blog
+  'https://fonestack.com.ng/admin',                      // Admin
+  'https://fonestack.com.ng/budget-smartphone-students-nigeria',
+  'https://fonestack.com.ng/buy-android-phone-ikeja-cheap',
+  'https://fonestack.com.ng/fairly-used-iphone-price-computer-village',
+  'https://fonestack.com.ng/iphone-battery-replacement-ikeja',
+  'https://fonestack.com.ng/phone-screen-repair-ikeja-price',
+  'https://fonestack.com.ng/sell-my-phone-computer-village',
+  'https://fonestack.com.ng/trade-in-old-phone-lagos',
 ];
 
 // Submit all
@@ -198,7 +198,7 @@ Value: f1300c4472f44e86b1455c5ab97e52a1
 Environments: Production, Preview, Development
 
 Name: NEXT_PUBLIC_SITE_URL
-Value: https://fonestack.vercel.app
+Value: https://fonestack.com.ng
 Environments: Production, Preview, Development
 ```
 
@@ -210,7 +210,7 @@ Environments: Production, Preview, Development
 - `.env.local` (development)
 - Vercel environment variables (production)
 
-✅ **Key file is public**: By design, the key file at `https://fonestack.vercel.app/f1300c4472f44e86b1455c5ab97e52a1.txt` is meant to be publicly accessible (IndexNow protocol requirement)
+✅ **Key file is public**: By design, the key file at `https://fonestack.com.ng/f1300c4472f44e86b1455c5ab97e52a1.txt` is meant to be publicly accessible (IndexNow protocol requirement)
 
 ✅ **Regenerate if compromised**: If this key is exposed publicly, visit https://www.indexnow.org/ and regenerate a new one
 
@@ -220,14 +220,14 @@ Environments: Production, Preview, Development
 
 ```
 Key File:
-  GET https://fonestack.vercel.app/f1300c4472f44e86b1455c5ab97e52a1.txt
+  GET https://fonestack.com.ng/f1300c4472f44e86b1455c5ab97e52a1.txt
 
 Submit URLs:
-  POST https://fonestack.vercel.app/api/indexnow/submit
+  POST https://fonestack.com.ng/api/indexnow/submit
   Body: { "urls": [...] }
 
 Documentation:
-  GET https://fonestack.vercel.app/api/indexnow/submit
+  GET https://fonestack.com.ng/api/indexnow/submit
 ```
 
 ---
@@ -237,16 +237,16 @@ Documentation:
 ### Key file returns 404
 - [ ] Ensure `INDEXNOW_API_KEY=f1300c4472f44e86b1455c5ab97e52a1` is set
 - [ ] Make sure app is deployed/running
-- [ ] Check URL format: `https://fonestack.vercel.app/[KEY].txt`
+- [ ] Check URL format: `https://fonestack.com.ng/[KEY].txt`
 
 ### Submit endpoint returns 403
 - [ ] Verify key file is accessible first
 - [ ] Check API key matches: `f1300c4472f44e86b1455c5ab97e52a1`
-- [ ] Ensure URLs match domain: `https://fonestack.vercel.app/*`
+- [ ] Ensure URLs match domain: `https://fonestack.com.ng/*`
 
 ### Submit endpoint returns 422
 - [ ] URLs must be HTTPS only
-- [ ] URLs must belong to `fonestack.vercel.app`
+- [ ] URLs must belong to `fonestack.com.ng`
 - [ ] Check URL format is valid
 
 ### Getting rate limited (429)
@@ -266,4 +266,4 @@ Documentation:
 
 ---
 
-**Your IndexNow integration is ready for fonestack.vercel.app! 🚀**
+**Your IndexNow integration is ready for fonestack.com.ng! 🚀**
