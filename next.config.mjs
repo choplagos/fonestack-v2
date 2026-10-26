@@ -75,13 +75,14 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        has: [{ type: 'host', value: 'www.fonestack.com.ng' }],
-        destination: 'https://fonestack.com.ng/:path*',
+        has: [{ type: 'host', value: 'fonestack.com.ng' }],
+        destination: 'https://www.fonestack.com.ng/:path*',
         permanent: true,
       },
       {
-        source: '/admin',
-        destination: '/admin/',
+        source: '/:path*',
+        has: [{ type: 'host', value: 'fonestack.vercel.app' }],
+        destination: 'https://www.fonestack.com.ng/:path*',
         permanent: true,
       },
     ];

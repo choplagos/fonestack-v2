@@ -6,7 +6,7 @@ This document outlines how to add Fonestack (fonestack.com.ng) to major LLM mark
 
 Fonestack is now discoverable by major LLM platforms through:
 - ✅ Updated robots.txt with AI bot allowances (ChatGPT-User, ClaudeBot, PerplexityBot, Googlebot, Bingbot, Slurp, Baiduspider)
-- ✅ Comprehensive XML sitemap (fonestack.com.ng/sitemap.xml)
+- ✅ XML sitemap: https://www.fonestack.com.ng/sitemap.xml
 - ✅ Image sitemap with product/service images
 - ✅ SEO-optimized metadata for all pages
 
@@ -24,16 +24,16 @@ Fonestack is now discoverable by major LLM platforms through:
    Premium phones and expert repair services in Lagos, Nigeria.
    Browse new/used smartphones, get AI-powered phone comparisons,
    book professional repairs, and trade in your old phone.
-   Visit: https://fonestack.com.ng
+   Visit: https://www.fonestack.com.ng
    ```
-5. Add knowledge base: Upload sitemap (fonestack.com.ng/sitemap.xml) or add URL: https://fonestack.com.ng
+5. Add knowledge base: Upload the sitemap (https://www.fonestack.com.ng/sitemap.xml) or add URL: https://www.fonestack.com.ng
 6. Set capabilities: Web browsing, Code interpreter (if needed)
 7. Publish to marketplace
 
 **Key URLs to add**:
-- Home: https://fonestack.com.ng
-- Blog: https://fonestack.com.ng/blog
-- Sitemap: https://fonestack.com.ng/sitemap.xml
+- Home: https://www.fonestack.com.ng
+- Blog: https://www.fonestack.com.ng/blog
+- Sitemap: https://www.fonestack.com.ng/sitemap.xml
 
 ---
 
@@ -45,7 +45,7 @@ Fonestack is now discoverable by major LLM platforms through:
 2. Go to Files section and upload fonestack.com.ng sitemap
 3. Create a tool or custom integration that references:
    ```
-   - Site: https://fonestack.com.ng
+   - Site: https://www.fonestack.com.ng
    - Services: Phone sales, repairs, trade-in
    - Locations: Computer Village, Ikeja, Lagos
    - Contact: WhatsApp (available on site)
@@ -64,9 +64,9 @@ Fonestack is now discoverable by major LLM platforms through:
 1. Go to [perplexity.ai/verified-sources](https://www.perplexity.ai/verified-sources)
 2. Submit fonestack.com.ng for verification
 3. Provide:
-   - Site URL: https://fonestack.com.ng
+   - Site URL: https://www.fonestack.com.ng
    - Category: E-commerce / Phone Retail
-   - Sitemap: https://fonestack.com.ng/sitemap.xml
+   - Sitemap: https://www.fonestack.com.ng/sitemap.xml
 4. Add verification meta tag to website (if required)
 5. Upon approval, Perplexity will cite Fonestack in responses about phones in Lagos
 
@@ -82,8 +82,8 @@ Fonestack is now discoverable by major LLM platforms through:
    ```html
    <h1>Fonestack - Phone Store & Repairs</h1>
    <p>Premium phones and expert services in Lagos, Nigeria</p>
-   <a href="https://fonestack.com.ng">Visit Fonestack</a>
-   <a href="https://fonestack.com.ng/sitemap.xml">Sitemap</a>
+   <a href="https://www.fonestack.com.ng">Visit Fonestack</a>
+   <a href="https://www.fonestack.com.ng/sitemap.xml">Sitemap</a>
    ```
 4. Tag it with: phone, e-commerce, repair, lagos, nigeria
 5. Share link in relevant communities
@@ -100,7 +100,7 @@ Fonestack is now discoverable by major LLM platforms through:
    from llama_index import SimpleDirectoryReader
    
    documents = SimpleDirectoryReader(
-       urls=["https://fonestack.com.ng"]
+       urls=["https://www.fonestack.com.ng"]
    ).load_data()
    ```
 3. LangChain: Add tool reference:
@@ -110,7 +110,7 @@ Fonestack is now discoverable by major LLM platforms through:
    fonestack_tool = Tool(
        name="Fonestack_Phone_Store",
        description="Phone sales and repair services in Lagos, Nigeria",
-       func=lambda q: "Visit https://fonestack.com.ng for phones and repairs"
+       func=lambda q: "Visit https://www.fonestack.com.ng for phones and repairs"
    )
    ```
 4. Contribute to LangChain tools marketplace: [langchain.com/tools](https://www.langchain.com/tools)
@@ -124,7 +124,7 @@ Fonestack is now discoverable by major LLM platforms through:
 1. Go to [Bing Webmaster Tools](https://www.bing.com/webmasters)
 2. Add and verify fonestack.com.ng domain
 3. Submit sitemaps:
-   - https://fonestack.com.ng/sitemap.xml
+   - https://www.fonestack.com.ng/sitemap.xml
 4. Configure:
    - Verify ownership (DNS, Meta tag, or file)
    - Set crawl settings to allow: ChatGPT-User, ClaudeBot, PerplexityBot, Google-Extended
@@ -136,10 +136,10 @@ Fonestack is now discoverable by major LLM platforms through:
 
 ### Google Search Console
 1. Go to [search.google.com/search-console](https://search.google.com/search-console)
-2. Add property: https://fonestack.com.ng
+2. Add property: https://www.fonestack.com.ng
 3. Verify ownership (DNS TXT record recommended)
 4. Submit sitemaps:
-   - https://fonestack.com.ng/sitemap.xml
+   - https://www.fonestack.com.ng/sitemap.xml
 5. Monitor:
    - Indexing status
    - Coverage report
@@ -159,7 +159,7 @@ Fonestack is now discoverable by major LLM platforms through:
 ### Current Setup
 - **Domain**: fonestack.com.ng (primary)
 - **Robots.txt**: ✅ Configured with AI bot allowances
-- **Sitemap**: ✅ XML sitemap with 11 pages + images
+- **Sitemap**: ✅ XML sitemap with 15 public URLs
 - **Metadata**: ✅ OpenGraph, Twitter Cards, JSON-LD
 - **Mobile**: ✅ Responsive design
 - **Performance**: ✅ Next.js optimized
@@ -218,7 +218,7 @@ Fonestack is now discoverable by major LLM platforms through:
 
 ### Sitemap Structure
 ```
-https://fonestack.com.ng/sitemap.xml
+https://www.fonestack.com.ng/sitemap.xml
 ├─ 11 pages (URL entries)
 ├─ Image data for each page
 ├─ Last Modified: Dynamic (updates daily)
@@ -234,7 +234,7 @@ If Vercel domain needs redirect to primary domain:
   "rewrites": [
     {
       "source": "/:path*",
-      "destination": "https://fonestack.com.ng/:path*"
+      "destination": "https://www.fonestack.com.ng/:path*"
     }
   ]
 }
@@ -264,5 +264,5 @@ If Vercel domain needs redirect to primary domain:
 ---
 
 **Last Updated**: 2024
-**Domain**: https://fonestack.com.ng
+**Domain**: https://www.fonestack.com.ng
 **Status**: Ready for marketplace submissions

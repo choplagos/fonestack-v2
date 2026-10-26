@@ -58,15 +58,9 @@ npm install
 npm run dev
 ```
 
-## 🌐 Custom domain and AdSense
+## 🌐 Custom domain
 
-The canonical site URL is `https://fonestack.com.ng`; the app redirects `www.fonestack.com.ng` to the apex domain. Set the apex domain as the primary domain in Vercel and configure both domain DNS records to avoid a host redirect loop.
-
-The AdSense script, account metadata, and `public/ads.txt` use the same publisher ID. Replace the `XXXXXXXXXXXXXXXX` placeholder in those files with the publisher ID from your AdSense account before deploying. The placeholder shown below is not a valid publisher ID:
-
-```text
-ca-pub-XXXXXXXXXXXXXXXX
-```
+The canonical site URL is `https://www.fonestack.com.ng`. The apex domain and the exact legacy host `fonestack.vercel.app` redirect permanently to the www host. Configure both custom-domain DNS records in Vercel and set the www domain as the primary domain.
 
 Technical setup and policy pages do not guarantee AdSense approval; Google also reviews site content and policy compliance.
 

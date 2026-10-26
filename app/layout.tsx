@@ -1,25 +1,29 @@
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
-import Script from 'next/script'
 import type { Metadata } from 'next'
+import { Inter, JetBrains_Mono, Sora } from 'next/font/google'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
-import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
+import { SITE_URL } from '@/lib/constants'
+
+const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap' })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
 
 // Dynamic metadata configuration
 export const metadata: Metadata = {
   title: {
-    default: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
-    template: `%s | Fonestack - Premium Phones & Repairs`,
+    default: 'Fonestack Phones, Repairs & Trade-ins in Ikeja',
+    template: '%s',
   },
-  description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
-  keywords: 'smartphones, phones, iPhone, Samsung, repair, BNPL, buy now pay later phones, CreditDirect, phone financing, Ikeja, Lagos, Computer Village, mobile phones, used phones, new phones, phone repair, screen repair, battery replacement',
+  description: 'Explore phones, repair enquiries and trade-in options from Fonestack in Computer Village, Ikeja, Lagos.',
   authors: [{ name: 'Fonestack' }],
   creator: 'Fonestack',
   publisher: 'Fonestack',
-  other: {
-    'google-adsense-account': 'ca-pub-XXXXXXXXXXXXXXXX',
-  },
   formatDetection: {
     telephone: true,
     date: true,
@@ -31,8 +35,8 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_NG',
     url: SITE_URL,
-    title: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
-    description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
+    title: 'Fonestack Phones, Repairs & Trade-ins in Ikeja',
+    description: 'Explore phones, repair enquiries and trade-in options from Fonestack in Computer Village, Ikeja, Lagos.',
     siteName: 'Fonestack',
     images: [
       {
@@ -45,8 +49,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Fonestack | Buy New & Fairly Used Phones & Repairs in Ikeja, Lagos',
-    description: 'Buy verified new and fairly used phones and get expert repairs at Fonestack, Computer Village, Ikeja. Transparent prices and CreditDirect BNPL.',
+    title: 'Fonestack Phones, Repairs & Trade-ins in Ikeja',
+    description: 'Explore phones, repair enquiries and trade-in options from Fonestack in Computer Village, Ikeja, Lagos.',
     creator: '@fonestack',
     site: '@fonestack',
     images: [
@@ -69,49 +73,6 @@ export const metadata: Metadata = {
   },
 }
 
-// Organization Schema
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  additionalType: 'https://schema.org/ElectronicsStore',
-  '@id': `${SITE_URL}/#organization`,
-  name: 'Fonestack',
-  alternateName: 'Fonestack Phones & Repairs',
-  url: SITE_URL,
-  hasMap: GOOGLE_BUSINESS_PROFILE_URL,
-  logo: `${SITE_URL}/logo.png`,
-  description: 'Premium smartphones and expert repair services in Computer Village, Ikeja, Lagos.',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Computer Village',
-    addressLocality: 'Ikeja',
-    addressRegion: 'Lagos',
-    postalCode: '100001',
-    addressCountry: 'NG',
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: 6.6048,
-    longitude: 3.3490,
-  },
-  telephone: '+2349029928322',
-  email: 'info@fonestack.com',
-  priceRange: '₦₦₦',
-  openingHours: [
-    'Mo-Fr 09:00-18:00',
-    'Sa 10:00-16:00',
-  ],
-  sameAs: [
-    'https://wa.me/2349029928322',
-  ],
-  identifier: {
-    '@type': 'PropertyValue',
-    propertyID: 'businessRegistration',
-    value: BUSINESS_REGISTRATION_NUMBER,
-  },
-  image: `${SITE_URL}/og-image.png`,
-}
-
 // Website Schema
 const websiteSchema = {
   '@context': 'https://schema.org',
@@ -119,37 +80,15 @@ const websiteSchema = {
   '@id': `${SITE_URL}/#website`,
   url: SITE_URL,
   name: 'Fonestack',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${SITE_URL}/?search={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-NG" suppressHydrationWarning>
+    <html lang="en-NG" className={`${sora.variable} ${inter.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
       <head>
         {/* Google Site Verification */}
         <meta name="google-site-verification" content="bCa9t2i35MLBQeEsscB2atPqhE1UN0i_XRvJLoguSr4" />
 
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-          crossOrigin="anonymous"
-        />
-        
-        {/* Preconnect for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href={SITE_URL} />
-        
-        {/* Fonts */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&display=swap"
-          rel="stylesheet"
-        />
-        
         {/* Favicons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -161,18 +100,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="msapplication-TileColor" content="#050505" />
         
         {/* Structured Data */}
-        <Script
-          id="organization-schema"
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
-        <Script
-          id="website-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema),
+            __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c'),
           }}
         />
       </head>

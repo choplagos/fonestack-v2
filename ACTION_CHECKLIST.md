@@ -25,8 +25,8 @@ Since you've connected fonestack.com.ng to Vercel:
 
 ### Verify Deployment Success
 Once deployed, test these URLs in your browser:
-- `https://fonestack.com.ng/sitemap.xml` - Should show XML with 11 pages + images
-- `https://fonestack.com.ng/robots.txt` - Should show robots.txt with fonestack.com.ng domain
+- `https://www.fonestack.com.ng/sitemap.xml` - Should show XML with 15 public URLs
+- `https://www.fonestack.com.ng/robots.txt` - Should show robots.txt with fonestack.com.ng domain
 
 ---
 
@@ -35,14 +35,14 @@ Once deployed, test these URLs in your browser:
 ### Quick Setup (5-10 minutes)
 1. Go to: https://search.google.com/search-console
 2. Click **"Add Property"**
-3. Enter: `fonestack.com.ng` (NOT https://fonestack.com.ng)
+3. Enter: `fonestack.com.ng` (NOT https://www.fonestack.com.ng)
 4. Choose verification method:
    - **DNS TXT Record** (Recommended) - Add one TXT record to your domain registrar
    - **Meta Tag** - Add one line to your website header
    - **HTML File** - Upload verification file
 5. Verify ownership
 6. Go to **"Sitemaps"** section
-7. Submit: `fonestack.com.ng/sitemap.xml`
+7. Submit: `https://www.fonestack.com.ng/sitemap.xml`
 8. Done! ✅
 
 **Detailed Guide**: See `/SEARCH_CONSOLE_WEBMASTER_GUIDE.md` in repo
@@ -54,10 +54,10 @@ Once deployed, test these URLs in your browser:
 ### Quick Setup (5-10 minutes)
 1. Go to: https://www.bing.com/webmasters
 2. Click **"Add a Site"**
-3. Enter: `https://fonestack.com.ng`
+3. Enter: `https://www.fonestack.com.ng`
 4. Choose verification method (same as Google)
 5. Verify ownership
-6. Submit sitemap: `fonestack.com.ng/sitemap.xml`
+6. Submit sitemap: `https://www.fonestack.com.ng/sitemap.xml`
 7. Done! ✅
 
 **Detailed Guide**: See `/SEARCH_CONSOLE_WEBMASTER_GUIDE.md` in repo
@@ -92,8 +92,8 @@ Once Google/Bing indexing is live, AI bots will automatically crawl your site be
 
 ### Daily (Days 1-2)
 - [ ] Check Vercel deployment is "Completed" ✅
-- [ ] Test sitemap: `https://fonestack.com.ng/sitemap.xml`
-- [ ] Test robots.txt: `https://fonestack.com.ng/robots.txt`
+- [ ] Test sitemap: `https://www.fonestack.com.ng/sitemap.xml`
+- [ ] Test robots.txt: `https://www.fonestack.com.ng/robots.txt`
 
 ### Days 2-3
 - [ ] Submit to Google Search Console
@@ -120,7 +120,7 @@ Once Google/Bing indexing is live, AI bots will automatically crawl your site be
 ### What Was Delivered
 | Component | Status | URL |
 |-----------|--------|-----|
-| Sitemap (11 pages + images) | ✅ Ready | `/sitemap.xml` |
+| Sitemap (15 public URLs) | ✅ Ready | `/sitemap.xml` |
 | Robots.txt (AI bot allowed) | ✅ Ready | `/robots.txt` |
 | Site URL (fonestack.com.ng) | ✅ Updated | `lib/constants.ts` |
 | Google Submit Guide | ✅ Ready | `SEARCH_CONSOLE_WEBMASTER_GUIDE.md` |
@@ -194,7 +194,7 @@ Once Google/Bing indexing is live, AI bots will automatically crawl your site be
 You'll know everything is working when:
 
 1. ✅ **Vercel**: Deployment shows "Completed"
-2. ✅ **Domain**: `fonestack.com.ng/sitemap.xml` returns XML (not error)
+2. ✅ **Domain**: `www.fonestack.com.ng/sitemap.xml` returns XML (not error)
 3. ✅ **Google**: Sitemap shows "Submitted" in Search Console
 4. ✅ **Bing**: Sitemap shows "Submitted" in Webmaster Tools
 5. ✅ **Indexing**: Google Search Console shows pages as "Indexed" (24-48 hours)
@@ -207,13 +207,13 @@ You'll know everything is working when:
 
 ```
 🌐 Live Site
-https://fonestack.com.ng
+https://www.fonestack.com.ng
 
 📄 Sitemap (for submission)
-https://fonestack.com.ng/sitemap.xml
+https://www.fonestack.com.ng/sitemap.xml
 
 🤖 Robots (shows crawl policy)
-https://fonestack.com.ng/robots.txt
+https://www.fonestack.com.ng/robots.txt
 
 📊 Google Search Console
 https://search.google.com/search-console
@@ -252,7 +252,7 @@ https://www.bing.com/webmasters
 **Right now:**
 1. ✅ Code is on GitHub
 2. ⏳ Deploy to Vercel (should be automatic)
-3. ⏳ Verify at https://fonestack.com.ng/sitemap.xml
+3. ⏳ Verify at https://www.fonestack.com.ng/sitemap.xml
 
 **Tomorrow:**
 4. ⏳ Submit to Google Search Console
