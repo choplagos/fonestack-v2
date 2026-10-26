@@ -17,6 +17,7 @@ export default function Footer() {
           <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+          <Link href="/diagnose" className="hover:text-white transition-colors">Free Phone Check</Link>
         </nav>
 
         <nav aria-label="Social and location links" className="flex items-center gap-4">
