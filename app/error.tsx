@@ -1,11 +1,10 @@
 'use client'
 import React from 'react'
 import { motion } from 'framer-motion'
-import { RefreshCw, Home, MessageCircle } from 'lucide-react'
+import { RefreshCw, Home } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Error({
-  error,
   reset,
 }: {
   error: Error & { digest?: string }

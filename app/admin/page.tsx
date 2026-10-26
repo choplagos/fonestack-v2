@@ -30,7 +30,7 @@ export default function AdminDashboard() {
         }}
       />
       
-      <div className="space-y-8 p-4" role="main" aria-label="Admin Dashboard">
+      <main className="space-y-8 p-4" aria-label="Admin Dashboard">
         {/* Stat Lens Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6" role="region" aria-label="Dashboard statistics">
           {stats.map((stat, idx) => (
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
             </table>
           </div>
         </div>
-      </div>
+      </main>
     </>
   )
 }

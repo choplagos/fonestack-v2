@@ -133,19 +133,20 @@ export async function POST(req: Request) {
       .select()
       .single()
 
-    if (insertError) {
-      console.error('Supabase insert error:', insertError)
+    if (insertError || !inserted) {
+      console.error('Supabase trade-in request insert failed:', insertError ?? 'No row returned')
+      return NextResponse.json(
+        { error: 'Could not save the trade-in request. Please try again or contact Fonestack.' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({
-      estimate_low,
-      estimate_high,
-      estimate_reasoning,
-      estimate_confidence: confidence,
-      request_id: inserted?.id || null,
+      message: 'Trade-in request submitted. Contact Fonestack to confirm any offer.',
+      request_id: inserted.id,
     })
-  } catch (err: any) {
-    console.error('Trade-in estimate error:', err)
+  } catch (error) {
+    console.error('Trade-in estimate error:', error)
     return NextResponse.json(
       { error: 'Could not generate estimate. Please try again.' },
       { status: 500 }

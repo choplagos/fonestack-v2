@@ -5,12 +5,11 @@ import {
   RefreshCcw,
   Package,
   BatteryCharging,
-  Sparkles,
   MessageCircle,
   Loader2,
 } from 'lucide-react'
 import Script from 'next/script'
-import { SITE_URL } from '@/lib/constants'
+import { SITE_URL, WHATSAPP_LINK } from '@/lib/constants'
 
 const CONDITIONS = [
   { id: 'excellent', label: 'Excellent', desc: 'Like new, no visible wear' },
@@ -27,13 +26,6 @@ const tradeInServiceSchema = {
   areaServed: { '@type': 'Place', name: 'Ikeja, Lagos, Nigeria' },
 }
 
-type Estimate = {
-  estimate_low: number
-  estimate_high: number
-  estimate_reasoning: string
-  estimate_confidence: 'high' | 'medium' | 'low'
-}
-
 export default function TradeInEstimator() {
   const [formData, setFormData] = useState({
     customer_name: '',
@@ -48,7 +40,7 @@ export default function TradeInEstimator() {
   const [hasCharger, setHasCharger] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [estimate, setEstimate] = useState<Estimate | null>(null)
+  const [submitted, setSubmitted] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -58,7 +50,7 @@ export default function TradeInEstimator() {
     }
     setLoading(true)
     setError(null)
-    setEstimate(null)
+    setSubmitted(false)
     try {
       const res = await fetch('/api/trade-in/estimate', {
         method: 'POST',
@@ -70,11 +62,10 @@ export default function TradeInEstimator() {
           has_charger: hasCharger,
         }),
       })
-      if (!res.ok) throw new Error('Failed to get estimate')
-      const data = await res.json()
-      setEstimate(data)
-    } catch (err) {
-      setError('Could not generate an estimate right now. Please try again.')
+      if (!res.ok) throw new Error('Failed to submit trade-in request')
+      setSubmitted(true)
+    } catch {
+      setError('Could not submit your request. Please try again or contact Fonestack directly.')
     } finally {
       setLoading(false)
     }
@@ -86,9 +77,9 @@ export default function TradeInEstimator() {
         formData.storage_gb ? ` (${formData.storage_gb}GB)` : ''
       }\n🔧 Condition: ${conditionGrade}\n📦 Box: ${hasBox ? 'Yes' : 'No'} | 🔌 Charger: ${
         hasCharger ? 'Yes' : 'No'
-      }\n💰 AI Estimate: ₦${estimate?.estimate_low.toLocaleString()} - ₦${estimate?.estimate_high.toLocaleString()}\n\nCan we confirm this trade-in value?`
+      }\n\nPlease let me know how to proceed with an assessment.`
     )
-    window.open(`https://wa.me/2349029928322?text=${waMsg}`, '_blank')
+    window.open(`${WHATSAPP_LINK}?text=${waMsg}`, '_blank')
   }
 
   return (
@@ -105,16 +96,15 @@ export default function TradeInEstimator() {
             {/* Intro + trust copy */}
             <div>
               <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4">
-                // AI Price Trade-In
+                {'//'} Trade-In Enquiry
               </div>
               <h2 id="trade-in-heading" className="text-4xl font-display font-black dark:text-white mb-6">
-                What's your old <br />
-                <span className="text-premiumYellow">phone worth?</span>
+                Request a <br />
+                <span className="text-premiumYellow">phone trade-in review.</span>
               </h2>
               <p className="text-slate-400 mb-8 max-w-md">
-                Tell us about your device and get an instant AI-powered estimate,
-                grounded in real prices from our current catalog. Confirm the
-                final offer on WhatsApp — no obligation.
+                Share your device details to request an assessment. This form does not show a price; confirm any offer
+                directly with Fonestack after the device is reviewed.
               </p>
 
               <div className="grid grid-cols-2 gap-4">
@@ -166,13 +156,13 @@ export default function TradeInEstimator() {
               <div className="absolute top-0 inset-x-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" aria-hidden="true" />
 
               <AnimatePresence mode="wait">
-                {!estimate ? (
+                {!submitted ? (
                   <motion.form
                     key="form"
                     exit={{ opacity: 0 }}
                     onSubmit={handleSubmit}
                     className="space-y-5"
-                    aria-label="Trade-in estimate form"
+                    aria-label="Trade-in assessment request form"
                   >
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2 col-span-2 sm:col-span-1">
@@ -184,7 +174,7 @@ export default function TradeInEstimator() {
                           value={formData.customer_name}
                           onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
-                          placeholder="Chioma Jide"
+                          placeholder="Enter your name"
                         />
                       </div>
                       <div className="space-y-2 col-span-2 sm:col-span-1">
@@ -197,7 +187,7 @@ export default function TradeInEstimator() {
                           value={formData.customer_phone}
                           onChange={(e) => setFormData({ ...formData, customer_phone: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
-                          placeholder="+234 902 992 8322"
+                          placeholder="Enter your WhatsApp number"
                         />
                       </div>
                     </div>
@@ -255,7 +245,7 @@ export default function TradeInEstimator() {
                       />
                     </div>
 
-                    {error && <p className="text-red-400 text-xs">{error}</p>}
+                    {error && <p role="alert" className="text-red-400 text-xs">{error}</p>}
 
                     <button
                       type="submit"
@@ -265,12 +255,12 @@ export default function TradeInEstimator() {
                       {loading ? (
                         <>
                           <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                          Estimating...
+                          Sending request...
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-5 h-5" aria-hidden="true" />
-                          GET AI PRICE ESTIMATE
+                          <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                          REQUEST A TRADE-IN REVIEW
                         </>
                       )}
                     </button>
@@ -285,15 +275,13 @@ export default function TradeInEstimator() {
                     <div className="flex items-center gap-3">
                       <RefreshCcw className="text-premiumYellow w-6 h-6" aria-hidden="true" />
                       <div className="text-xs uppercase font-mono tracking-widest text-slate-500">
-                        Estimated Trade-In Value
+                        Trade-In Request Submitted
                       </div>
                     </div>
 
-                    <div className="text-4xl font-display font-black text-premiumYellow">
-                      ₦{estimate.estimate_low.toLocaleString()} – ₦{estimate.estimate_high.toLocaleString()}
-                    </div>
-
-                    <p className="text-sm text-slate-400 leading-relaxed">{estimate.estimate_reasoning}</p>
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                      No price is displayed here. Contact Fonestack to confirm the assessment and any current offer.
+                    </p>
 
                     <div className="flex gap-3">
                       <button
@@ -301,13 +289,13 @@ export default function TradeInEstimator() {
                         className="flex-1 py-4 rounded-2xl bg-premiumYellow text-black font-bold flex items-center justify-center gap-2 hover:shadow-xl hover:shadow-premiumYellow/20 transition-all"
                       >
                         <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                        Confirm on WhatsApp
+                        Ask about assessment on WhatsApp
                       </button>
                       <button
-                        onClick={() => setEstimate(null)}
+                        onClick={() => setSubmitted(false)}
                         className="px-5 py-4 rounded-2xl border border-white/10 text-slate-400 text-xs font-bold hover:border-premiumYellow/40 hover:text-premiumYellow transition-all"
                       >
-                        Try Another
+                        Send another request
                       </button>
                     </div>
                   </motion.div>
