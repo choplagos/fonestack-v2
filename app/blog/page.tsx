@@ -1,52 +1,88 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { SITE_URL } from "@/lib/constants";
-import { BLOG_POSTS } from "@/lib/blogPosts";
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { SITE_URL } from '@/lib/constants'
+import { BLOG_POSTS } from '@/lib/blogPosts'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
-  description: "Practical guides and local price guides from Fonestack — Computer Village, Ikeja and Lagos-focused posts to help you buy, sell and repair phones without wahala.",
-  alternates: { canonical: `${SITE_URL}/blog` },
-  openGraph: {
-    title: "Fonestack Blog — Guides, Prices & Repair Tips (Lagos)",
-    description: "Practical guides and local price guides from Fonestack — Computer Village, Ikeja and Lagos-focused posts to help you buy, sell and repair phones without wahala.",
-    url: `${SITE_URL}/blog`,
-    type: "website",
-  },
-};
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Phone Guides for Lagos | Fonestack',
+  description:
+    'Practical phone buying, repair and trade-in guides from Fonestack in Ikeja, Lagos. Compare checks, learn what to confirm and contact the shop.',
+  path: '/blog',
+})
 
-const posts = [
-  { slug: 'fairly-used-iphone-price-computer-village', title: 'Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)' },
-  { slug: 'buy-android-phone-ikeja-cheap', title: "Buy Android Phone in Ikeja Cheap — Without Landing a Fake or 'Half-Dead' Unit" },
-  { slug: 'phone-screen-repair-ikeja-price', title: "Phone Screen Repair Price in Ikeja: What It Actually Costs (And Why the Cheapest Quote Isn't Always Best)" },
-  { slug: 'trade-in-old-phone-lagos', title: "Trade In Your Old Phone in Lagos: How to Actually Get a Fair Value (Not 'Mumu' Price)" },
-  { slug: 'budget-smartphone-students-nigeria', title: "Best Budget Smartphones for Students in Nigeria (2026): Good Enough for School, Not Painful for Your Pocket" },
-  { slug: 'sell-my-phone-computer-village', title: "Sell My Phone in Computer Village: How to Get Paid Fair and Fast (Without the Runaround)" },
-  { slug: 'iphone-battery-replacement-ikeja', title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery" },
-];
+const shopPages = [
+  { href: '/budget-smartphone-students-nigeria', label: 'Budget phones for students in Nigeria' },
+  { href: '/buy-android-phone-ikeja-cheap', label: 'Buying an Android phone in Ikeja' },
+  { href: '/fairly-used-iphone-price-computer-village', label: 'Buying a fairly used iPhone' },
+  { href: '/phone-screen-repair-ikeja-price', label: 'Phone screen repair in Ikeja' },
+  { href: '/iphone-battery-replacement-ikeja', label: 'iPhone battery repair in Ikeja' },
+  { href: '/trade-in-old-phone-lagos', label: 'Trading in an old phone in Lagos' },
+  { href: '/sell-my-phone-computer-village', label: 'Selling a phone in Computer Village' },
+]
 
-export default function Page() {
+export default function BlogPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Phone guides', item: `${SITE_URL}/blog` },
+    ],
+  }
+
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-12 md:px-20 md:py-20">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-lime-400">Phone Buying Guides & Repairs in Ikeja, Lagos</h1>
-        <p className="mt-3 text-gray-300">Practical, Lagos-focused posts to help you buy, sell and repair phones without the wahala.</p>
+    <main className="min-h-screen bg-black px-6 py-12 text-white md:px-20 md:py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+      />
+      <div className="mx-auto max-w-4xl">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-400">
+          <ol className="flex gap-2">
+            <li><Link href="/">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Phone guides</li>
+          </ol>
+        </nav>
+        <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">Phone buying, repair and trade-in guides</h1>
+        <p className="mt-3 max-w-3xl leading-7 text-gray-300">
+          Practical checklists for people choosing or caring for a phone in Lagos. Confirm current prices, stock and
+          service terms directly with a shop because these details can change.
+        </p>
 
-        <ul className="mt-8 space-y-4">
-          {posts.map((p) => (
-            <li key={p.slug} className="p-4 rounded-md border border-lime-400/10 hover:bg-white/2">
-              <Link href={`/${p.slug}`} className="text-lg font-semibold text-lime-400">{p.title}</Link>
-              <div className="mt-1 text-gray-300"><Link href={`/${p.slug}`} className="underline">Read post</Link></div>
-            </li>
-          ))}
-          {BLOG_POSTS.map((post) => (
-            <li key={post.slug} className="p-4 rounded-md border border-lime-400/10 hover:bg-white/2">
-              <Link href={`/blog/${post.slug}`} className="text-lg font-semibold text-lime-400">{post.title}</Link>
-              <p className="mt-1 text-gray-300">{post.description}</p>
-            </li>
-          ))}
-        </ul>
+        <section className="mt-10" aria-labelledby="articles-heading">
+          <h2 id="articles-heading" className="text-2xl font-semibold text-white">Articles</h2>
+          {BLOG_POSTS.length ? (
+            <ul className="mt-4 space-y-4">
+              {BLOG_POSTS.map((post) => (
+                <li key={post.slug} className="rounded-xl border border-lime-400/10 p-5">
+                  <Link href={`/blog/${post.slug}`} className="text-lg font-semibold text-lime-400 underline">
+                    {post.title}
+                  </Link>
+                  <p className="mt-2 text-gray-300">{post.description}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-gray-300">New guides will be added here.</p>
+          )}
+        </section>
+
+        <section className="mt-12" aria-labelledby="shop-pages-heading">
+          <h2 id="shop-pages-heading" className="text-2xl font-semibold text-white">Shop and service pages</h2>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {shopPages.map((page) => (
+              <li key={page.href} className="rounded-xl border border-white/10 p-4">
+                <Link href={page.href} className="text-lime-400 underline">{page.label}</Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5">
+            <Link href="/" className="text-lime-400 underline">Browse phones and contact Fonestack</Link>
+          </p>
+        </section>
       </div>
     </main>
-  );
+  )
 }

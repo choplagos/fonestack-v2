@@ -1,32 +1,24 @@
 import type { Metadata } from 'next'
-import { SITE_URL } from '@/lib/constants'
+import Link from 'next/link'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: 'Terms of Service',
-  description: 'Terms for using the Fonestack website, product listings, repair enquiries, and trade-in estimates.',
-  alternates: { canonical: `${SITE_URL}/terms` },
-  openGraph: {
-    type: 'website',
-    title: 'Terms of Service | Fonestack',
-    description: 'Terms for using the Fonestack website, product listings, repair enquiries, and trade-in estimates.',
-    url: `${SITE_URL}/terms`,
-    siteName: 'Fonestack',
-    images: [{ url: '/og-image.png', alt: 'Fonestack' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Terms of Service | Fonestack',
-    description: 'Terms for using the Fonestack website, product listings, repair enquiries, and trade-in estimates.',
-    creator: '@fonestack',
-    site: '@fonestack',
-    images: ['/og-image.png'],
-  },
-}
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Terms of Service | Fonestack',
+  description: 'Terms for using the Fonestack website, product catalogue, repair enquiries and trade-in estimates.',
+  path: '/terms',
+})
 
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-black px-6 py-12 text-white md:px-20 md:py-20">
       <article className="mx-auto max-w-3xl space-y-8 text-gray-300">
+        <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
+          <ol className="flex gap-2">
+            <li><Link href="/">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Terms of Service</li>
+          </ol>
+        </nav>
         <header>
           <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">Terms of Service</h1>
           <p className="mt-3">Last updated: October 22, 2026</p>

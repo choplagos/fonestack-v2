@@ -1,44 +1,49 @@
-'use client'
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Home, Search, MessageCircle } from 'lucide-react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Page Not Found | Fonestack',
+  description: 'This page could not be found. Browse Fonestack phones or read phone guides for Lagos.',
+  robots: { index: false, follow: true },
+  openGraph: {
+    type: 'website',
+    title: 'Page Not Found | Fonestack',
+    description: 'Browse Fonestack phones or read phone guides for Lagos.',
+    siteName: 'Fonestack',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Page Not Found | Fonestack',
+    description: 'Browse Fonestack phones or read phone guides for Lagos.',
+  },
+}
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-obsidian-900 text-white p-4" role="main" aria-label="Page not found">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center liquid-glass p-12 rounded-3xl max-w-md"
-      >
+    <main className="min-h-screen flex items-center justify-center bg-obsidian-900 text-white p-4">
+      <div className="text-center liquid-glass p-12 rounded-3xl max-w-md">
         <div className="text-8xl font-display font-black text-premiumYellow mb-4" aria-hidden="true">
           404
         </div>
         <h1 className="text-2xl font-bold mb-4">Page Not Found</h1>
         <p className="text-slate-400 mb-8">
-          The page you're looking for doesn't exist or has been moved.
+          The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
-        
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link 
-            href="/"
-            className="inline-flex items-center justify-center gap-2 bg-premiumYellow text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
-            aria-label="Go to homepage"
+          <Link
+            href="/#products"
+            className="inline-flex items-center justify-center bg-premiumYellow text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
           >
-            <Home className="w-4 h-4" aria-hidden="true" />
-            Home
+            Browse phones
           </Link>
-          <a 
-            href="https://wa.me/2349029928322"
-            className="inline-flex items-center justify-center gap-2 liquid-glass px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
-            aria-label="Contact us on WhatsApp"
+          <Link
+            href="/blog"
+            className="inline-flex items-center justify-center liquid-glass px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
           >
-            <MessageCircle className="w-4 h-4" aria-hidden="true" />
-            Contact
-          </a>
+            Read the blog
+          </Link>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </main>
   )
 }

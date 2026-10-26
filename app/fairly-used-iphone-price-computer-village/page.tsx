@@ -1,75 +1,100 @@
-import type { Metadata } from "next";
-import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
-import { buildFaqSchema } from "@/lib/faqSchema";
-import { SITE_URL } from "@/lib/constants";
+import type { Metadata } from 'next'
+import SeoArticle, { FAQ, Section } from '@/components/SeoArticle'
+import { buildFaqSchema } from '@/lib/faqSchema'
+import { SITE_URL } from '@/lib/constants'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: "Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)",
-  description: "Fairly used iPhone prices in Computer Village for 2026 — honest ranges, tips to avoid swapped parts, and where Fonestack stands for tested, warranted units.",
-  alternates: { canonical: `${SITE_URL}/fairly-used-iphone-price-computer-village` },
-  openGraph: {
-    title: "Fairly Used iPhone Price in Computer Village: The Real 2026 Price List (No Wahala)",
-    description: "Fairly used iPhone prices in Computer Village for 2026 — honest ranges, tips to avoid swapped parts, and where Fonestack stands for tested, warranted units.",
-    url: `${SITE_URL}/fairly-used-iphone-price-computer-village`,
-    type: "article",
-  },
-};
+const title = 'Buy a Fairly Used iPhone in Ikeja'
+const description =
+  'A practical checklist for comparing fairly used iPhones in Computer Village, Ikeja, including device checks and questions to ask before paying.'
+const canonicalUrl = `${SITE_URL}/fairly-used-iphone-price-computer-village`
+
+export const metadata: Metadata = createSeoMetadata({
+  title,
+  description,
+  path: '/fairly-used-iphone-price-computer-village',
+})
 
 const faqs: FAQ[] = [
-  { question: "Is it safe to buy fairly used from Computer Village?", answer: "Yes, if you inspect the unit, check battery health, IMEI, and buy from a seller with a short warranty or a tested supplier like Fonestack. Walk away from sealed boxes without checks." },
-  { question: "UK-used vs Nigerian-used difference?", answer: "UK-used units often have cleaner bodies and better battery cycles but may use different network bands. Check IMEI origin and battery health — UK-used can command a premium." },
-  { question: "Why do prices vary so much between sellers?", answer: "Condition, battery health, whether parts are original or swapped, included accessories, and the seller's confidence/warranty all affect pricing. Ask for a breakdown before paying." },
-];
+  {
+    question: 'What should I check before buying a fairly used iPhone?',
+    answer:
+      'Confirm the model and storage in Settings, check that the previous owner has removed their Apple Account, and test the screen, cameras, buttons, speakers, microphone and charging. Ask about repairs and have the condition and sale terms recorded.',
+  },
+  {
+    question: 'Can I rely on the box to verify a used iPhone?',
+    answer:
+      'No. A matching box can be useful context, but boxes and accessories can be swapped. Check the device itself and compare any identifiers with paperwork provided by the seller.',
+  },
+  {
+    question: 'Where can I check current iPhone availability?',
+    answer:
+      'Contact the shop to ask about the specific model, storage and condition you want. Availability and pricing change, so confirm details directly before travelling or paying.',
+  },
+]
 
 const sections: Section[] = [
   {
-    heading: "Fairly Used iPhone Price Range in Computer Village (2026)",
+    heading: 'Confirm the phone’s identity and account status',
+    content: (
+      <p>
+        Check the model and storage in Settings rather than relying only on the box or seller description. Ask the
+        seller to remove their Apple Account in front of you, restart the phone and confirm it can be set up without
+        the previous owner’s password. Compare the device identifiers with any available paperwork; do not share an
+        IMEI publicly.
+      </p>
+    ),
+  },
+  {
+    heading: 'Test the features you will use',
     content: (
       <div>
-        <p>Here are typical ballparks you should expect when shopping fairly used iPhones in Computer Village this year:</p>
-        <ul className="list-disc ml-6 mt-2 text-gray-200">
-          <li>iPhone 11: ₦280k–380k</li>
-          <li>iPhone 12 / 12 Pro: ₦380k–550k</li>
-          <li>iPhone 13 / 13 Pro: ₦550k–750k</li>
-          <li>iPhone 14 / 14 Pro: ₦750k–1.05m</li>
-          <li>iPhone 15 series: ₦950k–1.4m+</li>
+        <p>Inspect the phone in good light and test it before payment:</p>
+        <ul className="mt-3 list-disc space-y-2 pl-6 text-gray-200">
+          <li>Look for screen cracks, dead areas, discoloration and touch problems.</li>
+          <li>Try each camera, the microphone, speaker, buttons, charging and mobile connection.</li>
+          <li>Check battery behaviour and ask whether the battery or other parts have been replaced.</li>
+          <li>Ask about prior repairs and any alerts shown in Settings.</li>
+          <li>Record the agreed condition, included accessories and terms on a receipt or written message.</li>
         </ul>
-        <p className="mt-2">Battery health, whether a unit is UK used, and swapped parts will push the price up or down — always verify battery cycles and IMEI history.</p>
       </div>
     ),
   },
   {
-    heading: "How to Avoid Getting Scammed",
+    heading: 'Compare like with like',
     content: (
-      <div>
-        <p>Don’t let the market rush you. Before paying:</p>
-        <ol className="list-decimal ml-6 mt-2 text-gray-200">
-          <li>Check battery health yourself in Settings → Battery (aim for 85%+ for fair value).</li>
-          <li>Confirm the phone is not iCloud locked and ask the seller to show the account sign-out.</li>
-          <li>Check IMEI against online checks and ensure it isn’t blacklisted.</li>
-          <li>Watch for "Non-Genuine Parts" messages and screen mismatches.</li>
-          <li>Never pay full price before inspection; do the checks on the spot.</li>
-        </ol>
-      </div>
+      <p>
+        Two phones with the same model name may differ in storage, physical condition, battery state or repair history.
+        Compare those details alongside the current quote and written terms. Do not assume a low price means a fault,
+        but investigate anything that does not match the seller’s description.
+      </p>
     ),
   },
-  {
-    heading: "The Fonestack Difference",
-    content: (
-      <div>
-        <p>Fonestack grades units, runs battery and diagnostics, and offers short warranties on fairly used stock. Based in Computer Village, Fonestack focuses on transparency — what you see is tested and described honestly, so you avoid the wahala of swapped parts or hidden faults.</p>
-      </div>
-    ),
-  },
-];
+]
 
-export default function Page() {
-  const faqSchema = buildFaqSchema(faqs);
+export default function FairlyUsedIPhonePage() {
+  const faqSchema = buildFaqSchema(faqs)
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={"Computer Village hustle — it’s hard to tell a genuine fairly used iPhone from a swapped-parts phone. Here’s how to shop smart."} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/fairly-used-iphone-price-computer-village`} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
+      />
+      <SeoArticle
+        h1={title}
+        hook="A careful inspection helps you understand the condition of a fairly used iPhone before you commit. Use these checks in Computer Village or anywhere else you are comparing devices."
+        sections={sections}
+        faqs={faqs}
+        description={description}
+        canonicalUrl={canonicalUrl}
+        dateModified="2026-10-25"
+        relatedLinks={[
+          { href: '/blog/how-to-check-a-used-phone-before-buying-nigeria', label: 'Full used-phone inspection guide' },
+          { href: '/sell-my-phone-computer-village', label: 'Selling a phone in Computer Village' },
+          { href: '/trade-in-old-phone-lagos', label: 'Trading in an old phone in Lagos' },
+        ]}
+      />
     </>
-  );
+  )
 }

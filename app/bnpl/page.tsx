@@ -1,128 +1,105 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
-import BNPLSection from '@/components/BNPLSection'
-import { SITE_URL } from '@/lib/constants'
+import Link from 'next/link'
+import { FAQ } from '@/components/SeoArticle'
+import { buildFaqSchema } from '@/lib/faqSchema'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-const BNPL_URL = `${SITE_URL}/bnpl`
-
-export const metadata: Metadata = {
-  title: 'Buy Now, Pay Later Phones in Lagos | CreditDirect BNPL',
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Phone Financing in Lagos: What to Confirm',
   description:
-    'Get a phone through Fonestack Buy Now, Pay Later in Lagos with CreditDirect. Learn about the 40–50% down payment, requirements, and how to get started.',
-  keywords: [
-    'buy now pay later phones Lagos',
-    'BNPL phones Nigeria',
-    'CreditDirect phones',
-    'phone financing Ikeja',
-    'pay later phone Computer Village',
-  ],
-  alternates: { canonical: BNPL_URL },
-  openGraph: {
-    title: 'Buy Now, Pay Later Phones in Lagos | CreditDirect BNPL',
-    description:
-      'See the requirements for Fonestack phone financing through CreditDirect and start your BNPL enquiry on WhatsApp.',
-    url: BNPL_URL,
-    type: 'website',
-  },
-}
+    'Considering a phone payment plan in Lagos? Compare the provider, total repayment, schedule, fees and eligibility before you agree.',
+  path: '/bnpl',
+})
 
-const serviceSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Service',
-  '@id': `${BNPL_URL}#service`,
-  name: 'Fonestack Buy Now, Pay Later Phone Service',
-  serviceType: 'Buy Now, Pay Later phone financing',
-  description:
-    'Phone financing enquiries from Fonestack in partnership with CreditDirect for eligible customers in Lagos.',
-  provider: {
-    '@type': 'LocalBusiness',
-    name: 'Fonestack',
-    url: SITE_URL,
-    areaServed: {
-      '@type': 'Place',
-      name: 'Lagos, Nigeria',
-    },
+const faqs: FAQ[] = [
+  {
+    question: 'How can I ask about phone payment options?',
+    answer:
+      'Contact Fonestack to ask whether any options are currently available. Request the provider name and written terms before submitting an application or paying.',
   },
-  broker: {
-    '@type': 'Organization',
-    name: 'CreditDirect',
+  {
+    question: 'What should I compare before accepting a payment plan?',
+    answer:
+      'Compare the total amount payable, upfront amount, instalment dates, fees, late-payment consequences, eligibility rules and cancellation terms.',
   },
-  areaServed: {
-    '@type': 'Place',
-    name: 'Lagos, Nigeria',
+  {
+    question: 'Does asking about financing guarantee approval?',
+    answer:
+      'No. Any application is subject to the finance provider’s own eligibility checks, decision and final terms.',
   },
-  url: BNPL_URL,
-}
+]
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What do I need to qualify for Fonestack BNPL?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'You need an active bank account, an active ATM card, an active email address, your BVN together with the phone number registered with the BVN, and a typical 40–50% down payment. CreditDirect confirms the final terms.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Who provides the BNPL service?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Fonestack partners with CreditDirect for the BNPL service. CreditDirect reviews applications and confirms final eligibility.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Does meeting the requirements guarantee approval?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. The listed requirements are needed to get started, but final approval is subject to CreditDirect review.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How much is the BNPL down payment?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'The expected down payment is typically 40–50% of the phone price. CreditDirect confirms the final amount and terms after reviewing the application.',
-      },
-    },
-  ],
-}
+export default function PhoneFinancingPage() {
+  const faqSchema = buildFaqSchema(faqs)
 
-export default function BNPLPage() {
   return (
-    <>
-      <Script
-        id="bnpl-service-schema"
+    <main className="min-h-screen bg-black px-6 py-12 text-white md:px-20 md:py-20">
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
       />
-      <Script
-        id="bnpl-faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <main>
-        <nav aria-label="Breadcrumb" className="sr-only">
-          <ol>
-            <li><a href="/">Home</a></li>
-            <li aria-current="page">Buy Now, Pay Later</li>
+      <article className="mx-auto max-w-3xl">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-400">
+          <ol className="flex gap-2">
+            <li><Link href="/">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Phone financing</li>
           </ol>
         </nav>
-        <header className="mx-auto max-w-7xl px-6 pt-16">
-          <h1 className="text-4xl font-display font-black text-white">
-            Buy Now, Pay Later Phones in Lagos with CreditDirect
-          </h1>
-          <p className="mt-3 max-w-2xl text-slate-400">
-            Explore Fonestack phone financing options for eligible customers in Lagos.
+        <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">
+          Phone financing in Lagos: what to confirm
+        </h1>
+        <p className="mt-4 leading-7 text-gray-300">
+          Payment options and terms can change. Contact Fonestack to ask what is currently available, and verify the
+          provider’s terms before you share information, pay a deposit or commit to instalments.
+        </p>
+
+        <section className="mt-8" aria-labelledby="compare-heading">
+          <h2 id="compare-heading" className="text-2xl font-semibold">Compare the complete cost</h2>
+          <p className="mt-3 leading-7 text-gray-300">
+            Ask for the full amount payable, the upfront payment, every instalment amount and due date, and any
+            account, service or late-payment fees. Compare the complete plan with the current cash price of the exact
+            device and condition.
           </p>
-        </header>
-        <BNPLSection />
-      </main>
-    </>
+        </section>
+        <section className="mt-8" aria-labelledby="provider-heading">
+          <h2 id="provider-heading" className="text-2xl font-semibold">Verify the provider and application process</h2>
+          <p className="mt-3 leading-7 text-gray-300">
+            Ask who makes the approval decision, what information is required, how it will be handled and where the
+            application should be submitted. Never share passwords, card PINs or one-time verification codes.
+            Confirm important promises in writing through an official channel.
+          </p>
+        </section>
+        <section className="mt-8" aria-labelledby="device-heading">
+          <h2 id="device-heading" className="text-2xl font-semibold">Confirm the phone details too</h2>
+          <p className="mt-3 leading-7 text-gray-300">
+            Make sure the agreement identifies the correct phone model, storage, condition and included accessories.
+            Confirm what happens if the device is unavailable or if the application is not approved before making a
+            payment.
+          </p>
+        </section>
+
+        <section className="mt-10" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" className="text-2xl font-semibold">Frequently asked questions</h2>
+          <dl className="mt-4 space-y-5">
+            {faqs.map((faq) => (
+              <div key={faq.question}>
+                <dt className="font-semibold text-lime-400">{faq.question}</dt>
+                <dd className="mt-1 leading-7 text-gray-300">{faq.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <nav className="mt-10 border-t border-white/10 pt-6" aria-label="Related pages">
+          <h2 className="text-xl font-semibold">Related Fonestack pages</h2>
+          <ul className="mt-3 list-disc space-y-2 pl-6">
+            <li><Link className="text-lime-400 underline" href="/easy-buy-phone-financing-lagos">Compare phone payment plans</Link></li>
+            <li><Link className="text-lime-400 underline" href="/budget-smartphone-students-nigeria">Budget phone guide for students</Link></li>
+            <li><Link className="text-lime-400 underline" href="/contact">Contact Fonestack</Link></li>
+          </ul>
+        </nav>
+      </article>
+    </main>
   )
 }

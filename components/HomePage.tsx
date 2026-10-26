@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
-import Script from 'next/script'
+import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
@@ -13,69 +13,9 @@ import TradeInEstimator from '@/components/TradeInEstimator'
 import BNPLSection from '@/components/BNPLSection'
 import { sortProductsForCatalogue, sortProductsForSearch } from '@/lib/productMerchandising'
 import { PRODUCT_CATEGORIES, getProductCategory, type ProductCategory } from '@/lib/productCategories'
-import { SITE_URL } from '@/lib/constants'
-
-// FAQ Schema for AI Search
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What types of devices do you sell?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'We sell new and fairly used smartphones, laptops, and audio products from premium brands. All devices are authenticity guaranteed.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Do you offer phone repair services?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes, we offer expert repair services for all smartphone brands including screen replacement, battery replacement, water damage repair, camera repair, and more. Located in Computer Village, Ikeja.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What is your warranty policy?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'All our devices come with a 7-14 days standard warranty. Repair services also include warranty coverage. Contact us for full warranty terms.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How can I pay for my purchase?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'We accept Bank Transfer, Cash, and other payment methods. All transactions are secure and verified.',
-      },
-    },
-  ],
-}
-
-// Product Collection Schema
-const productCollectionSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'ProductCollection',
-  name: 'Fonestack Device Collection',
-  description: 'Premium selection of phones, laptops, and audio products in Ikeja, Lagos.',
-  url: `${SITE_URL}/#products`,
-}
+import type { StoreProduct } from '@/lib/productTypes'
 
 const PRODUCTS_PER_PAGE = 12
-type StoreProduct = {
-  id: number
-  name: string
-  brand: string
-  price: number
-  status: string
-  image_url: string
-  spec: string
-  stock_quantity: number
-  category?: ProductCategory
-}
 
 export default function Storefront() {
   const [products, setProducts] = useState<StoreProduct[]>([])
@@ -135,6 +75,7 @@ export default function Storefront() {
     () => sortProductsForSearch(categoryProducts, search),
     [categoryProducts, search]
   )
+  const listedProducts = products.filter(product => product.status !== 'demo')
 
   // Reset display count when search changes
   useEffect(() => {
@@ -142,23 +83,6 @@ export default function Storefront() {
   }, [search, selectedCategory])
 
   return (
-    <>
-      {/* Structured Data for AI Search */}
-      <Script
-        id="faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
-        }}
-      />
-      <Script
-        id="product-collection-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productCollectionSchema),
-        }}
-      />
-
       <main>
         {/* Breadcrumb Schema for Homepage */}
         <nav aria-label="Breadcrumb" className="sr-only">
@@ -171,11 +95,11 @@ export default function Storefront() {
         
         <Hero 
           stats={{ 
-            total: products.length.toString(), 
-            brands: '12+', 
-            new: '24' 
+            total: listedProducts.length.toString(),
+            brands: new Set(listedProducts.map(product => product.brand)).size.toString(),
+            new: listedProducts.filter(product => product.status !== 'used').length.toString(),
           }} 
-          chips={catalogueProducts.slice(0, 3).map(p => ({
+          chips={catalogueProducts.filter(product => product.status !== 'demo').slice(0, 3).map(p => ({
             brand: p.brand, 
             price: `₦${p.price.toLocaleString()}` 
           }))}
@@ -185,7 +109,7 @@ export default function Storefront() {
           <div className="flex flex-col gap-6 mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-3">
-                // Device Collection
+                {'//'} Device Collection
               </div>
               <h2 id="products-heading" className="text-3xl md:text-4xl font-display font-black dark:text-white">
                 Find your next device
@@ -332,6 +256,29 @@ export default function Storefront() {
         <BNPLSection />
                 
         <TradeInEstimator />
+        <section className="mx-auto max-w-7xl px-6 py-16" aria-labelledby="guides-heading">
+          <p className="text-xs font-mono uppercase tracking-widest text-premiumYellow">Phone guides</p>
+          <h2 id="guides-heading" className="mt-3 text-3xl font-display font-black dark:text-white">
+            Make a more informed phone decision
+          </h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/budget-smartphone-students-nigeria">
+              Budget phone guide for students
+            </Link>
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/fairly-used-iphone-price-computer-village">
+              Buying a fairly used iPhone
+            </Link>
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/phone-screen-repair-ikeja-price">
+              Phone screen repair in Ikeja
+            </Link>
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/trade-in-old-phone-lagos">
+              Trade in an old phone in Lagos
+            </Link>
+          </div>
+          <Link href="/blog" className="mt-5 inline-block text-sm text-white underline underline-offset-4">
+            Read all Fonestack phone guides
+          </Link>
+        </section>
         <ComparisonDock
           compareList={compareList}
           onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))}
@@ -342,10 +289,8 @@ export default function Storefront() {
         <ComparisonModal 
           isOpen={isCompareOpen} 
           onClose={() => setIsCompareOpen(false)} 
-          phones={compareList} 
-          onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))}
+          phones={compareList}
         />
       </main>
-    </>
   )
-} 
+}

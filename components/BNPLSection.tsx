@@ -1,36 +1,9 @@
-import { CreditCard, Landmark, Mail, MessageCircle, ShieldCheck, WalletCards } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
+import Link from 'next/link'
 import { WHATSAPP_LINK } from '@/lib/constants'
 
-const REQUIREMENTS = [
-  {
-    label: 'Active bank account',
-    description: 'A bank account that is currently open and in use.',
-    icon: Landmark,
-  },
-  {
-    label: 'Active ATM card',
-    description: 'An active ATM card linked to your bank account.',
-    icon: CreditCard,
-  },
-  {
-    label: 'Active email address',
-    description: 'An email address you can access for updates.',
-    icon: Mail,
-  },
-  {
-    label: 'BVN and registered phone number',
-    description: 'Your BVN and the phone number registered with it.',
-    icon: ShieldCheck,
-  },
-  {
-    label: '40–50% down payment',
-    description: 'Plan to pay an estimated 40–50% of the phone price upfront.',
-    icon: WalletCards,
-  },
-]
-
 const whatsappMessage = encodeURIComponent(
-  'Hi Fonestack! I am interested in the CreditDirect BNPL service. Please share the next steps.'
+  'Hi Fonestack! Are any phone payment or financing options currently available? Please share the current terms.'
 )
 
 export default function BNPLSection() {
@@ -42,41 +15,32 @@ export default function BNPLSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4">
-              // Buy Now, Pay Later
+              {'//'} Buy Now, Pay Later
             </div>
             <h2 id="bnpl-heading" className="text-4xl font-display font-black dark:text-white mb-6">
-              Get your next phone <br />
-              <span className="text-premiumYellow">on flexible payments.</span>
+              Ask about current <br />
+              <span className="text-premiumYellow">payment options.</span>
             </h2>
             <p className="text-slate-400 max-w-lg leading-relaxed">
-              Fonestack has partnered with CreditDirect to help eligible customers spread
-              the cost of their phone. Check what you need below, then chat with us on
-              WhatsApp to get started.
+              Considering paying for a phone over time? Ask Fonestack whether an option is currently available and
+              confirm the provider&apos;s terms before applying.
             </p>
 
             <div className="mt-8 p-5 rounded-3xl bg-premiumYellow/10 border border-premiumYellow/20">
               <p className="text-sm text-slate-300 leading-relaxed">
-                The down payment is typically 40–50% of the phone price. Meeting these
-                requirements does not guarantee approval; CreditDirect will review your
-                application and confirm the final amount and eligibility.
+                Before agreeing, request the total amount payable, any upfront payment, instalment dates, fees and
+                eligibility conditions in writing. Approval and terms are set by the finance provider.
               </p>
             </div>
           </div>
 
           <div className="liquid-glass p-8 md:p-10 rounded-[3rem] border-white/10 shadow-2xl">
-            <h3 className="text-xl font-bold dark:text-white">What you need to qualify</h3>
-            <ul className="mt-6 space-y-4" aria-label="BNPL qualification requirements">
-              {REQUIREMENTS.map(({ label, description, icon: Icon }) => (
-                <li key={label} className="flex items-start gap-4">
-                  <div className="shrink-0 w-10 h-10 rounded-2xl bg-premiumYellow/10 text-premiumYellow flex items-center justify-center">
-                    <Icon className="w-5 h-5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <div className="font-bold dark:text-white">{label}</div>
-                    <p className="mt-1 text-sm text-slate-400">{description}</p>
-                  </div>
-                </li>
-              ))}
+            <h3 className="text-xl font-bold dark:text-white">Questions to ask first</h3>
+            <ul className="mt-6 list-disc space-y-3 pl-5 text-slate-300">
+              <li>Who provides the financing and who makes the approval decision?</li>
+              <li>What is the full repayment amount and schedule?</li>
+              <li>Are there fees or consequences for late payment?</li>
+              <li>Which verified channel should be used for any application?</li>
             </ul>
 
             <a
@@ -84,11 +48,14 @@ export default function BNPLSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 w-full py-5 rounded-2xl bg-premiumYellow text-black font-bold flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-premiumYellow/20 transition-all"
-              aria-label="Start a CreditDirect BNPL enquiry on WhatsApp"
+              aria-label="Ask Fonestack about current phone payment options on WhatsApp"
             >
               <MessageCircle className="w-5 h-5" aria-hidden="true" />
-              START BNPL ENQUIRY ON WHATSAPP
+              ASK ABOUT CURRENT OPTIONS
             </a>
+            <Link href="/bnpl" className="mt-4 block text-center text-sm text-slate-300 underline">
+              Read the phone financing checklist
+            </Link>
           </div>
         </div>
       </div>

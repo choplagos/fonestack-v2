@@ -1,139 +1,107 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import SeoArticle, { FAQ, Section } from '@/components/SeoArticle'
 import { buildFaqSchema } from '@/lib/faqSchema'
 import { SITE_URL } from '@/lib/constants'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-const ARTICLE_URL = `${SITE_URL}/easy-buy-phone-financing-lagos`
+const title = 'Compare Phone Payment Plans in Lagos'
+const description =
+  'A checklist for comparing phone instalment plans in Lagos: calculate the full cost, review provider terms and protect your personal information.'
+const canonicalUrl = `${SITE_URL}/easy-buy-phone-financing-lagos`
 
-export const metadata: Metadata = {
-  title: 'Easy Buy Phone Financing in Lagos: BNPL Requirements and Down Payment',
-  description:
-    'Learn how Fonestack Easy Buy phone financing works in Lagos through CreditDirect, including the 40–50% down payment, qualification requirements, and WhatsApp application steps.',
-  keywords: [
-    'Easy Buy phones Lagos',
-    'Easy Buy phone financing Nigeria',
-    'buy phone on instalment Lagos',
-    'BNPL phone down payment Nigeria',
-    'phone financing Computer Village',
-    'CreditDirect BNPL requirements',
-  ],
-  alternates: { canonical: ARTICLE_URL },
-  openGraph: {
-    title: 'Easy Buy Phone Financing in Lagos: BNPL Requirements and Down Payment',
-    description:
-      'A practical guide to Fonestack Easy Buy phone financing through CreditDirect, including eligibility requirements and the typical 40–50% upfront payment.',
-    url: ARTICLE_URL,
-    type: 'article',
-  },
-}
+export const metadata: Metadata = createSeoMetadata({
+  title,
+  description,
+  path: '/easy-buy-phone-financing-lagos',
+})
 
 const faqs: FAQ[] = [
   {
-    question: 'What is Easy Buy phone financing?',
+    question: 'What is the first thing to compare in a phone payment plan?',
     answer:
-      'Easy Buy is a buy-now-pay-later option that can help eligible customers get a phone while paying an upfront amount and spreading the remaining balance under approved terms.',
+      'Compare the full amount payable, not only the upfront amount or monthly instalment. Ask for all fees, due dates and late-payment consequences in writing.',
   },
   {
-    question: 'How much down payment is needed for Easy Buy?',
+    question: 'Can I rely on an online instalment estimate?',
     answer:
-      'The expected down payment is typically 40–50% of the phone price. CreditDirect confirms the final amount and repayment terms after reviewing the application.',
+      'Treat an estimate as preliminary. The provider must confirm eligibility, the exact device, final costs and payment terms before you agree.',
   },
   {
-    question: 'What documents or details are needed to start?',
+    question: 'What personal information should I keep private?',
     answer:
-      'Customers should have an active bank account, active ATM card, active email address, BVN, and the phone number registered with the BVN. Do not send sensitive details through the website; continue the enquiry with Fonestack on WhatsApp.',
-  },
-  {
-    question: 'Does meeting the Easy Buy requirements guarantee approval?',
-    answer:
-      'No. The listed requirements help start the process, but CreditDirect performs the final eligibility review and confirms approval and terms.',
+      'Do not share passwords, card PINs or one-time verification codes. Submit any required information only through the finance provider’s verified official process.',
   },
 ]
 
 const sections: Section[] = [
   {
-    heading: 'What is the Fonestack Easy Buy service?',
-    content: (
-      <p>
-        Fonestack Easy Buy is a phone financing option for customers in Lagos who want
-        to get a new or fairly used phone without paying the entire price at once.
-        Fonestack works with CreditDirect, which reviews applications and confirms the
-        final eligibility and repayment terms.
-      </p>
-    ),
-  },
-  {
-    heading: 'How much is the Easy Buy down payment?',
+    heading: 'Write down the full payment schedule',
     content: (
       <div>
-        <p>
-          Customers should plan for an estimated <strong>40–50% down payment</strong>
-          of the phone price. The exact amount may depend on the selected device and
-          CreditDirect&apos;s review, so confirm the final figure before making payment.
-        </p>
-        <p className="mt-3">
-          The remaining balance and payment schedule are subject to the approved
-          CreditDirect terms. Fonestack does not guarantee approval or a specific
-          repayment plan.
-        </p>
+        <p>Before comparing plans, request these details for the same phone and condition:</p>
+        <ul className="mt-3 list-disc space-y-2 pl-6 text-gray-200">
+          <li>The cash price and total amount payable under the plan.</li>
+          <li>Any upfront amount, each instalment, its due date and the number of payments.</li>
+          <li>All fees, late-payment consequences and cancellation terms.</li>
+          <li>Whether the device or accessories differ between offers.</li>
+        </ul>
       </div>
     ),
   },
   {
-    heading: 'Easy Buy qualification requirements',
-    content: (
-      <ul className="list-disc ml-6 mt-2 text-gray-200">
-        <li>Active bank account</li>
-        <li>Active ATM card linked to the account</li>
-        <li>Active email address</li>
-        <li>BVN and the phone number registered with the BVN</li>
-        <li>Ability to provide the estimated 40–50% down payment</li>
-      </ul>
-    ),
-  },
-  {
-    heading: 'How to apply through WhatsApp',
-    content: (
-      <ol className="list-decimal ml-6 mt-2 text-gray-200">
-        <li>Choose the phone you want from Fonestack.</li>
-        <li>Review the requirements and prepare the expected down payment.</li>
-        <li>Click the WhatsApp button and send an Easy Buy enquiry.</li>
-        <li>Follow the secure instructions provided for the CreditDirect review.</li>
-        <li>Proceed only after the final amount and terms are clearly confirmed.</li>
-      </ol>
-    ),
-  },
-  {
-    heading: 'Protect your personal information',
+    heading: 'Read the provider’s conditions',
     content: (
       <p>
-        Do not post your BVN, card number, PIN, password, or banking login details on
-        the website or in public comments. Fonestack will guide you to the appropriate
-        WhatsApp conversation, while CreditDirect handles the eligibility review.
+        Ask who makes the lending or financing decision, what information is required and how an application is
+        submitted. Eligibility is determined by the provider, and an enquiry does not guarantee approval. Do not
+        make a payment until you understand the provider’s final written terms.
+      </p>
+    ),
+  },
+  {
+    heading: 'Protect your identity and payment information',
+    content: (
+      <p>
+        Use only a verified application channel. Keep your passwords, card PINs and one-time codes private, and do
+        not send sensitive financial details through public comments or an unverified message. If a request feels
+        unclear, pause and contact the provider through a channel you independently verified.
+      </p>
+    ),
+  },
+  {
+    heading: 'Confirm the device and sale terms',
+    content: (
+      <p>
+        Check the exact phone model, storage, condition and included accessories in the agreement. Ask what happens
+        if the device is unavailable or the application is declined, and keep copies of the written terms and
+        payment receipts.
       </p>
     ),
   },
 ]
 
-export default function EasyBuyArticle() {
+export default function PhonePaymentPlanGuide() {
   const faqSchema = buildFaqSchema(faqs)
 
   return (
     <>
-      <Script
-        id="easy-buy-faq-schema"
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
       />
       <SeoArticle
-        h1="Easy Buy Phone Financing in Lagos: BNPL Requirements and Down Payment"
-        hook="Want a new phone but prefer to spread the cost? Here is how Fonestack Easy Buy works, what you need to get started, and why you should plan for a 40–50% down payment."
+        h1={title}
+        hook="Instalment offers can be hard to compare when each one emphasizes a different number. Use this checklist to compare the total cost and written conditions before choosing a phone payment plan in Lagos."
         sections={sections}
         faqs={faqs}
-        description={metadata.description as string}
-        canonicalUrl={ARTICLE_URL}
-        dateModified="2026-09-25"
+        description={description}
+        canonicalUrl={canonicalUrl}
+        dateModified="2026-10-25"
+        relatedLinks={[
+          { href: '/bnpl', label: 'Phone financing questions to confirm' },
+          { href: '/budget-smartphone-students-nigeria', label: 'Budget phone guide for students' },
+          { href: '/contact', label: 'Contact Fonestack about current options' },
+        ]}
       />
     </>
   )

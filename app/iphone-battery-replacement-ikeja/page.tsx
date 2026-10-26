@@ -1,75 +1,99 @@
-import type { Metadata } from "next";
-import SeoArticle, { FAQ, Section } from "@/components/SeoArticle";
-import { buildFaqSchema } from "@/lib/faqSchema";
-import { SITE_URL } from "@/lib/constants";
+import type { Metadata } from 'next'
+import SeoArticle, { FAQ, Section } from '@/components/SeoArticle'
+import { buildFaqSchema } from '@/lib/faqSchema'
+import { SITE_URL } from '@/lib/constants'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery",
-  description: "iPhone battery replacement prices in Ikeja for 2026, signs you need replacement, and how to avoid low-quality batteries or bad installs.",
-  alternates: { canonical: `${SITE_URL}/iphone-battery-replacement-ikeja` },
-  openGraph: {
-    title: "iPhone Battery Replacement in Ikeja: Prices, Warning Signs, and How to Avoid a Fake Battery",
-    description: "iPhone battery replacement prices in Ikeja for 2026, signs you need replacement, and how to avoid low-quality batteries or bad installs.",
-    url: `${SITE_URL}/iphone-battery-replacement-ikeja`,
-    type: "article",
-  },
-};
+const title = 'iPhone Battery Repair in Ikeja'
+const description =
+  'Learn how to assess iPhone battery problems and what to ask before arranging battery repair in Ikeja. Confirm current quotes and terms with the shop.'
+const canonicalUrl = `${SITE_URL}/iphone-battery-replacement-ikeja`
+
+export const metadata: Metadata = createSeoMetadata({
+  title,
+  description,
+  path: '/iphone-battery-replacement-ikeja',
+})
 
 const faqs: FAQ[] = [
-  { question: "Cost of iPhone battery replacement in Ikeja?", answer: "Ranges by model: older iPhones start lower, newer models cost more. Expect from ₦15k up to ₦70k depending on series and OEM vs generic choice." },
-  { question: "How long does it take?", answer: "Battery swaps are often done same-day within 30–90 minutes for simple swaps; some models need longer if device needs careful disassembly." },
-  { question: "Is a generic/non-OEM battery bad?", answer: "Generic batteries can work, but they often degrade faster and may show warnings. OEM or high-quality replacements are recommended for longevity and safety." },
-];
+  {
+    question: 'How can I tell if my iPhone battery needs attention?',
+    answer:
+      'Review the battery information and service messages available in Settings, and note symptoms such as unexpected shutdowns or a rapid drop in charge. A technician can assess the device before recommending a replacement.',
+  },
+  {
+    question: 'How much does iPhone battery replacement cost in Ikeja?',
+    answer:
+      'The cost depends on the iPhone model and the part selected. Ask for a current quote for your exact device and confirm the part, labour and any written warranty before authorizing work.',
+  },
+  {
+    question: 'What should I do if the battery looks swollen?',
+    answer:
+      'Stop charging or using the phone and arrange professional assessment. Do not press, puncture or try to remove a swollen battery yourself.',
+  },
+]
 
 const sections: Section[] = [
   {
-    heading: "Signs You Actually Need a Battery Replacement",
+    heading: 'Check the symptoms and battery information',
+    content: (
+      <p>
+        Review the battery health and service information available in the phone settings, and note when the problem
+        occurs. Unexpected shutdowns, rapid charge changes or battery warnings are useful details to share, but they
+        do not by themselves identify the cause. A technician should assess the device before recommending a repair.
+      </p>
+    ),
+  },
+  {
+    heading: 'Ask what the battery service includes',
     content: (
       <div>
-        <ul className="list-disc ml-6 mt-2 text-gray-200">
-          <li>Battery health below 80%</li>
-          <li>Sudden shutdowns or big drops in charge</li>
-          <li>Warm or swollen back panel</li>
-          <li>Slower performance or "Peak Performance Capability" warnings</li>
+        <p>Before agreeing to a replacement, ask the repairer to explain:</p>
+        <ul className="mt-3 list-disc space-y-2 pl-6 text-gray-200">
+          <li>Which battery part is proposed for your exact iPhone model.</li>
+          <li>The full quote, including diagnosis and labour.</li>
+          <li>Whether any service warning may appear after the repair.</li>
+          <li>How the phone will be tested and what written warranty, if any, applies.</li>
+          <li>Whether you should back up the device before handing it over.</li>
         </ul>
       </div>
     ),
   },
   {
-    heading: "iPhone Battery Replacement Price in Ikeja (2026)",
+    heading: 'Confirm current details before visiting',
     content: (
-      <div>
-        <ul className="list-disc ml-6 mt-2 text-gray-200">
-          <li>iPhone 8–X: ₦15k–25k</li>
-          <li>iPhone 11 series: ₦20k–32k</li>
-          <li>iPhone 12–13 series: ₦28k–42k</li>
-          <li>iPhone 14 series: ₦35k–55k</li>
-          <li>iPhone 15 series: ₦45k–70k</li>
-        </ul>
-        <p className="mt-2">OEM vs generic batteries explain most of the quality and price gap — OEM costs more but gives better long-term results.</p>
-      </div>
+      <p>
+        Parts, quotes and repair timing can vary by model and device condition. Contact the shop with your exact
+        model and symptoms to ask what is currently available. Do not rely on old price lists or assume that every
+        repair can be completed in the same time.
+      </p>
     ),
   },
-  {
-    heading: "How to Avoid a Bad Battery Job",
-    content: (
-      <div>
-        <ol className="list-decimal ml-6 mt-2 text-gray-200">
-          <li>Ask if the replacement is OEM or generic and insist on checking battery health after the job (95–100% is ideal right after swap).</li>
-          <li>Watch for "Important Battery Message" in Settings after replacement — it can indicate non-genuine parts.</li>
-          <li>Get a minimum 30-day warranty and avoid pressure upsells.</li>
-        </ol>
-      </div>
-    ),
-  },
-];
+]
 
-export default function Page() {
-  const faqSchema = buildFaqSchema(faqs);
+export default function IPhoneBatteryRepairPage() {
+  const faqSchema = buildFaqSchema(faqs)
+
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <SeoArticle h1={metadata.title as string} hook={'Battery dropping fast? Scared of a fake battery job? Here\'s how to check, price expectations, and what to demand from any repairer in Ikeja.'} sections={sections} faqs={faqs} description={metadata.description as string} canonicalUrl={`${SITE_URL}/iphone-battery-replacement-ikeja`} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
+      />
+      <SeoArticle
+        h1={title}
+        hook="Battery problems can have more than one cause. Use this guide to describe the symptoms and request a clear assessment before arranging iPhone battery repair in Ikeja."
+        sections={sections}
+        faqs={faqs}
+        description={description}
+        canonicalUrl={canonicalUrl}
+        dateModified="2026-10-25"
+        relatedLinks={[
+          { href: '/phone-screen-repair-ikeja-price', label: 'Phone screen repair guidance' },
+          { href: '/contact', label: 'Contact Fonestack about a repair enquiry' },
+          { href: '/#repair', label: 'Send a repair enquiry' },
+        ]}
+      />
     </>
-  );
+  )
 }

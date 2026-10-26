@@ -1,33 +1,26 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { MapPin, Mail, MessageCircle, Phone } from 'lucide-react'
 import { GOOGLE_BUSINESS_PROFILE_URL, SITE_URL, WHATSAPP_LINK, WHATSAPP_NUMBER } from '@/lib/constants'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: 'Contact Fonestack',
-  description: 'Contact Fonestack in Computer Village, Ikeja, Lagos by WhatsApp, phone, or email.',
-  alternates: { canonical: `${SITE_URL}/contact` },
-  openGraph: {
-    type: 'website',
-    title: 'Contact Fonestack',
-    description: 'Contact Fonestack in Computer Village, Ikeja, Lagos by WhatsApp, phone, or email.',
-    url: `${SITE_URL}/contact`,
-    siteName: 'Fonestack',
-    images: [{ url: '/og-image.png', alt: 'Fonestack' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact Fonestack',
-    description: 'Contact Fonestack in Computer Village, Ikeja, Lagos by WhatsApp, phone, or email.',
-    creator: '@fonestack',
-    site: '@fonestack',
-    images: ['/og-image.png'],
-  },
-}
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Contact Fonestack in Ikeja',
+  description: 'Contact Fonestack in Computer Village, Ikeja, Lagos about phone availability, repairs, trade-ins or an order.',
+  path: '/contact',
+})
 
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-black px-6 py-12 text-white md:px-20 md:py-20">
       <div className="mx-auto max-w-3xl">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-400">
+          <ol className="flex gap-2">
+            <li><Link href="/">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Contact</li>
+          </ol>
+        </nav>
         <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">Contact Fonestack</h1>
         <p className="mt-4 max-w-2xl leading-7 text-gray-300">
           Talk to our team about phone availability, repairs, trade-ins, or a current order. Our shop is in Computer

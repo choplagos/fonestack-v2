@@ -34,8 +34,8 @@ export default function Hero({ stats, chips }: {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-6xl font-display font-extrabold leading-[1.1] dark:text-white"
           >
-            Premium Smartphones <br />
-            <span className="text-premiumYellow">&amp; Device Repairs</span> <br />
+            Phones &amp; Device Repairs <br />
+            <span className="text-premiumYellow">in Computer Village</span> <br />
             <span className="opacity-70">in Ikeja, Lagos</span>
           </motion.h1>
 
@@ -45,7 +45,8 @@ export default function Hero({ stats, chips }: {
              transition={{ delay: 0.4 }}
              className="mt-8 text-lg text-slate-600 dark:text-slate-400 max-w-md leading-relaxed"
           >
-            Shop new and fairly used phones, laptops, and audio products. Authenticity guaranteed, localized prices.
+            Browse phone listings, send a repair enquiry or ask about trading in your device. Confirm current
+            availability and terms directly with the shop.
           </motion.p>
 
           <motion.div 
@@ -88,9 +89,9 @@ export default function Hero({ stats, chips }: {
             role="group"
             aria-label="Store statistics"
           >
-            <StatItem label="Devices" value={stats.total} />
+            <StatItem label="Listings" value={stats.total} />
             <StatItem label="Brands" value={stats.brands} />
-            <StatItem label="New Arrivals" value={stats.new} />
+            <StatItem label="New Devices" value={stats.new} />
           </motion.div>
         </div>
 

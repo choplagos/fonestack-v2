@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="text-sm text-slate-400">
           <div className="font-medium text-white">Fonestack</div>
           <div className="mt-1">Business Registration: <span className="font-mono">{BUSINESS_REGISTRATION_NUMBER}</span></div>
-          <div className="mt-1">&copy; {new Date().getFullYear()} Fonestack — <a href={SITE_URL} className="underline">fonestack.com.ng</a></div>
+          <div className="mt-1">&copy; {new Date().getFullYear()} Fonestack — <a href={SITE_URL} className="underline">www.fonestack.com.ng</a></div>
         </div>
 
         <nav aria-label="Company information" className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-300">

@@ -3,6 +3,8 @@ export type BlogPost = {
   title: string
   description: string
   publishedAt: string
+  updatedAt?: string
+  relatedPages: { href: string; label: string }[]
   sections: {
     heading: string
     paragraphs: string[]
@@ -14,8 +16,14 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'how-to-check-a-used-phone-before-buying-nigeria',
     title: 'How to Check a Used Phone Before Buying in Nigeria',
     description:
-      'A practical inspection checklist for used phones in Nigeria: verify the device, test its functions, check its history, and agree on the condition before paying.',
+      'A practical used-phone inspection checklist for Nigeria: verify the device, test key functions, check its history and agree on condition before paying.',
     publishedAt: '2026-10-22',
+    updatedAt: '2026-10-25',
+    relatedPages: [
+      { href: '/fairly-used-iphone-price-computer-village', label: 'Buying a fairly used iPhone' },
+      { href: '/sell-my-phone-computer-village', label: 'Selling a phone in Computer Village' },
+      { href: '/trade-in-old-phone-lagos', label: 'Trading in an old phone in Lagos' },
+    ],
     sections: [
       {
         heading: 'Start with the seller, the device, and the agreement',

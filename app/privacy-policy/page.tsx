@@ -1,35 +1,27 @@
 import type { Metadata } from 'next'
-import { SITE_URL } from '@/lib/constants'
+import Link from 'next/link'
+import { createSeoMetadata } from '@/lib/seoMetadata'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description: 'How Fonestack handles information, cookies, and third-party services when you use our website.',
-  alternates: { canonical: `${SITE_URL}/privacy-policy` },
-  openGraph: {
-    type: 'website',
-    title: 'Privacy Policy | Fonestack',
-    description: 'How Fonestack handles information, cookies, and third-party services when you use our website.',
-    url: `${SITE_URL}/privacy-policy`,
-    siteName: 'Fonestack',
-    images: [{ url: '/og-image.png', alt: 'Fonestack' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Privacy Policy | Fonestack',
-    description: 'How Fonestack handles information, cookies, and third-party services when you use our website.',
-    creator: '@fonestack',
-    site: '@fonestack',
-    images: ['/og-image.png'],
-  },
-}
+export const metadata: Metadata = createSeoMetadata({
+  title: 'Privacy Policy | Fonestack',
+  description: 'Learn how Fonestack handles information submitted through the website, database services and external links.',
+  path: '/privacy-policy',
+})
 
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-black px-6 py-12 text-white md:px-20 md:py-20">
       <article className="mx-auto max-w-3xl space-y-8 text-gray-300">
+        <nav aria-label="Breadcrumb" className="text-sm text-gray-400">
+          <ol className="flex gap-2">
+            <li><Link href="/">Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">Privacy Policy</li>
+          </ol>
+        </nav>
         <header>
           <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">Privacy Policy</h1>
-          <p className="mt-3">Last updated: October 22, 2026</p>
+          <p className="mt-3">Last updated: October 25, 2026</p>
         </header>
 
         <section>
@@ -62,13 +54,10 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-white">Cookies, local storage, and advertising</h2>
+          <h2 className="text-xl font-semibold text-white">Browser storage and external services</h2>
           <p className="mt-3 leading-7">
-            The site uses browser storage to remember display preferences such as your selected theme. We do not
-            currently use a first-party analytics cookie. If Google AdSense is enabled for this site, Google and its
-            partners may use cookies or similar technologies to provide, measure, and personalize advertising, subject
-            to your settings and applicable Google policies. You can manage cookies through your browser and review
-            Google’s advertising controls and privacy information.
+            The site uses browser storage to remember display preferences such as your selected theme. Site fonts are
+            served from this website. You can manage browser storage through your browser settings.
           </p>
         </section>
 

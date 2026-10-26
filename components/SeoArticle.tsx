@@ -20,6 +20,7 @@ export interface SeoArticleProps {
   description: string;
   canonicalUrl: string;
   dateModified?: string;
+  relatedLinks: { href: string; label: string }[];
 }
 
 export default function SeoArticle({
@@ -30,33 +31,15 @@ export default function SeoArticle({
   description,
   canonicalUrl,
   dateModified,
+  relatedLinks,
 }: SeoArticleProps) {
-  const articleSchema = {
+  const pageSchema = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "@id": `${canonicalUrl}#blogposting`,
-    headline: h1,
-    description,
+    "@type": "WebPage",
+    "@id": canonicalUrl,
     url: canonicalUrl,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": canonicalUrl,
-    },
-    image: [`${SITE_URL}/og-image.png`],
-    author: {
-      "@type": "Organization",
-      name: "Fonestack",
-      url: SITE_URL,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Fonestack",
-      url: SITE_URL,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/logo.png`,
-      },
-    },
+    name: h1,
+    description,
     ...(dateModified ? { dateModified } : {}),
   };
   const breadcrumbSchema = {
@@ -72,12 +55,6 @@ export default function SeoArticle({
       {
         "@type": "ListItem",
         position: 2,
-        name: "Blog",
-        item: `${SITE_URL}/blog`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: h1,
         item: canonicalUrl,
       },
@@ -89,7 +66,7 @@ export default function SeoArticle({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(pageSchema).replace(/</g, "\\u003c"),
         }}
       />
       <script
@@ -100,8 +77,21 @@ export default function SeoArticle({
       />
       <article className="min-h-screen bg-black text-white px-6 py-12 md:px-20 md:py-20">
         <div className="max-w-3xl mx-auto prose prose-invert prose-headings:text-white">
+          <nav aria-label="Breadcrumb" className="mb-6 text-sm text-gray-400">
+            <ol className="flex flex-wrap items-center gap-2">
+              <li><Link href="/">Home</Link></li>
+              <li aria-hidden="true">/</li>
+              <li aria-current="page">{h1}</li>
+            </ol>
+          </nav>
           <h1 className="text-3xl md:text-4xl font-bold text-lime-400">{h1}</h1>
-          <p className="mt-2 text-sm text-gray-400">By Fonestack</p>
+          <div className="mt-2 text-sm text-gray-400">
+            <p>By Fonestack</p>
+            <p className="mt-2">
+              Fonestack is a phone retail, repair and trade-in shop in Computer Village, Ikeja.{' '}
+              <Link href="/contact" className="text-lime-400 underline">Contact the shop</Link>.
+            </p>
+          </div>
           {dateModified && (
             <p className="mt-1 text-sm text-gray-400">
               Updated{" "}
@@ -122,9 +112,18 @@ export default function SeoArticle({
             </section>
           ))}
 
+          <nav className="mt-10" aria-label="Related shop and service pages">
+            <h2 className="text-xl font-semibold text-lime-400">Related Fonestack pages</h2>
+            <ul className="mt-3 list-disc space-y-2 pl-6">
+              {relatedLinks.map((link) => (
+                <li key={link.href}><Link className="text-lime-400 underline" href={link.href}>{link.label}</Link></li>
+              ))}
+            </ul>
+          </nav>
+
           <div className="mt-10 p-6 rounded-lg bg-amber-900/5 border border-lime-400/10">
-            <p className="text-lg font-semibold text-lime-400">Want help now? Fonestack is here.</p>
-            <p className="text-sm text-gray-300 mt-1">Quick checks, honest grading, and local warranty—no wahala.</p>
+            <p className="text-lg font-semibold text-lime-400">Need current information?</p>
+            <p className="text-sm text-gray-300 mt-1">Contact Fonestack to ask about current availability, repairs, or trade-in options.</p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link href="/#products" className="inline-flex items-center px-4 py-2 rounded-md border border-lime-400 text-lime-400 hover:bg-white/2">
                 Browse Phones
@@ -132,23 +131,28 @@ export default function SeoArticle({
               <Link href="/#repair" className="inline-flex items-center px-4 py-2 rounded-md bg-lime-400 text-black font-medium hover:opacity-90">
                 Book a Repair
               </Link>
+              <Link href="/blog" className="inline-flex items-center px-4 py-2 rounded-md border border-white/20 text-white hover:bg-white/5">
+                Read phone guides
+              </Link>
               <a href={WHATSAPP_LINK} className="inline-flex items-center px-4 py-2 rounded-md border border-white/20 text-white hover:bg-white/5">
                 Chat on WhatsApp
               </a>
             </div>
           </div>
 
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold text-lime-400">Frequently asked questions</h2>
-            <dl className="mt-4 space-y-4">
-              {faqs.map((f, idx) => (
-                <div key={idx}>
-                  <dt className="font-semibold text-gray-100">{f.question}</dt>
-                  <dd className="text-gray-300 mt-1">{f.answer}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+          {faqs.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-semibold text-lime-400">Frequently asked questions</h2>
+              <dl className="mt-4 space-y-4">
+                {faqs.map((f) => (
+                  <div key={f.question}>
+                    <dt className="font-semibold text-gray-100">{f.question}</dt>
+                    <dd className="text-gray-300 mt-1">{f.answer}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
         </div>
       </article>
     </>
