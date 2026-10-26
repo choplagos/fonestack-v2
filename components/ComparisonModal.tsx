@@ -2,61 +2,30 @@
 import React from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, MessageCircle, Trophy, Zap } from 'lucide-react'
+import { X, MessageCircle } from 'lucide-react'
 import AICompareSection from './AICompareSection'
-import Script from 'next/script'
-import { SITE_URL } from '@/lib/constants'
+import type { StoreProduct } from '@/lib/productTypes'
 
 export default function ComparisonModal({ 
   isOpen, 
   onClose, 
   phones, 
-  onRemove 
 }: { 
   isOpen: boolean, 
   onClose: () => void, 
-  phones: any[], 
-  onRemove: (id: number) => void 
+  phones: StoreProduct[],
 }) {
   if (!isOpen) return null;
 
-  // Breadcrumb Schema for comparison page
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: SITE_URL,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Compare Phones',
-        item: `${SITE_URL}/#phones`,
-      },
-    ],
-  };
-
-  const specRows: { label: string; key: string; fmt: (v: any) => string }[] = [
-    { label: 'Price', key: 'price', fmt: (v: any) => `₦${Number(v).toLocaleString()}` },
-    { label: 'Condition', key: 'status', fmt: (v: any) => String(v ?? '').toUpperCase() },
-    { label: 'Brand', key: 'brand', fmt: (v: any) => v },
-    { label: 'Specifications', key: 'spec', fmt: (v: any) => v || '—' },
+  const specRows: { label: string; key: 'price' | 'status' | 'brand' | 'spec'; fmt: (v: unknown) => string }[] = [
+    { label: 'Price', key: 'price', fmt: (v) => `₦${Number(v).toLocaleString()}` },
+    { label: 'Condition', key: 'status', fmt: (v) => String(v ?? '').toUpperCase() },
+    { label: 'Brand', key: 'brand', fmt: (v) => String(v ?? '') },
+    { label: 'Specifications', key: 'spec', fmt: (v) => String(v || '—') },
   ];
 
   return (
     <AnimatePresence>
-      <Script
-        id="breadcrumb-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
-      
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -1,8 +1,9 @@
 'use client'
 import React from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { X, Scale, ArrowRight } from 'lucide-react'
+import type { StoreProduct } from '@/lib/productTypes'
 
 export default function ComparisonDock({ 
   compareList, 
@@ -10,7 +11,7 @@ export default function ComparisonDock({
   onClear, 
   onOpenModal 
 }: { 
-  compareList: any[], 
+  compareList: StoreProduct[],
   onRemove: (id: number) => void,
   onClear: () => void,
   onOpenModal: () => void 

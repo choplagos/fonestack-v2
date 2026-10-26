@@ -1,12 +1,25 @@
 'use client'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, Send, BrainCircuit, CheckCircle2, AlertCircle, Trophy } from 'lucide-react'
+import { Sparkles, Send, BrainCircuit, Trophy } from 'lucide-react'
+import type { StoreProduct } from '@/lib/productTypes'
 
-export default function AICompareSection({ phones }: { phones: any[] }) {
+type CompareScore = {
+  name: string
+  value_score: number
+  score_reason: string
+}
+
+type CompareResult = {
+  verdict: string
+  scores: CompareScore[]
+  recommendation: string
+}
+
+export default function AICompareSection({ phones }: { phones: StoreProduct[] }) {
   const [profile, setProfile] = useState('basic');
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<CompareResult | null>(null);
   
   const profiles = [
     { id: 'basic', label: 'Basic', icon: '📱' },
@@ -88,16 +101,16 @@ export default function AICompareSection({ phones }: { phones: any[] }) {
           </div>
           <p className="text-sm font-mono text-premiumYellow animate-pulse">FONESTACK AI ANALYSING DATA...</p>
         </div>
-      ) : (
+      ) : result ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
           {/* Verdict Text */}
           <div className="text-lg leading-relaxed dark:text-slate-200 font-medium" aria-live="polite">
-            "{result.verdict}"
+            &quot;{result.verdict}&quot;
           </div>
 
           {/* Value Score Bars */}
           <div className="grid md:grid-cols-3 gap-4" role="table" aria-label="Phone comparison scores">
-            {result.scores.map((s: any, idx: number) => (
+            {result.scores.map((s, idx) => (
               <div key={idx} className="bg-black/20 p-4 rounded-2xl border border-white/5" role="row">
                 <div className="text-[10px] uppercase font-mono opacity-50 mb-1" role="rowheader">{s.name}</div>
                 <div className="text-3xl font-display font-black text-premiumYellow" role="cell">{s.value_score}%</div>
@@ -139,7 +152,7 @@ export default function AICompareSection({ phones }: { phones: any[] }) {
              </div>
           </div>
         </motion.div>
-      )}
+      ) : null}
     </div>
   )
 }

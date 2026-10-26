@@ -11,11 +11,28 @@ const PROFILES: Record<string, string> = {
   basic:    'simplicity and call/WhatsApp quality are the only requirements. Price should be as low as possible.',
 };
 
+type ComparePhone = {
+  brand: string
+  name: string
+  price: number
+  status?: string
+  storage_gb?: number | null
+  spec?: string | null
+  ram_gb?: number | null
+  battery_mah?: number | null
+  camera_mp?: number | null
+}
+
+type CompareMessage = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 function buildSystemPrompt() {
   return `You are Fonestack's AI phone advisor — a trusted phone dealer in Computer Village, Ikeja, Lagos, Nigeria. Help Nigerian buyers compare phones. Be direct, practical, and Lagos-market savvy. Prices in ₦. Consider Nigerian realities: MTN/Airtel/Glo compatibility, WhatsApp usage, resale value in Lagos. Always end with a bold recommendation.`;
 }
 
-function buildComparePrompt(phones: any[], profile: string, messages: any[]) {
+function buildComparePrompt(phones: ComparePhone[], profile: string, messages: CompareMessage[]) {
   const profileDesc = PROFILES[profile] || PROFILES.basic;
   const phoneBlocks = phones.map((p, i) => `PHONE ${i+1}: ${p.brand} ${p.name}\n  Price: ₦${Number(p.price).toLocaleString()}\n  Condition: ${p.status === 'used' ? 'Fairly Used' : 'Brand New'}\n  Storage: ${p.storage_gb ? p.storage_gb+'GB' : p.spec || 'N/A'}\n  RAM: ${p.ram_gb ? p.ram_gb+'GB' : 'N/A'}\n  Battery: ${p.battery_mah ? p.battery_mah+'mAh' : 'N/A'}\n  Camera: ${p.camera_mp ? p.camera_mp+'MP' : 'N/A'}`).join('\n\n');
 
@@ -33,8 +50,12 @@ export async function POST(req: Request) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
 
-  const { phones, profile = 'basic', messages = [] } = await req.json();
-  if (!phones || phones.length < 2) return Response.json({ error: 'At least 2 phones required' }, { status: 400 });
+  const { phones, profile = 'basic', messages = [] } = await req.json() as {
+    phones?: ComparePhone[]
+    profile?: string
+    messages?: CompareMessage[]
+  }
+  if (!Array.isArray(phones) || phones.length < 2) return Response.json({ error: 'At least 2 phones required' }, { status: 400 });
 
   const isFirstMessage = messages.length === 0;
   const userPrompt = buildComparePrompt(phones, profile, messages);
@@ -42,7 +63,7 @@ export async function POST(req: Request) {
     ? [{ role: 'user', parts: [{ text: userPrompt }] }]
     : [
         { role: 'user', parts: [{ text: buildComparePrompt(phones, profile, []) }] },
-        ...messages.slice(0, -1).map((m: any) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+        ...messages.slice(0, -1).map((message) => ({ role: message.role === 'assistant' ? 'model' : 'user', parts: [{ text: message.content }] })),
         { role: 'user', parts: [{ text: userPrompt }] }
       ];
 

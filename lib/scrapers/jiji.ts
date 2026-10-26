@@ -49,7 +49,7 @@ export async function scrapeJiji(query: string, limit = 25): Promise<Listing[]> 
     }
 
     return dedupeListings(listings);
-  } catch (e) {
+  } catch {
     return [];
   }
 }

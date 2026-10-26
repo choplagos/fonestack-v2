@@ -3,21 +3,7 @@ import React from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Bookmark, MessageCircle, Scale } from 'lucide-react'
-import Script from 'next/script'
-import { SITE_URL } from '@/lib/constants'
-
-interface Product {
-  id: number;
-  name: string;
-  brand: string;
-  price: number;
-  status: string;
-  image_url: string;
-  spec: string;
-  stock_quantity: number;
-  category?: 'phones' | 'laptops' | 'audio';
-  rating?: number;
-}
+import type { StoreProduct } from '@/lib/productTypes'
 
 export default function ProductCard({ 
   product, 
@@ -27,9 +13,9 @@ export default function ProductCard({
   isInCompare,
   showCompare = true,
 }: { 
-  product: Product, 
-  onToggleWishlist: (p: Product) => void,
-  onToggleCompare: (p: Product) => void,
+  product: StoreProduct,
+  onToggleWishlist: (p: StoreProduct) => void,
+  onToggleCompare: (p: StoreProduct) => void,
   isInWishlist: boolean,
   isInCompare: boolean,
   showCompare?: boolean
@@ -39,46 +25,12 @@ export default function ProductCard({
   const category = product.category ?? 'phones'
   const categoryLabel = category === 'audio' ? 'audio product' : category === 'laptops' ? 'laptop' : 'smartphone'
   
-  // Product Schema for SEO
-  const productSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand,
-    },
-    description: product.spec || `${product.brand} ${product.name} - Premium ${categoryLabel} available at Fonestack, Computer Village Ikeja.`,
-    offers: isDemo ? undefined : {
-      '@type': 'Offer',
-      priceCurrency: 'NGN',
-      price: product.price,
-      availability: isSoldOut ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
-      seller: {
-        '@type': 'LocalBusiness',
-        name: 'Fonestack',
-      },
-      url: `${SITE_URL}/#products`,
-    },
-    image: product.image_url ? [product.image_url] : [],
-  };
-
   // Existing WhatsApp logic preserved
   const waMsg = encodeURIComponent(
     `Hi Fonestack! 👋\nI'm interested in: *${product.name}*\nPrice: ₦${product.price.toLocaleString()}\nIs this available?`
   );
 
   return (
-    <>
-      {/* Product Schema - JSON-LD */}
-      <Script
-        id={`product-schema-${product.id}`}
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(productSchema),
-        }}
-      />
-      
       <motion.article
         layout
         initial={{ opacity: 0, y: 20 }}
@@ -87,8 +39,6 @@ export default function ProductCard({
         viewport={{ once: true }}
         className={`group liquid-glass rounded-3xl p-4 flex flex-col gap-4 transition-all duration-500 
           ${isSoldOut ? 'opacity-60 grayscale' : 'hover:border-premiumYellow/40 hover:shadow-2xl hover:shadow-premiumYellow/10'}`}
-        itemScope
-        itemType="https://schema.org/Product"
       >
         {/* Specular Shine Effect Layer */}
         <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
@@ -131,7 +81,6 @@ export default function ProductCard({
               alt={`${product.brand} ${product.name} ${categoryLabel} at Fonestack, Computer Village, Ikeja, Lagos`}
               className="p-4 object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
-              itemProp="image"
             />
           ) : (
             <div
@@ -146,13 +95,13 @@ export default function ProductCard({
 
         {/* Info Area */}
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-premiumYellow opacity-70" itemProp="brand" itemScope itemType="https://schema.org/Brand">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-premiumYellow opacity-70">
             {product.brand}
           </span>
-          <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-premiumYellow transition-colors line-clamp-1" itemProp="name">
+          <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-premiumYellow transition-colors line-clamp-1">
             {product.name}
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 h-8" itemProp="description">
+          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 h-8">
             {product.spec || 'Contact for full specifications.'}
           </p>
         </div>
@@ -160,12 +109,12 @@ export default function ProductCard({
         {/* Footer */}
         <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
           <div className="flex flex-col">
-            <span className="text-xs opacity-50 dark:text-white uppercase font-mono text-[9px]">{isDemo ? 'Demo listing' : 'Best Price'}</span>
-            <span className="text-lg font-display font-extrabold text-slate-900 dark:text-white" itemProp={isDemo ? undefined : 'offers'} itemScope={isDemo ? undefined : true} itemType={isDemo ? undefined : 'https://schema.org/Offer'}>
+            <span className="text-xs opacity-50 dark:text-white uppercase font-mono text-[9px]">{isDemo ? 'Demo listing' : 'Price'}</span>
+            <span className="text-lg font-display font-extrabold text-slate-900 dark:text-white">
               {isDemo ? 'Price not set' : (
                 <>
-                  <span itemProp="priceCurrency" content="NGN">₦</span>
-                  <span itemProp="price" content={product.price.toString()}>{product.price.toLocaleString()}</span>
+                  <span>₦</span>
+                  <span>{product.price.toLocaleString()}</span>
                 </>
               )}
             </span>
@@ -198,6 +147,5 @@ export default function ProductCard({
           </button>
         )}
       </motion.article>
-    </>
   )
 }

@@ -42,7 +42,7 @@ export async function scrapeFacebookMarketplace(query: string, limit = 25): Prom
     }
 
     return dedupeListings(listings);
-  } catch (e) {
+  } catch {
     return [];
   }
 }

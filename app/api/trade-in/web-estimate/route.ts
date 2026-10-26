@@ -2,11 +2,18 @@ import { scrapeJiji } from '@/lib/scrapers/jiji';
 import { scrapeFacebookMarketplace } from '@/lib/scrapers/facebook';
 import { aggregateListings } from '@/lib/tradein/aggregator';
 import { supabase } from '@/lib/supabase';
+import type { AggregationResult } from '@/lib/tradein/aggregator'
+import type { Listing } from '@/lib/scrapers/jiji'
 
 export const runtime = 'edge';
 
 const CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
-const cache = new Map<string, { ts: number; value: any }>();
+type TradeInWebResult = {
+  query: string
+  listingsBySource: Record<string, Listing[]>
+  aggregation: AggregationResult
+}
+const cache = new Map<string, { ts: number; value: TradeInWebResult }>();
 
 function cacheKey(q: string) {
   return `tradein:web:${q.toLowerCase().trim()}`;
@@ -44,7 +51,7 @@ export async function POST(req: Request) {
         const row = rows[0];
         const age = new Date().getTime() - new Date(row.created_at).getTime();
         if (age < CACHE_TTL) {
-          const parsed = row.result;
+          const parsed = row.result as TradeInWebResult;
           // Update in-memory cache
           cache.set(key, { ts: now, value: parsed });
           return new Response(JSON.stringify({ fromCache: true, source: 'supabase', ...parsed }), { headers: { 'Content-Type': 'application/json' } });
@@ -60,7 +67,7 @@ export async function POST(req: Request) {
       scrapeFacebookMarketplace(query, 50),
     ]);
 
-    const listingsBySource: Record<string, any[]> = {
+    const listingsBySource: Record<string, Listing[]> = {
       jiji: jijiRes.status === 'fulfilled' ? jijiRes.value : [],
       facebook: fbRes.status === 'fulfilled' ? fbRes.value : [],
     };
@@ -80,7 +87,8 @@ export async function POST(req: Request) {
     }
 
     return new Response(JSON.stringify(result), { headers: { 'Content-Type': 'application/json' } });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e?.message || String(e) }), { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }
