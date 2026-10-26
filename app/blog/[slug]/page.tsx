@@ -121,6 +121,20 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               <li key={page.href}><Link className="text-lime-400 underline" href={page.href}>{page.label}</Link></li>
             ))}
           </ul>
+          {post.relatedPosts && post.relatedPosts.length > 0 && (
+            <>
+              <h2 className="mt-6 text-xl font-semibold text-lime-400">Related guides</h2>
+              <ul className="mt-3 list-disc space-y-2 pl-6">
+                {post.relatedPosts.map((relatedPost) => (
+                  <li key={relatedPost.slug}>
+                    <Link className="text-lime-400 underline" href={`/blog/${relatedPost.slug}`}>
+                      {relatedPost.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <Link href="/blog" className="mt-5 inline-block text-lime-400 underline">Browse all phone guides</Link>
         </nav>
       </article>
