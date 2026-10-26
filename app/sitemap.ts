@@ -6,6 +6,8 @@ const CONTENT_UPDATED_AT = new Date('2026-10-25T00:00:00.000Z')
 const pages = [
   { path: '/', priority: 1, changeFrequency: 'weekly' as const },
   { path: '/blog', priority: 0.9, changeFrequency: 'weekly' as const },
+  { path: '/diagnose', priority: 0.8, changeFrequency: 'monthly' as const },
+  { path: '/plan', priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/budget-smartphone-students-nigeria', priority: 0.8, changeFrequency: 'monthly' as const },
   { path: '/buy-android-phone-ikeja-cheap', priority: 0.8, changeFrequency: 'monthly' as const },
   { path: '/fairly-used-iphone-price-computer-village', priority: 0.8, changeFrequency: 'monthly' as const },

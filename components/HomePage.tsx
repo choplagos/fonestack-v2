@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import Script from 'next/script'
+import Link from 'next/link'
 import { Search, X } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
@@ -332,6 +333,27 @@ export default function Storefront() {
         <BNPLSection />
                 
         <TradeInEstimator />
+        <section className="mx-auto max-w-7xl px-6 py-16" aria-labelledby="guides-heading">
+          <p className="text-xs font-mono uppercase tracking-widest text-premiumYellow">Phone guides & checks</p>
+          <h2 id="guides-heading" className="mt-3 text-3xl font-display font-black dark:text-white">
+            Make a more informed phone decision
+          </h2>
+          <p className="mt-3 max-w-2xl leading-7 text-slate-300">
+            Browse practical buying and repair advice, or run quick checks on the phone you are using.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Link className="rounded-2xl border border-premiumYellow/40 bg-premiumYellow/5 p-5 text-premiumYellow hover:border-premiumYellow" href="/diagnose">
+              Run a free phone diagnostic check
+            </Link>
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/plan">
+              How to use the phone diagnostic
+            </Link>
+            <Link className="rounded-2xl border border-white/10 p-5 text-premiumYellow hover:border-premiumYellow/50" href="/blog">
+              Read all Fonestack phone guides
+            </Link>
+          </div>
+        </section>
+
         <ComparisonDock
           compareList={compareList}
           onRemove={(id) => setCompareList(p => p.filter(x => x.id !== id))}

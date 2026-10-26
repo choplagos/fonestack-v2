@@ -11,14 +11,14 @@ export const metadata: Metadata = createSeoMetadata({
   path: '/blog',
 })
 
-const shopPages = [
-  { href: '/budget-smartphone-students-nigeria', label: 'Budget phones for students in Nigeria' },
+const phoneGuides = [
+  { href: '/fairly-used-iphone-price-computer-village', label: 'Fairly used iPhone prices in Computer Village' },
   { href: '/buy-android-phone-ikeja-cheap', label: 'Buying an Android phone in Ikeja' },
-  { href: '/fairly-used-iphone-price-computer-village', label: 'Buying a fairly used iPhone' },
-  { href: '/phone-screen-repair-ikeja-price', label: 'Phone screen repair in Ikeja' },
-  { href: '/iphone-battery-replacement-ikeja', label: 'iPhone battery repair in Ikeja' },
+  { href: '/phone-screen-repair-ikeja-price', label: 'Phone screen repair prices in Ikeja' },
   { href: '/trade-in-old-phone-lagos', label: 'Trading in an old phone in Lagos' },
+  { href: '/budget-smartphone-students-nigeria', label: 'Budget smartphones for students in Nigeria' },
   { href: '/sell-my-phone-computer-village', label: 'Selling a phone in Computer Village' },
+  { href: '/iphone-battery-replacement-ikeja', label: 'iPhone battery replacement in Ikeja' },
 ]
 
 export default function BlogPage() {
@@ -51,6 +51,27 @@ export default function BlogPage() {
           service terms directly with a shop because these details can change.
         </p>
 
+        <section className="mt-8 grid gap-4 sm:grid-cols-2" aria-label="Phone diagnostic">
+          <div className="rounded-xl border border-lime-400/30 bg-lime-400/5 p-5">
+            <h2 className="text-xl font-semibold text-white">Check your phone for free</h2>
+            <p className="mt-2 leading-6 text-gray-300">
+              Test the screen, touchscreen, speakers, microphone, cameras and motion sensors from your phone browser.
+            </p>
+            <Link href="/diagnose" className="mt-4 inline-block rounded-lg bg-lime-400 px-5 py-3 font-bold text-black">
+              Start the phone check
+            </Link>
+          </div>
+          <div className="rounded-xl border border-white/10 p-5">
+            <h2 className="text-xl font-semibold text-white">How the phone check works</h2>
+            <p className="mt-2 leading-6 text-gray-300">
+              Read what each test checks and what the results can—and cannot—tell you.
+            </p>
+            <Link href="/plan" className="mt-4 inline-block text-lime-400 underline">
+              Read the diagnostic guide
+            </Link>
+          </div>
+        </section>
+
         <section className="mt-10" aria-labelledby="articles-heading">
           <h2 id="articles-heading" className="text-2xl font-semibold text-white">Articles</h2>
           {BLOG_POSTS.length ? (
@@ -69,19 +90,17 @@ export default function BlogPage() {
           )}
         </section>
 
-        <section className="mt-12" aria-labelledby="shop-pages-heading">
-          <h2 id="shop-pages-heading" className="text-2xl font-semibold text-white">Shop and service pages</h2>
+        <section className="mt-12" aria-labelledby="phone-guides-heading">
+          <h2 id="phone-guides-heading" className="text-2xl font-semibold text-white">More phone buying and service guides</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {shopPages.map((page) => (
-              <li key={page.href} className="rounded-xl border border-white/10 p-4">
-                <Link href={page.href} className="text-lime-400 underline">{page.label}</Link>
+            {phoneGuides.map((guide) => (
+              <li key={guide.href} className="rounded-xl border border-white/10 p-4">
+                <Link href={guide.href} className="text-lime-400 underline">{guide.label}</Link>
               </li>
             ))}
           </ul>
-          <p className="mt-5">
-            <Link href="/" className="text-lime-400 underline">Browse phones and contact Fonestack</Link>
-          </p>
         </section>
+
       </div>
     </main>
   )
