@@ -1,5 +1,5 @@
 import { getIndexNowKeyFileContent } from '@/lib/indexnow';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 /**
  * Serves the IndexNow API key file
