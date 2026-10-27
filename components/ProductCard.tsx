@@ -32,6 +32,8 @@ export default function ProductCard({
 
   return (
       <motion.article
+        data-analytics-model={product.name}
+        data-analytics-brand={product.brand}
         layout
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Smartphone, Battery, Zap, Droplets, Camera, Speaker, Wrench, MessageCircle } from 'lucide-react'
 import Script from 'next/script'
 import { SITE_URL } from '@/lib/constants'
+import { currentPage, track } from '@/lib/analytics'
 
 const REPAIR_TYPES = [
   { id: 'screen', label: 'Screen', icon: Smartphone, desc: 'Cracked or bleeding display' },
@@ -35,6 +36,11 @@ export default function RepairHub() {
 
   const handleRepairWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
+    track('repair_click')
+    track('whatsapp_click', {
+      page: currentPage(),
+      model: formData.model,
+    })
     const waMsg = encodeURIComponent(
       `Hi Fonestack! 🔧\n\n*REPAIR REQUEST*\n👤 Name: ${formData.name}\n📱 Device: ${formData.model}\n🛠 Issue: ${selectedIssue || 'General Checkup'}\n\nWhat is the estimated cost?`
     );
@@ -94,7 +100,7 @@ export default function RepairHub() {
               {/* Glossy top highlight */}
               <div className="absolute top-0 inset-x-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" aria-hidden="true" />
               
-              <form onSubmit={handleRepairWhatsApp} className="space-y-6" aria-label="Repair request form">
+              <form onSubmit={handleRepairWhatsApp} className="space-y-6" aria-label="Repair request form" data-ph-no-capture>
                 <div className="space-y-2">
                   <label htmlFor="customer-name" className="text-[10px] font-mono uppercase tracking-widest text-slate-500">
                     Device Owner
@@ -103,6 +109,8 @@ export default function RepairHub() {
                     id="customer-name"
                     required
                     placeholder="Enter your name"
+                    autoComplete="name"
+                    data-ph-sensitive
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -118,6 +126,7 @@ export default function RepairHub() {
                     id="phone-model"
                     required
                     placeholder="e.g. iPhone 14 Pro Max"
+                    data-ph-sensitive
                     value={formData.model}
                     onChange={(e) => setFormData({...formData, model: e.target.value})}
                     className="w-full bg-black/20 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"

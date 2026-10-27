@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
         </nav>
         <header>
           <h1 className="text-3xl font-bold text-lime-400 md:text-4xl">Privacy Policy</h1>
-          <p className="mt-3">Last updated: October 25, 2026</p>
+          <p className="mt-3">Last updated: October 27, 2026</p>
         </header>
 
         <section>
@@ -67,6 +67,11 @@ export default function PrivacyPolicyPage() {
             We use service providers, including Supabase for database services and WhatsApp when you choose to contact
             us there. Google may process information if advertising is enabled. These providers handle information
             under their own terms and privacy notices. Links to third-party sites are not controlled by Fonestack.
+          </p>
+          <p className="mt-3 leading-7">
+            We use PostHog for website analytics and session recordings. Input values are masked, text marked as
+            sensitive is masked, and the repair and trade-in forms are excluded from recordings. Analytics events do
+            not include submitted names, phone numbers, email addresses, or IMEIs.
           </p>
         </section>
 

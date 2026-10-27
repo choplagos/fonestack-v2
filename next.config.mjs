@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
+const posthogRegion = (process.env.NEXT_PUBLIC_POSTHOG_HOST ?? '').includes('eu') ? 'eu' : 'us'
 const nextConfig = {
+  skipTrailingSlashRedirect: true,
+
   // Performance optimizations
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
@@ -90,7 +93,16 @@ const nextConfig = {
 
   // Rewrites for clean URLs
   async rewrites() {
-    return [];
+    return [
+      {
+        source: '/ingest/static/:path*',
+        destination: `https://${posthogRegion}-assets.i.posthog.com/static/:path*`,
+      },
+      {
+        source: '/ingest/:path*',
+        destination: `https://${posthogRegion}.i.posthog.com/:path*`,
+      },
+    ];
   },
 
   // Output configuration

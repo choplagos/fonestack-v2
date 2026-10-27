@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   RefreshCcw,
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import Script from 'next/script'
 import { SITE_URL, WHATSAPP_LINK } from '@/lib/constants'
+import { currentPage, track } from '@/lib/analytics'
 
 const CONDITIONS = [
   { id: 'excellent', label: 'Excellent', desc: 'Like new, no visible wear' },
@@ -41,6 +42,13 @@ export default function TradeInEstimator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const tradeInStartedRef = useRef(false)
+
+  function handleTradeInInteraction() {
+    if (tradeInStartedRef.current) return
+    tradeInStartedRef.current = true
+    track('tradein_started', { page: currentPage() })
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -63,6 +71,7 @@ export default function TradeInEstimator() {
         }),
       })
       if (!res.ok) throw new Error('Failed to submit trade-in request')
+      track('tradein_submitted', { brand: formData.brand, model: formData.model })
       setSubmitted(true)
     } catch {
       setError('Could not submit your request. Please try again or contact Fonestack directly.')
@@ -72,6 +81,11 @@ export default function TradeInEstimator() {
   }
 
   function handleWhatsApp() {
+    track('whatsapp_click', {
+      page: currentPage(),
+      brand: formData.brand,
+      model: formData.model,
+    })
     const waMsg = encodeURIComponent(
       `Hi Fonestack! 🔄\n\n*TRADE-IN REQUEST*\n👤 Name: ${formData.customer_name}\n📱 Device: ${formData.brand} ${formData.model}${
         formData.storage_gb ? ` (${formData.storage_gb}GB)` : ''
@@ -161,8 +175,10 @@ export default function TradeInEstimator() {
                     key="form"
                     exit={{ opacity: 0 }}
                     onSubmit={handleSubmit}
+                    onFocusCapture={handleTradeInInteraction}
                     className="space-y-5"
                     aria-label="Trade-in assessment request form"
+                    data-ph-no-capture
                   >
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2 col-span-2 sm:col-span-1">
@@ -171,6 +187,8 @@ export default function TradeInEstimator() {
                         </label>
                         <input
                           required
+                          autoComplete="name"
+                          data-ph-sensitive
                           value={formData.customer_name}
                           onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -184,6 +202,8 @@ export default function TradeInEstimator() {
                         <input
                           required
                           type="tel"
+                          autoComplete="tel"
+                          data-ph-sensitive
                           value={formData.customer_phone}
                           onChange={(e) => setFormData({ ...formData, customer_phone: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -199,6 +219,7 @@ export default function TradeInEstimator() {
                         </label>
                         <input
                           required
+                          data-ph-sensitive
                           value={formData.brand}
                           onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -211,6 +232,7 @@ export default function TradeInEstimator() {
                         </label>
                         <input
                           required
+                          data-ph-sensitive
                           value={formData.model}
                           onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                           className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -225,6 +247,7 @@ export default function TradeInEstimator() {
                       </label>
                       <input
                         type="number"
+                        data-ph-sensitive
                         value={formData.storage_gb}
                         onChange={(e) => setFormData({ ...formData, storage_gb: e.target.value })}
                         className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-premiumYellow/50 transition-all dark:text-white"
@@ -237,6 +260,7 @@ export default function TradeInEstimator() {
                         Anything we should know? — optional
                       </label>
                       <textarea
+                        data-ph-sensitive
                         value={formData.condition_description}
                         onChange={(e) => setFormData({ ...formData, condition_description: e.target.value })}
                         rows={2}

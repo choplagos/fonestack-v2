@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono, Sora } from 'next/font/google'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
+import PostHogProvider from '@/components/PostHogProvider'
 import { SITE_URL } from '@/lib/constants'
 
 const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap' })
@@ -109,9 +110,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          {children}
-          <Footer />
-          <PoweredByOtprent />
+          <PostHogProvider>
+            {children}
+            <Footer />
+            <PoweredByOtprent />
+          </PostHogProvider>
         </ThemeProvider>
       </body>
     </html>
