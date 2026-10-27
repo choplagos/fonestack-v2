@@ -4,6 +4,7 @@ import Script from 'next/script'
 import type { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
+import PostHogProvider from '@/components/PostHogProvider'
 import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
 // Dynamic metadata configuration
@@ -178,9 +179,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          {children}
-          <Footer />
-          <PoweredByOtprent />
+          <PostHogProvider>
+            {children}
+            <Footer />
+            <PoweredByOtprent />
+          </PostHogProvider>
         </ThemeProvider>
       </body>
     </html>

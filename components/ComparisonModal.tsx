@@ -94,7 +94,7 @@ export default function ComparisonModal({
                 <tr>
                   <th className="p-6 w-1/4"></th>
                   {phones.map(p => (
-                    <th key={p.id} className="p-6 w-1/4">
+                    <th key={p.id} className="p-6 w-1/4" data-analytics-model={p.name} data-analytics-brand={p.brand}>
                       <div className="flex flex-col items-center gap-4 text-center">
                         {p.image_url ? (
                           <Image

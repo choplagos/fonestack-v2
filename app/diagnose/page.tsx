@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { currentPage, track } from '@/lib/analytics'
 
 const PHONE_NUMBER = '234XXXXXXXXXX'
 
@@ -492,6 +493,7 @@ export default function DiagnosticPage() {
         setApiError('WhatsApp could not be opened on this device.')
         return
       }
+      track('whatsapp_click', { page: currentPage() })
       const opened = window.open(url, '_blank', 'noopener,noreferrer')
       if (!opened) setApiError('WhatsApp was blocked by the browser. Allow pop-ups and try again.')
     } catch (error) {
@@ -515,6 +517,16 @@ export default function DiagnosticPage() {
   const allTouchSquaresDone = touchSquares.every(Boolean)
   const currentColor = SCREEN_COLORS[screenColorIndex]
 
+  useEffect(() => {
+    if (step !== TESTS.length) return
+
+    track('diagnostic_completed', {
+      passed: Object.values(results).filter((status) => status === 'pass').length,
+      problems: Object.values(results).filter((status) => status === 'problem').length,
+      skipped: Object.values(results).filter((status) => status === 'skipped').length,
+    })
+  }, [results, step])
+
   return (
     <main className="min-h-screen bg-black px-4 pb-12 pt-8 text-white sm:px-6 sm:pt-12">
       <div className="mx-auto max-w-xl">
@@ -527,7 +539,10 @@ export default function DiagnosticPage() {
               Check your screen, touch, speaker, microphone, cameras and more. Follow each step and choose what you
               observe. Some checks need browser permission and may not be available on every device.
             </p>
-            <button type="button" className={`${PRIMARY_BUTTON_CLASS} mt-8 w-full`} onClick={() => setStep(0)}>
+            <button type="button" className={`${PRIMARY_BUTTON_CLASS} mt-8 w-full`} onClick={() => {
+              track('diagnostic_started', { page: currentPage() })
+              setStep(0)
+            }}>
               Start
             </button>
             <p className="mt-4 text-center text-sm text-gray-400">Your results stay on this device until you choose to share them.</p>
