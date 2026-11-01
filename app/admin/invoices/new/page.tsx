@@ -18,6 +18,8 @@ type ProductOption = {
   spec: string | null
 }
 
+type InvoiceItemSource = 'catalog' | 'custom'
+
 function formatNaira(value: number) {
   return `₦${Number(value).toLocaleString('en-NG')}`
 }
@@ -25,7 +27,12 @@ function formatNaira(value: number) {
 export default function NewInvoicePage() {
   const router = useRouter()
   const [products, setProducts] = useState<ProductOption[]>([])
+  const [itemSource, setItemSource] = useState<InvoiceItemSource>('catalog')
   const [productId, setProductId] = useState('')
+  const [customItemName, setCustomItemName] = useState('')
+  const [customItemBrand, setCustomItemBrand] = useState('')
+  const [customItemSpec, setCustomItemSpec] = useState('')
+  const [customUnitPrice, setCustomUnitPrice] = useState(0)
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
@@ -63,6 +70,8 @@ export default function NewInvoicePage() {
         if (availableProducts[0]) {
           setProductId(String(availableProducts[0].id))
           setUnitPrice(Number(availableProducts[0].price))
+        } else {
+          setItemSource('custom')
         }
       }
       if (settingsResult.error) {
@@ -94,27 +103,55 @@ export default function NewInvoicePage() {
     if (selected) setUnitPrice(Number(selected.price))
   }
 
+  function chooseItemSource(source: InvoiceItemSource) {
+    setItemSource(source)
+    setErrorMessage('')
+    if (source === 'custom') {
+      setUnitPrice(customUnitPrice)
+      return
+    }
+
+    const catalogProduct = products.find((product) => String(product.id) === productId)
+    if (catalogProduct) setUnitPrice(Number(catalogProduct.price))
+  }
+
   async function createInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage('')
 
-    if (!selectedProduct) {
+    if (itemSource === 'catalog' && !selectedProduct) {
       setErrorMessage('Select an in-stock product before creating the invoice.')
+      return
+    }
+    if (itemSource === 'custom' && !customItemName.trim()) {
+      setErrorMessage('Enter a name for the custom invoice item.')
       return
     }
     if (!customerName.trim() || !customerPhone.trim()) {
       setErrorMessage('Customer name and phone number are required.')
       return
     }
-    if (!Number.isInteger(quantity) || quantity < 1 || quantity > selectedProduct.stock_quantity) {
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      setErrorMessage('Quantity must be a whole number greater than zero.')
+      return
+    }
+    if (itemSource === 'catalog' && selectedProduct && quantity > selectedProduct.stock_quantity) {
       setErrorMessage(`Quantity must be between 1 and the available stock (${selectedProduct.stock_quantity}).`)
       return
     }
-    if (!Number.isFinite(unitPrice) || unitPrice < 0 || !Number.isFinite(discount) || discount < 0 || discount > subtotal) {
+    if (
+      !Number.isFinite(unitPrice) ||
+      unitPrice < 0 ||
+      !Number.isFinite(subtotal) ||
+      !Number.isFinite(total) ||
+      !Number.isFinite(discount) ||
+      discount < 0 ||
+      discount > subtotal
+    ) {
       setErrorMessage('Enter a valid price and a discount no greater than the subtotal.')
       return
     }
-    if (total <= 0 || initialPayment < 0 || initialPayment > total) {
+    if (total <= 0 || !Number.isFinite(initialPayment) || initialPayment < 0 || initialPayment > total) {
       setErrorMessage('The invoice total must be positive and the initial payment cannot exceed it.')
       return
     }
@@ -122,19 +159,28 @@ export default function NewInvoicePage() {
     const status = initialPayment === total ? 'paid' : initialPayment > 0 ? 'deposit' : 'pending'
     setSaving(true)
 
+    const productSnapshot = itemSource === 'custom'
+      ? {
+          name: customItemName.trim(),
+          brand: customItemBrand.trim(),
+          image_url: null,
+          spec: customItemSpec.trim() || null,
+        }
+      : {
+          name: selectedProduct!.name,
+          brand: selectedProduct!.brand,
+          image_url: selectedProduct!.image_url,
+          spec: selectedProduct!.spec,
+        }
+
     const { data, error } = await supabase
       .from('invoices')
       .insert({
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim(),
         customer_email: customerEmail.trim() || null,
-        product_id: selectedProduct.id,
-        product_snapshot: {
-          name: selectedProduct.name,
-          brand: selectedProduct.brand,
-          image_url: selectedProduct.image_url,
-          spec: selectedProduct.spec,
-        },
+        product_id: itemSource === 'custom' ? null : selectedProduct!.id,
+        product_snapshot: productSnapshot,
         quantity,
         unit_price: unitPrice,
         discount_amount: discount,
@@ -187,27 +233,102 @@ export default function NewInvoicePage() {
         <form onSubmit={createInvoice} className="space-y-5 rounded-2xl border border-white/10 bg-white/5 p-5 md:p-7">
           {products.length === 0 && (
             <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
-              No in-stock products are available. Add stock in Inventory before creating an invoice.
+              No in-stock products are available. You can still create an invoice for a custom item.
             </p>
           )}
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="space-y-2 text-xs font-semibold text-slate-300 sm:col-span-2">
-              Product
-              <select
-                required
-                disabled={products.length === 0}
-                value={productId}
-                onChange={(event) => chooseProduct(event.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
-              >
-                {products.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.brand} {product.name} · {formatNaira(product.price)} · {product.stock_quantity} in stock
-                  </option>
-                ))}
-              </select>
-            </label>
+            <fieldset className="space-y-2 sm:col-span-2">
+              <legend className="text-xs font-semibold text-slate-300">Invoice item</legend>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm ${itemSource === 'catalog' ? 'border-premiumYellow/50 bg-premiumYellow/10 text-white' : 'border-white/10 text-slate-300'}`}>
+                  <input
+                    type="radio"
+                    name="invoice-item-source"
+                    value="catalog"
+                    checked={itemSource === 'catalog'}
+                    disabled={products.length === 0}
+                    onChange={() => chooseItemSource('catalog')}
+                    className="mt-0.5 accent-[#B7E34B]"
+                  />
+                  <span>
+                    <span className="block font-semibold">Catalog product</span>
+                    <span className="mt-1 block text-xs text-slate-400">Choose an item currently in stock.</span>
+                  </span>
+                </label>
+                <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 text-sm ${itemSource === 'custom' ? 'border-premiumYellow/50 bg-premiumYellow/10 text-white' : 'border-white/10 text-slate-300'}`}>
+                  <input
+                    type="radio"
+                    name="invoice-item-source"
+                    value="custom"
+                    checked={itemSource === 'custom'}
+                    onChange={() => chooseItemSource('custom')}
+                    className="mt-0.5 accent-[#B7E34B]"
+                  />
+                  <span>
+                    <span className="block font-semibold">Custom one-off item</span>
+                    <span className="mt-1 block text-xs text-slate-400">Invoice an item without adding it to Inventory.</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            {itemSource === 'catalog' ? (
+              <label className="space-y-2 text-xs font-semibold text-slate-300 sm:col-span-2">
+                Product
+                <select
+                  required
+                  disabled={products.length === 0}
+                  value={productId}
+                  onChange={(event) => chooseProduct(event.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
+                >
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.brand} {product.name} · {formatNaira(product.price)} · {product.stock_quantity} in stock
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <>
+                <label className="space-y-2 text-xs font-semibold text-slate-300">
+                  Item name
+                  <input
+                    required
+                    maxLength={160}
+                    value={customItemName}
+                    onChange={(event) => setCustomItemName(event.target.value)}
+                    placeholder="e.g. Phone case"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
+                  />
+                </label>
+                <label className="space-y-2 text-xs font-semibold text-slate-300">
+                  Brand (optional)
+                  <input
+                    maxLength={100}
+                    value={customItemBrand}
+                    onChange={(event) => setCustomItemBrand(event.target.value)}
+                    placeholder="e.g. Apple"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
+                  />
+                </label>
+                <label className="space-y-2 text-xs font-semibold text-slate-300 sm:col-span-2">
+                  Item description (optional)
+                  <textarea
+                    rows={2}
+                    maxLength={2000}
+                    value={customItemSpec}
+                    onChange={(event) => setCustomItemSpec(event.target.value)}
+                    placeholder="Color, model, or other invoice details"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
+                  />
+                </label>
+                <p className="text-xs text-slate-400 sm:col-span-2">
+                  This item is saved only on the invoice. It will not be added to Inventory or change stock.
+                </p>
+              </>
+            )}
             <label className="space-y-2 text-xs font-semibold text-slate-300">
               Customer name
               <input required value={customerName} onChange={(event) => setCustomerName(event.target.value)} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white" />
@@ -226,11 +347,21 @@ export default function NewInvoicePage() {
             </label>
             <label className="space-y-2 text-xs font-semibold text-slate-300">
               Quantity
-              <input type="number" min={1} max={selectedProduct?.stock_quantity ?? 1} value={quantity} onChange={(event) => setQuantity(Number(event.target.value))} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white" />
+              <input type="number" min={1} max={itemSource === 'catalog' ? selectedProduct?.stock_quantity : undefined} value={quantity} onChange={(event) => setQuantity(Number(event.target.value))} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white" />
             </label>
             <label className="space-y-2 text-xs font-semibold text-slate-300">
               Unit price (₦)
-              <input type="number" min={0} value={unitPrice} onChange={(event) => setUnitPrice(Number(event.target.value))} className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white" />
+              <input
+                type="number"
+                min={0}
+                value={unitPrice}
+                onChange={(event) => {
+                  const value = Number(event.target.value)
+                  setUnitPrice(value)
+                  if (itemSource === 'custom') setCustomUnitPrice(value)
+                }}
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white"
+              />
             </label>
             <label className="space-y-2 text-xs font-semibold text-slate-300">
               Discount (₦)
@@ -262,7 +393,7 @@ export default function NewInvoicePage() {
           </dl>
 
           <div className="flex justify-end">
-            <button type="submit" disabled={saving || products.length === 0} className="rounded-xl bg-premiumYellow px-5 py-3 text-sm font-bold text-black disabled:opacity-60">
+            <button type="submit" disabled={saving || (itemSource === 'catalog' && products.length === 0)} className="rounded-xl bg-premiumYellow px-5 py-3 text-sm font-bold text-black disabled:opacity-60">
               {saving ? 'Creating…' : 'Create invoice'}
             </button>
           </div>
