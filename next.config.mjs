@@ -82,11 +82,6 @@ const nextConfig = {
         destination: 'https://fonestack.com.ng/:path*',
         permanent: true,
       },
-      {
-        source: '/admin',
-        destination: '/admin/',
-        permanent: true,
-      },
     ];
   },
 
