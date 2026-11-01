@@ -36,6 +36,11 @@ export default function InvoicePage() {
   const [invoice, setInvoice] = useState<PublicInvoice | null>(null)
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [printWhenReady, setPrintWhenReady] = useState(false)
+
+  useEffect(() => {
+    setPrintWhenReady(new URLSearchParams(window.location.search).get('print') === '1')
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -59,6 +64,13 @@ export default function InvoicePage() {
       active = false
     }
   }, [id])
+
+  useEffect(() => {
+    if (!invoice || !printWhenReady) return
+
+    const printTimer = window.setTimeout(() => window.print(), 500)
+    return () => window.clearTimeout(printTimer)
+  }, [invoice, printWhenReady])
 
   if (loading) {
     return <main className="mx-auto max-w-3xl px-5 py-16 text-center text-slate-400">Loading invoice…</main>

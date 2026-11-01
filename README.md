@@ -71,6 +71,18 @@ are read from their existing Supabase tables. Missing Supabase configuration or
 query failures are shown as errors rather than replaced with sample dashboard
 values.
 
+Invoice details include an email action powered by Resend. Configure
+`RESEND_API_KEY` and `RESEND_FROM_EMAIL` in the deployment environment; the
+sender address must belong to a domain verified with Resend. Keep the API key
+server-side and do not prefix it with `NEXT_PUBLIC_`. Invoice email terms use
+the current `invoice_terms` setting and render as escaped text in the
+Terms & Conditions block.
+
+For WhatsApp, use **Save PDF** to open the printable customer invoice and save
+it as a PDF, then open **WhatsApp message** and attach the downloaded PDF before
+sending the prefilled thank-you message. WhatsApp does not allow a `wa.me` link
+to attach files automatically.
+
 ## 🌐 Custom domain and AdSense
 
 The canonical site URL is `https://fonestack.com.ng`; the app redirects `www.fonestack.com.ng` to the apex domain. Set the apex domain as the primary domain in Vercel and configure both domain DNS records to avoid a host redirect loop.

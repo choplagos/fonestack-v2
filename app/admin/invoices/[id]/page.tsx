@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { AlertCircle, ArrowLeft, Printer } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Mail, MessageCircle, Printer } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
 
@@ -36,6 +36,10 @@ function formatNaira(value: number) {
 export default function AdminInvoiceDetailsPage() {
   const params = useParams<{ id: string }>()
   const [invoice, setInvoice] = useState<InvoiceDetails | null>(null)
+  const [emailRecipient, setEmailRecipient] = useState('')
+  const [sendingEmail, setSendingEmail] = useState(false)
+  const [shareMessage, setShareMessage] = useState('')
+  const [shareError, setShareError] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -52,7 +56,9 @@ export default function AdminInvoiceDetailsPage() {
       if (error) {
         setErrorMessage(error.message)
       } else {
-        setInvoice(data as InvoiceDetails)
+        const invoiceData = data as InvoiceDetails
+        setInvoice(invoiceData)
+        setEmailRecipient(invoiceData.customer_email ?? '')
       }
       setLoading(false)
     }
@@ -62,6 +68,53 @@ export default function AdminInvoiceDetailsPage() {
       active = false
     }
   }, [params.id])
+
+  async function sendInvoiceEmail() {
+    if (!invoice || !emailRecipient.trim()) {
+      setShareError('Enter the customer email address before sending.')
+      setShareMessage('')
+      return
+    }
+
+    setSendingEmail(true)
+    setShareError('')
+    setShareMessage('')
+    try {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError) throw sessionError
+      if (!sessionData.session?.access_token) {
+        throw new Error('Your admin session has expired. Sign in again.')
+      }
+
+      const response = await fetch('/api/admin/invoices/send-email', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ invoiceId: invoice.id, recipient: emailRecipient.trim() }),
+      })
+      const result = await response.json() as { message?: string; error?: string }
+      if (!response.ok) throw new Error(result.error || 'Invoice email could not be sent.')
+      setShareMessage(`Invoice email sent to ${emailRecipient.trim()}.`)
+    } catch (error) {
+      setShareError(error instanceof Error ? error.message : 'Invoice email could not be sent.')
+    } finally {
+      setSendingEmail(false)
+    }
+  }
+
+  function getWhatsAppUrl() {
+    if (!invoice) return null
+    const digits = invoice.customer_phone.replace(/\D/g, '')
+    const internationalNumber = digits.startsWith('0')
+      ? `234${digits.slice(1)}`
+      : digits
+    if (internationalNumber.length < 10) return null
+
+    const message = `Hi ${invoice.customer_name}, please find invoice ${invoice.invoice_number} attached. Thank you for choosing Fonestack!`
+    return `https://wa.me/${internationalNumber}?text=${encodeURIComponent(message)}`
+  }
 
   if (loading) {
     return <div className="p-6 text-sm text-slate-400">Loading invoice from Supabase…</div>
@@ -82,6 +135,7 @@ export default function AdminInvoiceDetailsPage() {
   }
 
   const productName = `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
+  const whatsappUrl = getWhatsAppUrl()
 
   return (
     <div className="space-y-5 p-1 md:p-4">
@@ -89,15 +143,69 @@ export default function AdminInvoiceDetailsPage() {
         <Link href="/admin/invoices" className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white">
           <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to invoices
         </Link>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link href={`/invoice/${invoice.id}`} target="_blank" className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white">
             Customer invoice
           </Link>
+          <Link
+            href={`/invoice/${invoice.id}?print=1`}
+            target="_blank"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white"
+          >
+            <Printer className="h-4 w-4" aria-hidden="true" /> Save PDF
+          </Link>
+          {whatsappUrl ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-200 hover:bg-green-500/20"
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp message
+            </a>
+          ) : (
+            <span className="rounded-xl border border-white/10 px-4 py-2 text-sm text-slate-500">
+              Customer phone unavailable for WhatsApp
+            </span>
+          )}
           <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-xl bg-premiumYellow px-4 py-2 text-sm font-bold text-black">
             <Printer className="h-4 w-4" aria-hidden="true" /> Print / Save PDF
           </button>
         </div>
       </div>
+
+      <section className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4 print:hidden">
+        <div>
+          <h2 className="text-sm font-bold text-white">Email invoice</h2>
+          <p className="mt-1 text-xs text-slate-400">Sends the invoice details and your current Terms &amp; Conditions by email.</p>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <label className="flex-1 space-y-1 text-xs font-semibold text-slate-300">
+            Recipient email
+            <input
+              type="email"
+              required
+              value={emailRecipient}
+              onChange={(event) => setEmailRecipient(event.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-premiumYellow/70"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => void sendInvoiceEmail()}
+            disabled={sendingEmail || !emailRecipient.trim()}
+            className="inline-flex min-h-11 items-center justify-center gap-2 self-end rounded-xl bg-premiumYellow px-4 py-2 text-sm font-bold text-black disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Mail className="h-4 w-4" aria-hidden="true" />
+            {sendingEmail ? 'Sending…' : 'Send email'}
+          </button>
+        </div>
+        <p className="text-xs text-slate-400">
+          To attach a PDF in WhatsApp, save the PDF first, open the WhatsApp message, then attach and send the downloaded file.
+        </p>
+        {shareError && <p role="alert" className="text-sm text-red-300">{shareError}</p>}
+        {shareMessage && <p role="status" className="text-sm text-green-300">{shareMessage}</p>}
+      </section>
 
       <article className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white p-6 text-slate-900 shadow-xl md:p-10 print:max-w-none print:border-0 print:p-0 print:shadow-none">
         <header className="flex flex-wrap justify-between gap-6 border-b border-slate-200 pb-6">
