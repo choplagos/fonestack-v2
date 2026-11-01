@@ -66,6 +66,17 @@ type InvoiceRow = {
   terms_snapshot: string | null
 }
 
+type InvoiceInsert = Partial<Omit<InvoiceRow, 'total_amount' | 'amount_due'>> &
+  Pick<InvoiceRow, 'customer_name' | 'customer_phone' | 'unit_price'> & {
+    total_amount?: never
+    amount_due?: never
+  }
+
+type InvoiceUpdate = Partial<Omit<InvoiceRow, 'total_amount' | 'amount_due'>> & {
+  total_amount?: never
+  amount_due?: never
+}
+
 type TradeInRequestRow = {
   id: number
   customer_name: string
@@ -119,10 +130,7 @@ export type Database = {
         ProductRow,
         Partial<ProductRow> & Pick<ProductRow, 'name' | 'brand' | 'price'>
       >
-      invoices: Table<
-        InvoiceRow,
-        Partial<InvoiceRow> & Pick<InvoiceRow, 'customer_name' | 'customer_phone' | 'quantity' | 'unit_price'>
-      >
+      invoices: Table<InvoiceRow, InvoiceInsert, InvoiceUpdate>
       admin_users: Table<
         { id: string; email: string; created_at: string; role: string; name: string | null },
         { id?: string; email: string; created_at?: string; role?: string; name?: string | null }
