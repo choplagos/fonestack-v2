@@ -172,8 +172,8 @@ export async function POST(req: Request) {
       estimate_confidence: confidence,
       request_id: inserted?.id || null,
     })
-  } catch (err: any) {
-    console.error('Trade-in estimate error:', err)
+  } catch (error) {
+    console.error('Trade-in estimate error:', error)
     return NextResponse.json(
       { error: 'Could not generate estimate. Please try again.' },
       { status: 500 }

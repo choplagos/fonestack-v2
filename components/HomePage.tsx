@@ -107,6 +107,7 @@ export default function Storefront() {
         if (data) {
           setProducts(data.map(product => ({
             ...product,
+            image_url: product.image_url ?? '',
             spec: product.spec ?? '',
             rating: product.rating ?? undefined,
             stock_quantity: product.stock_quantity ?? 0,
@@ -189,7 +190,7 @@ export default function Storefront() {
           <div className="flex flex-col gap-6 mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-3">
-                // Device Collection
+                {'// Device Collection'}
               </div>
               <h2 id="products-heading" className="text-3xl md:text-4xl font-display font-black dark:text-white">
                 Find your next device

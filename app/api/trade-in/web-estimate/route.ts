@@ -7,7 +7,12 @@ import type { Listing } from '@/lib/scrapers/jiji'
 export const runtime = 'edge';
 
 const CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
-const cache = new Map<string, { ts: number; value: any }>();
+type TradeInWebResult = {
+  query: string
+  listingsBySource: Record<string, Listing[]>
+  aggregation: AggregationResult
+}
+const cache = new Map<string, { ts: number; value: TradeInWebResult }>();
 
 function cacheKey(q: string) {
   return `tradein:web:${q.toLowerCase().trim()}`;
@@ -37,7 +42,7 @@ export async function POST(req: Request) {
       scrapeFacebookMarketplace(query, 50),
     ]);
 
-    const listingsBySource: Record<string, any[]> = {
+    const listingsBySource: Record<string, Listing[]> = {
       jiji: jijiRes.status === 'fulfilled' ? jijiRes.value : [],
       facebook: fbRes.status === 'fulfilled' ? fbRes.value : [],
     };
@@ -50,7 +55,8 @@ export async function POST(req: Request) {
     cache.set(key, { ts: now, value: result });
 
     return new Response(JSON.stringify(result), { headers: { 'Content-Type': 'application/json' } });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e?.message || String(e) }), { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }

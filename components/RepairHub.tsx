@@ -96,9 +96,9 @@ export default function RepairHub() {
             
             {/* Diagnostic Grid */}
             <div>
-              <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4" id="repair-label">// Repair Services</div>
+              <div className="text-premiumYellow font-mono text-xs tracking-widest uppercase mb-4" id="repair-label">{'// Repair Services'}</div>
               <h2 id="repair-heading" className="text-4xl font-display font-black dark:text-white mb-8">
-                What's wrong with <br/><span className="text-premiumYellow">your device?</span>
+                What&apos;s wrong with <br/><span className="text-premiumYellow">your device?</span>
               </h2>
               
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4" role="group" aria-label="Repair service types">
