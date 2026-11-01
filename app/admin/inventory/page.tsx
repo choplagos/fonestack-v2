@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { AlertCircle, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { AlertCircle, Pencil, Plus, Search, Sparkles, Trash2 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
 
@@ -49,6 +49,9 @@ export default function InventoryPage() {
   const [form, setForm] = useState<ProductForm | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [generatingSpec, setGeneratingSpec] = useState(false)
+  const [specMessage, setSpecMessage] = useState('')
+  const [specError, setSpecError] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
   async function loadProducts() {
@@ -103,7 +106,53 @@ export default function InventoryPage() {
       warranty_months: product.warranty_months ?? 0,
       imei: product.imei ?? '',
     })
+    setSpecMessage('')
+    setSpecError('')
     setErrorMessage('')
+  }
+
+  async function generateProductSpec() {
+    if (!form) return
+    if (!form.brand.trim() || !form.name.trim()) {
+      setSpecError('Enter the brand and product name before generating specifications.')
+      setSpecMessage('')
+      return
+    }
+    if (form.spec?.trim() && !window.confirm('Replace the current specifications with an AI-generated draft?')) {
+      return
+    }
+
+    setGeneratingSpec(true)
+    setSpecError('')
+    setSpecMessage('')
+    try {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError) throw sessionError
+      if (!sessionData.session?.access_token) {
+        throw new Error('Your admin session has expired. Sign in again.')
+      }
+
+      const response = await fetch('/api/admin/inventory/generate-spec', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ brand: form.brand.trim(), name: form.name.trim() }),
+      })
+      const result = await response.json() as { specification?: string; error?: string }
+      if (!response.ok) throw new Error(result.error || 'Could not generate product specifications.')
+      if (!result.specification?.trim()) {
+        throw new Error('The AI service returned no specifications. Try a more specific product name.')
+      }
+
+      setForm((current) => current ? { ...current, spec: result.specification!.trim() } : current)
+      setSpecMessage('AI draft added. Review it and save the product when ready.')
+    } catch (error) {
+      setSpecError(error instanceof Error ? error.message : 'Could not generate product specifications.')
+    } finally {
+      setGeneratingSpec(false)
+    }
   }
 
   async function saveProduct(event: FormEvent<HTMLFormElement>) {
@@ -170,6 +219,8 @@ export default function InventoryPage() {
           type="button"
           onClick={() => {
             setForm({ ...EMPTY_PRODUCT })
+            setSpecMessage('')
+            setSpecError('')
             setErrorMessage('')
           }}
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-premiumYellow px-4 py-2 text-sm font-bold text-black"
@@ -211,13 +262,17 @@ export default function InventoryPage() {
                   type={type}
                   min={type === 'number' ? 0 : undefined}
                   value={form[key] ?? ''}
-                  onChange={(event) =>
+                  onChange={(event) => {
                     setForm((current) =>
                       current
                         ? { ...current, [key]: type === 'number' ? Number(event.target.value) : event.target.value }
                         : current,
                     )
-                  }
+                    if (key === 'brand' || key === 'name') {
+                      setSpecMessage('')
+                      setSpecError('')
+                    }
+                  }}
                   className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-premiumYellow/70"
                   required={key === 'brand' || key === 'name' || key === 'price'}
                 />
@@ -245,22 +300,44 @@ export default function InventoryPage() {
                 {['S', 'A', 'B', 'C'].map((grade) => <option key={grade} value={grade}>{grade}</option>)}
               </select>
             </label>
-            <label className="space-y-2 text-xs font-semibold text-slate-300 sm:col-span-2 lg:col-span-3">
-              Specifications
+            <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="product-specifications" className="text-xs font-semibold text-slate-300">
+                  Specifications
+                </label>
+                <button
+                  type="button"
+                  onClick={() => void generateProductSpec()}
+                  disabled={generatingSpec || saving || !form.brand.trim() || !form.name.trim()}
+                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-premiumYellow/40 bg-premiumYellow/10 px-3 py-2 text-xs font-bold text-premiumYellow hover:bg-premiumYellow/20 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
+                  {generatingSpec ? 'Generating draft…' : 'Generate specs with AI'}
+                </button>
+              </div>
               <textarea
-                rows={3}
+                id="product-specifications"
+                rows={4}
                 value={form.spec ?? ''}
-                onChange={(event) => setForm((current) => current ? { ...current, spec: event.target.value } : current)}
+                onChange={(event) => {
+                  setForm((current) => current ? { ...current, spec: event.target.value } : current)
+                  setSpecMessage('')
+                  setSpecError('')
+                }}
+                aria-describedby={specError ? 'product-spec-error' : specMessage ? 'product-spec-status' : undefined}
                 className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-premiumYellow/70"
               />
-            </label>
+              <p className="text-xs text-slate-500">AI drafts can be inaccurate. Review and edit specifications before saving.</p>
+              {specError && <p id="product-spec-error" role="alert" className="text-xs text-red-300">{specError}</p>}
+              {specMessage && <p id="product-spec-status" role="status" className="text-xs text-green-300">{specMessage}</p>}
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <button type="button" onClick={() => setForm(null)} className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300">
               Cancel
             </button>
-            <button type="submit" disabled={saving} className="rounded-xl bg-premiumYellow px-5 py-2 text-sm font-bold text-black disabled:opacity-60">
-              {saving ? 'Saving…' : 'Save product'}
+            <button type="submit" disabled={saving || generatingSpec} className="rounded-xl bg-premiumYellow px-5 py-2 text-sm font-bold text-black disabled:opacity-60">
+              {saving ? 'Saving…' : generatingSpec ? 'Generating specs…' : 'Save product'}
             </button>
           </div>
         </form>

@@ -71,6 +71,12 @@ are read from their existing Supabase tables. Missing Supabase configuration or
 query failures are shown as errors rather than replaced with sample dashboard
 values.
 
+Inventory product forms include an AI specification draft action. It uses
+`GEMINI_API_KEY` on the server, generates from the product brand and name, and
+fills the editable specifications field for review. The draft is saved only
+when an admin explicitly saves the product. Configure `GEMINI_API_KEY` in the
+local/deployment environment; do not prefix it with `NEXT_PUBLIC_`.
+
 Invoice details include an email action powered by Resend. Configure
 `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in the deployment environment; the
 sender address must belong to a domain verified with Resend. Keep the API key
