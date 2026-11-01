@@ -207,65 +207,151 @@ export default function AdminInvoiceDetailsPage() {
         {shareMessage && <p role="status" className="text-sm text-green-300">{shareMessage}</p>}
       </section>
 
-      <article className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white p-6 text-slate-900 shadow-xl md:p-10 print:max-w-none print:border-0 print:p-0 print:shadow-none">
-        <header className="flex flex-wrap justify-between gap-6 border-b border-slate-200 pb-6">
-          <div>
-            <p className="text-sm font-bold tracking-[0.2em] text-amber-600">FONESTACK</p>
-            <h1 className="mt-2 text-2xl font-black">Sales invoice</h1>
-            <p className="mt-2 text-sm text-slate-500">{invoice.invoice_number}</p>
-          </div>
-          <div className="text-right text-sm">
-            <p className="font-semibold">{new Date(invoice.created_at).toLocaleDateString('en-NG')}</p>
-            <p className="mt-2 capitalize text-slate-500">Status: {invoice.status}</p>
-            {invoice.paid_at && <p className="mt-1 text-slate-500">Paid: {new Date(invoice.paid_at).toLocaleDateString('en-NG')}</p>}
+      <article className="mx-auto max-w-[600px] overflow-hidden rounded-xl border border-slate-200 bg-white text-[#191C17] shadow-xl print:max-w-none print:rounded-none print:border-0 print:shadow-none">
+        <header className="border-b border-[#E9EBE6] px-5 py-6 sm:px-10">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-[25px] font-extrabold leading-none tracking-[-1px] text-[#171914]">
+              FONESTACK<span className="text-[#B7E34B]">.</span>
+            </p>
+            <span className="text-[11px] font-bold tracking-[1.5px] text-[#73786D]">INVOICE</span>
           </div>
         </header>
 
-        <section className="grid gap-5 py-6 sm:grid-cols-2">
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Bill to</h2>
-            <p className="mt-2 font-semibold">{invoice.customer_name}</p>
-            <p className="text-sm text-slate-600">{invoice.customer_phone}</p>
-            {invoice.customer_email && <p className="text-sm text-slate-600">{invoice.customer_email}</p>}
-          </div>
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Payment</h2>
-            <p className="mt-2 capitalize">{invoice.payment_method ?? '—'}</p>
-            {invoice.imei && <p className="mt-1 text-sm text-slate-600">IMEI / serial: {invoice.imei}</p>}
+        <section className="px-5 pb-6 pt-8 sm:px-10">
+          <p className="mb-2.5 text-[13px] text-[#74796F]">Hello {invoice.customer_name},</p>
+          <h1 className="text-[30px] font-extrabold leading-tight tracking-[-1px] text-[#171914] sm:text-[34px]">
+            Your invoice<br />is ready.
+          </h1>
+          <p className="mt-4 text-sm leading-7 text-[#62675E]">
+            Thank you for choosing Fonestack. Here&apos;s a summary of your purchase and payment details.
+          </p>
+        </section>
+
+        <section className="px-5 pb-7 sm:px-10">
+          <div className="rounded-lg bg-[#F6F7F3] p-5 sm:px-[22px]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="mb-2 text-[10px] font-bold tracking-[1px] text-[#81867C]">INVOICE NUMBER</p>
+                <p className="text-sm font-bold text-[#191C17]">{invoice.invoice_number}</p>
+              </div>
+              <span className="rounded-full bg-[#E8F3D1] px-3 py-1.5 text-[11px] font-bold capitalize text-[#456817]">
+                {invoice.status}
+              </span>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-4">
+              <div>
+                <p className="mb-1.5 text-[11px] text-[#81867C]">ISSUE DATE</p>
+                <p className="text-[13px] text-[#191C17]">{new Date(invoice.created_at).toLocaleDateString('en-NG')}</p>
+              </div>
+              <div className="text-right">
+                <p className="mb-1.5 text-[11px] text-[#81867C]">BALANCE DUE</p>
+                <p className="text-[13px] font-bold text-[#191C17]">{formatNaira(invoice.amount_due)}</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        <table className="w-full border-y border-slate-200 text-left text-sm">
-          <thead>
-            <tr className="text-xs uppercase tracking-wider text-slate-500">
-              <th className="py-3">Item</th>
-              <th className="py-3 text-right">Qty</th>
-              <th className="py-3 text-right">Unit price</th>
-              <th className="py-3 text-right">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="py-4">
-                <p className="font-semibold">{productName || 'Product details unavailable'}</p>
-                {invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-slate-500">{invoice.product_snapshot.spec}</p>}
-              </td>
-              <td className="py-4 text-right">{invoice.quantity}</td>
-              <td className="py-4 text-right">{formatNaira(invoice.unit_price)}</td>
-              <td className="py-4 text-right">{formatNaira(invoice.unit_price * invoice.quantity)}</td>
-            </tr>
-          </tbody>
-        </table>
+        <section className="px-5 pb-7 sm:px-10">
+          <p className="mb-3.5 text-[11px] font-bold tracking-[1.2px] text-[#81867C]">BILLED TO</p>
+          <p className="mb-1 text-[15px] font-bold text-[#191C17]">{invoice.customer_name}</p>
+          <p className="text-[13px] leading-7 text-[#62675E]">
+            {invoice.customer_email && <>{invoice.customer_email}<br /></>}
+            {invoice.customer_phone}
+          </p>
+        </section>
 
-        <dl className="ml-auto mt-6 grid max-w-sm gap-2 text-sm">
-          <div className="flex justify-between"><dt>Discount</dt><dd>{formatNaira(invoice.discount_amount)}</dd></div>
-          <div className="flex justify-between border-t border-slate-200 pt-3 text-base font-bold"><dt>Total</dt><dd>{formatNaira(invoice.total_amount)}</dd></div>
-          <div className="flex justify-between"><dt>Deposit / paid</dt><dd>{formatNaira(invoice.deposit_amount)}</dd></div>
-          <div className="flex justify-between font-semibold"><dt>Balance due</dt><dd>{formatNaira(invoice.amount_due)}</dd></div>
-        </dl>
+        <section className="overflow-x-auto px-5 pb-2.5 sm:px-10 print:overflow-visible">
+          <table className="w-full min-w-[400px] border-collapse text-left print:min-w-0">
+            <thead>
+              <tr>
+                <th colSpan={4} className="pb-3 text-[11px] font-bold tracking-[1px] text-[#81867C]">ORDER SUMMARY</th>
+              </tr>
+              <tr className="bg-[#F6F7F3] text-[11px] font-bold text-[#656A60]">
+                <th className="px-2.5 py-3">Item</th>
+                <th className="px-1.5 py-3 text-center">Qty</th>
+                <th className="px-1.5 py-3 text-right">Price</th>
+                <th className="px-2.5 py-3 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-[#E9EBE6] text-[13px]">
+                <td className="break-words px-2.5 py-4 text-[#191C17]">
+                  {productName || 'Product details unavailable'}
+                  {invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-[#62675E]">{invoice.product_snapshot.spec}</p>}
+                </td>
+                <td className="px-1.5 py-4 text-center text-[#62675E]">{invoice.quantity}</td>
+                <td className="px-1.5 py-4 text-right text-[#62675E]">{formatNaira(invoice.unit_price)}</td>
+                <td className="px-2.5 py-4 text-right font-bold text-[#191C17]">
+                  {formatNaira(invoice.unit_price * invoice.quantity)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-        {invoice.notes && <p className="mt-8 whitespace-pre-wrap border-t border-slate-200 pt-5 text-sm text-slate-600">{invoice.notes}</p>}
-        {invoice.terms_snapshot && <p className="mt-6 whitespace-pre-wrap text-xs text-slate-500">{invoice.terms_snapshot}</p>}
+        <section className="px-5 pb-8 pt-5 sm:px-10">
+          <dl className="ml-auto max-w-sm text-[13px]">
+            <div className="flex justify-between gap-4 py-2 text-[#62675E]">
+              <dt>Subtotal</dt><dd className="text-[#191C17]">{formatNaira(invoice.unit_price * invoice.quantity)}</dd>
+            </div>
+            <div className="flex justify-between gap-4 py-2 text-[#62675E]">
+              <dt>Discount</dt><dd className="text-[#191C17]">−{formatNaira(invoice.discount_amount)}</dd>
+            </div>
+            <div className="mt-1 border-t border-[#DDE0D8] pt-3">
+              <div className="flex items-center justify-between gap-4 py-2">
+                <dt className="font-bold text-[#191C17]">TOTAL</dt>
+                <dd className="text-xl font-bold tracking-tight text-[#A3C936]">{formatNaira(invoice.total_amount)}</dd>
+              </div>
+            </div>
+            <div className="flex justify-between gap-4 py-2 text-[#62675E]">
+              <dt>Paid / deposit</dt><dd className="text-[#191C17]">{formatNaira(invoice.deposit_amount)}</dd>
+            </div>
+            <div className="flex justify-between gap-4 py-2 font-bold text-[#191C17]">
+              <dt>Balance due</dt><dd>{formatNaira(invoice.amount_due)}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <div className="px-5 pb-8 sm:px-10 print:hidden">
+          <Link
+            href={`/invoice/${invoice.id}`}
+            target="_blank"
+            className="block rounded-md bg-[#171914] px-6 py-4 text-center text-sm font-bold text-white hover:bg-[#30332B]"
+          >
+            View / Print Invoice <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
+        {invoice.notes && (
+          <section className="px-5 pb-7 sm:px-10">
+            <p className="whitespace-pre-wrap border-t border-[#E9EBE6] pt-5 text-sm leading-6 text-[#62675E]">{invoice.notes}</p>
+          </section>
+        )}
+
+        {invoice.terms_snapshot && (
+          <section className="px-5 pb-7 sm:px-10">
+            <div className="rounded-md border-l-[3px] border-[#B7E34B] bg-[#F6F7F3] px-5 py-[18px]">
+              <p className="mb-2.5 text-[11px] font-bold tracking-[1.2px] text-[#191C17]">TERMS &amp; CONDITIONS</p>
+              <p className="whitespace-pre-wrap text-xs leading-[1.8] text-[#62675E]">{invoice.terms_snapshot}</p>
+            </div>
+          </section>
+        )}
+
+        <footer className="bg-[#171914] px-6 py-8 text-center">
+          <p className="mb-2 text-base font-bold tracking-tight text-white">FONESTACK<span className="text-[#B7E34B]">.</span></p>
+          <p className="mb-4 text-[11px] leading-5 text-[#A5AAA0]">Gadgets. Technology. Everyday innovation.</p>
+          <p className="mb-3 text-xs text-[#D6D9D2]">Need help with your invoice?</p>
+          <p className="mb-4 text-xs text-[#B7E34B]">
+            <a href="mailto:support@fonestack.com.ng" className="text-[#B7E34B]">support@fonestack.com.ng</a>
+          </p>
+          <p className="text-[11px] leading-5 text-[#858A80]">
+            <a href="https://fonestack.com.ng" className="text-[#D6D9D2]">fonestack.com.ng</a>
+            <br />Computer Village, Ikeja, Lagos, Nigeria
+          </p>
+          <p className="mt-5 text-[10px] leading-5 text-[#70756C]">
+            © {new Date(invoice.created_at).getFullYear()} Fonestack. All rights reserved.
+          </p>
+        </footer>
       </article>
     </div>
   )

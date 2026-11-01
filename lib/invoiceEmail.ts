@@ -3,6 +3,8 @@ import type { Json } from '@/lib/database.types'
 type InvoiceEmailData = {
   invoiceNumber: string
   customerName: string
+  customerEmail: string
+  customerPhone: string
   productName: string
   productSpec: string | null
   quantity: number
@@ -17,7 +19,6 @@ type InvoiceEmailData = {
   businessName: string
   businessAddress: string | null
   businessPhone: string | null
-  logoUrl: string | null
   invoiceFooter: string | null
   termsAndConditions: string | null
 }
@@ -49,57 +50,139 @@ export function renderInvoiceEmail(data: InvoiceEmailData) {
   const productDescription = [data.productName, data.productSpec].filter(Boolean).join(' · ')
   const terms = data.termsAndConditions?.trim() || 'No terms and conditions were provided.'
   const termsHtml = e(terms).replace(/\r\n|\r|\n/g, '<br>')
-  const logo = data.logoUrl
-    ? `<img src="${e(data.logoUrl)}" alt="${e(data.businessName)}" style="display:block;max-width:160px;max-height:56px;margin:0 0 14px;">`
-    : ''
   const footer = data.invoiceFooter
-    ? `<p style="margin:22px 0 0;text-align:center;font-size:12px;line-height:1.7;color:#62675E;white-space:pre-line;">${e(data.invoiceFooter)}</p>`
+    ? `<p style="margin:20px 0 0;font-size:11px;line-height:1.8;color:#A5AAA0;white-space:pre-line;">${e(data.invoiceFooter)}</p>`
     : ''
-  const address = data.businessAddress
-    ? `<p style="margin:5px 0 0;font-size:12px;line-height:1.6;color:#62675E;white-space:pre-line;">${e(data.businessAddress)}</p>`
-    : ''
-  const phone = data.businessPhone
-    ? `<p style="margin:5px 0 0;font-size:12px;color:#62675E;">${e(data.businessPhone)}</p>`
-    : ''
+  const date = e(new Date(data.createdAt).toLocaleDateString('en-NG'))
+  const subtotal = data.unitPrice * data.quantity
 
   return `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
     <title>Invoice ${e(data.invoiceNumber)} · ${e(data.businessName)}</title>
+    <style>
+      body { margin:0; padding:0; width:100% !important; background-color:#F4F5F2; font-family:Arial,Helvetica,sans-serif; -webkit-text-size-adjust:100%; }
+      table { border-collapse:collapse; border-spacing:0; }
+      img { border:0; display:block; max-width:100%; }
+      a { text-decoration:none; }
+      @media screen and (max-width:600px) {
+        .email-wrapper { width:100% !important; }
+        .email-content { padding-left:20px !important; padding-right:20px !important; }
+        .invoice-title { font-size:28px !important; }
+        .item-padding { padding:12px 8px !important; }
+        .mobile-button { display:block !important; width:auto !important; }
+      }
+    </style>
   </head>
-  <body style="margin:0;padding:0;background:#F6F7F3;font-family:Arial,Helvetica,sans-serif;color:#191C17;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F6F7F3;">
-      <tr><td align="center" style="padding:28px 12px;">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#FFFFFF;border-radius:8px;">
-          <tr><td style="padding:32px 40px 22px;">
-            ${logo}
-            <p style="margin:0;font-size:12px;font-weight:bold;letter-spacing:2px;color:#191C17;">${e(data.businessName)}</p>
-            ${address}${phone}
-          </td></tr>
-          <tr><td style="padding:0 40px 24px;">
-            <h1 style="margin:0 0 8px;font-size:24px;line-height:1.3;color:#191C17;">Your invoice is ready</h1>
-            <p style="margin:0;font-size:14px;line-height:1.7;color:#62675E;">Hello ${e(data.customerName)}, thank you for choosing ${e(data.businessName)}. Your invoice details are below.</p>
-          </td></tr>
-          <tr><td style="padding:0 40px 20px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">INVOICE</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;font-weight:bold;color:#191C17;">${e(data.invoiceNumber)}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">DATE</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${e(new Date(data.createdAt).toLocaleDateString('en-NG'))}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">ITEM</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${e(productDescription)}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">QUANTITY</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${data.quantity}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">UNIT PRICE</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${formatNaira(data.unitPrice)}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">DISCOUNT</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${formatNaira(data.discountAmount)}</td></tr>
-              <tr><td style="padding:14px 0;border-bottom:1px solid #E6E8E2;font-size:13px;font-weight:bold;color:#191C17;">TOTAL</td><td align="right" style="padding:14px 0;border-bottom:1px solid #E6E8E2;font-size:16px;font-weight:bold;color:#191C17;">${formatNaira(data.totalAmount)}</td></tr>
-              <tr><td style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:12px;color:#62675E;">PAID / DEPOSIT</td><td align="right" style="padding:12px 0;border-bottom:1px solid #E6E8E2;font-size:13px;color:#191C17;">${formatNaira(data.depositAmount)}</td></tr>
-              <tr><td style="padding:12px 0;font-size:12px;color:#62675E;">BALANCE DUE</td><td align="right" style="padding:12px 0;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(data.amountDue)}</td></tr>
-            </table>
-          </td></tr>
-          <tr><td align="center" style="padding:0 40px 24px;">
-            <a href="${e(data.invoiceUrl)}" style="display:inline-block;padding:13px 22px;background:#B7E34B;border-radius:5px;color:#191C17;text-decoration:none;font-size:13px;font-weight:bold;">VIEW / PRINT INVOICE</a>
-            <p style="margin:10px 0 0;font-size:11px;line-height:1.6;color:#62675E;">Status: ${e(data.status)}</p>
-          </td></tr>
-          <!-- Terms & Conditions -->
+  <body style="margin:0;padding:0;background-color:#F4F5F2;color:#191C17;">
+    <div style="display:none;font-size:1px;color:#F4F5F2;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">
+      Your Fonestack invoice is ready. Review the details and payment balance.
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F4F5F2" style="background-color:#F4F5F2;">
+      <tr><td align="center" style="padding:32px 12px;">
+        <table role="presentation" class="email-wrapper" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="width:100%;max-width:600px;background-color:#FFFFFF;border-radius:12px;overflow:hidden;">
+          <tr>
+            <td class="email-content" style="padding:32px 40px 28px;border-bottom:1px solid #E9EBE6;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="left" valign="middle"><span style="font-size:25px;font-weight:800;letter-spacing:-1px;color:#171914;">FONESTACK<span style="color:#B7E34B;">.</span></span></td>
+                  <td align="right" valign="middle"><span style="font-size:11px;font-weight:bold;letter-spacing:1.5px;color:#73786D;">INVOICE</span></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:36px 40px 24px;">
+              <p style="margin:0 0 10px;font-size:13px;color:#74796F;">Hello ${e(data.customerName)},</p>
+              <h1 class="invoice-title" style="margin:0;font-size:34px;line-height:1.2;letter-spacing:-1px;color:#171914;font-weight:800;">Your invoice<br>is ready.</h1>
+              <p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:#62675E;">Thank you for choosing ${e(data.businessName)}. Here's a summary of your purchase and payment details.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:8px 40px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F6F7F3" style="background-color:#F6F7F3;border-radius:8px;">
+                <tr><td style="padding:20px 22px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td width="50%" valign="top">
+                        <p style="margin:0 0 7px;font-size:10px;font-weight:bold;letter-spacing:1px;color:#81867C;">INVOICE NUMBER</p>
+                        <p style="margin:0;font-size:14px;font-weight:bold;color:#191C17;">${e(data.invoiceNumber)}</p>
+                      </td>
+                      <td width="50%" valign="top" align="right">
+                        <span style="display:inline-block;padding:6px 12px;border-radius:20px;background-color:#E8F3D1;color:#456817;font-size:11px;font-weight:bold;">${e(data.status)}</span>
+                      </td>
+                    </tr>
+                    <tr><td colspan="2" style="padding-top:20px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td width="50%" valign="top">
+                            <p style="margin:0 0 6px;font-size:11px;color:#81867C;">ISSUE DATE</p>
+                            <p style="margin:0;font-size:13px;color:#191C17;">${date}</p>
+                          </td>
+                          <td width="50%" valign="top" align="right">
+                            <p style="margin:0 0 6px;font-size:11px;color:#81867C;">BALANCE DUE</p>
+                            <p style="margin:0;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(data.amountDue)}</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:0 40px 30px;">
+              <p style="margin:0 0 14px;font-size:11px;font-weight:bold;letter-spacing:1.2px;color:#81867C;">BILLED TO</p>
+              <p style="margin:0 0 5px;font-size:15px;font-weight:bold;color:#191C17;">${e(data.customerName)}</p>
+              <p style="margin:0;font-size:13px;line-height:1.7;color:#62675E;">${e(data.customerEmail)}<br>${e(data.customerPhone)}</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:0 40px 10px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td colspan="4" style="padding:0 0 12px;font-size:11px;font-weight:bold;letter-spacing:1px;color:#81867C;">ORDER SUMMARY</td></tr>
+                <tr bgcolor="#F6F7F3">
+                  <th align="left" class="item-padding" style="padding:12px 10px;font-size:11px;color:#656A60;font-weight:bold;">Item</th>
+                  <th align="center" class="item-padding" style="padding:12px 5px;font-size:11px;color:#656A60;font-weight:bold;">Qty</th>
+                  <th align="right" class="item-padding" style="padding:12px 5px;font-size:11px;color:#656A60;font-weight:bold;">Price</th>
+                  <th align="right" class="item-padding" style="padding:12px 10px;font-size:11px;color:#656A60;font-weight:bold;">Total</th>
+                </tr>
+                <tr>
+                  <td class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#191C17;">${e(productDescription)}</td>
+                  <td align="center" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${data.quantity}</td>
+                  <td align="right" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${formatNaira(data.unitPrice)}</td>
+                  <td align="right" class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(subtotal)}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:20px 40px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td align="right" style="padding:7px 0;font-size:13px;color:#62675E;">Subtotal</td><td align="right" width="120" style="padding:7px 0 7px 16px;font-size:13px;color:#191C17;">${formatNaira(subtotal)}</td></tr>
+                <tr><td align="right" style="padding:7px 0;font-size:13px;color:#62675E;">Discount</td><td align="right" width="120" style="padding:7px 0 7px 16px;font-size:13px;color:#191C17;">−${formatNaira(data.discountAmount)}</td></tr>
+                <tr><td colspan="2" style="padding:12px 0 0;border-top:1px solid #DDE0D8;"></td></tr>
+                <tr><td align="right" valign="middle" style="padding:8px 0;font-size:14px;font-weight:bold;color:#191C17;">TOTAL</td><td align="right" valign="middle" width="120" style="padding:8px 0 8px 16px;font-size:23px;font-weight:bold;letter-spacing:-0.5px;color:#A3C936;">${formatNaira(data.totalAmount)}</td></tr>
+                <tr><td align="right" style="padding:7px 0;font-size:13px;color:#62675E;">Paid / deposit</td><td align="right" width="120" style="padding:7px 0 7px 16px;font-size:13px;color:#191C17;">${formatNaira(data.depositAmount)}</td></tr>
+                <tr><td align="right" style="padding:7px 0;font-size:13px;font-weight:bold;color:#191C17;">Balance due</td><td align="right" width="120" style="padding:7px 0 7px 16px;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(data.amountDue)}</td></tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-content" style="padding:0 40px 36px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td align="center" bgcolor="#171914" style="border-radius:6px;">
+                  <a href="${e(data.invoiceUrl)}" target="_blank" class="mobile-button" style="display:inline-block;padding:16px 28px;font-size:14px;font-weight:bold;color:#FFFFFF;text-align:center;text-decoration:none;border-radius:6px;">View / Print Invoice &nbsp; &#8594;</a>
+                </td></tr>
+              </table>
+              <p style="margin:16px 0 0;font-size:12px;line-height:1.7;text-align:center;color:#81867C;">If you've already made payment, kindly disregard this notification.</p>
+            </td>
+          </tr>
           <tr>
             <td class="email-content" style="padding:0 40px 28px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F6F7F3" style="background-color:#F6F7F3;border-left:3px solid #B7E34B;border-radius:6px;">
@@ -110,10 +193,21 @@ export function renderInvoiceEmail(data: InvoiceEmailData) {
               </table>
             </td>
           </tr>
-          <tr><td style="padding:0 40px 30px;">
-            <p style="margin:0;font-size:12px;line-height:1.7;color:#62675E;">If you have questions about this invoice, please contact us${data.businessPhone ? ` at ${e(data.businessPhone)}` : ''}.</p>
-            ${footer}
-          </td></tr>
+          <tr>
+            <td align="center" bgcolor="#171914" style="padding:30px 24px;">
+              <p style="margin:0 0 8px;font-size:16px;font-weight:bold;letter-spacing:-0.5px;color:#FFFFFF;">FONESTACK<span style="color:#B7E34B;">.</span></p>
+              <p style="margin:0 0 16px;font-size:11px;line-height:1.7;color:#A5AAA0;">Gadgets. Technology. Everyday innovation.</p>
+              <p style="margin:0 0 12px;font-size:12px;color:#D6D9D2;">Need help with your invoice?</p>
+              <p style="margin:0 0 16px;font-size:12px;color:#B7E34B;"><a href="mailto:support@fonestack.com.ng" style="color:#B7E34B;text-decoration:none;">support@fonestack.com.ng</a></p>
+              <p style="margin:0;font-size:11px;line-height:1.8;color:#858A80;">
+                <a href="https://fonestack.com.ng" target="_blank" style="color:#D6D9D2;">fonestack.com.ng</a>
+                ${data.businessAddress ? `<br>${e(data.businessAddress)}` : '<br>Computer Village, Ikeja, Lagos, Nigeria'}
+                ${data.businessPhone ? `<br>${e(data.businessPhone)}` : ''}
+              </p>
+              ${footer}
+              <p style="margin:20px 0 0;font-size:10px;line-height:1.7;color:#70756C;">&copy; ${new Date(data.createdAt).getFullYear()} Fonestack. All rights reserved.<br>This is an automated transactional email.</p>
+            </td>
+          </tr>
         </table>
       </td></tr>
     </table>

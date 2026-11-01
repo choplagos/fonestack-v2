@@ -13,6 +13,7 @@ type InvoiceForEmail = {
   id: string
   invoice_number: string
   customer_name: string
+  customer_phone: string
   customer_email: string | null
   product_snapshot: Database['public']['Tables']['invoices']['Row']['product_snapshot']
   quantity: number
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
 
   const { data: invoiceData, error: invoiceError } = await supabase
     .from('invoices')
-    .select('id, invoice_number, customer_name, customer_email, product_snapshot, quantity, unit_price, discount_amount, total_amount, deposit_amount, amount_due, status, created_at')
+    .select('id, invoice_number, customer_name, customer_phone, customer_email, product_snapshot, quantity, unit_price, discount_amount, total_amount, deposit_amount, amount_due, status, created_at')
     .eq('id', body.invoiceId)
     .maybeSingle()
   if (invoiceError) {
@@ -106,7 +107,6 @@ export async function POST(request: Request) {
     'business_name',
     'business_address',
     'business_phone',
-    'logo_url',
     'invoice_footer',
     'invoice_terms',
   ]
@@ -125,6 +125,8 @@ export async function POST(request: Request) {
   const html = renderInvoiceEmail({
     invoiceNumber: invoice.invoice_number,
     customerName: invoice.customer_name,
+    customerEmail: body.recipient.trim(),
+    customerPhone: invoice.customer_phone,
     productName: invoiceEmailProductName(invoice.product_snapshot),
     productSpec: invoiceEmailProductSpec(invoice.product_snapshot),
     quantity: invoice.quantity,
@@ -139,7 +141,6 @@ export async function POST(request: Request) {
     businessName: settings.business_name || 'Fonestack',
     businessAddress: settings.business_address || null,
     businessPhone: settings.business_phone || null,
-    logoUrl: settings.logo_url || null,
     invoiceFooter: settings.invoice_footer || null,
     termsAndConditions: settings.invoice_terms || null,
   })
