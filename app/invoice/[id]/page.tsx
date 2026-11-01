@@ -1,143 +1,157 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { CheckCircle2, Download, Share2, Printer, ShieldCheck } from 'lucide-react'
-import Script from 'next/script'
 
-// Invoice Schema
-const invoiceSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Invoice',
-  broker: {
-    '@type': 'Organization',
-    name: 'Fonestack',
-  },
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { AlertCircle, Printer } from 'lucide-react'
+
+import { supabase } from '@/lib/supabase'
+
+type PublicInvoice = {
+  id: string
+  invoice_number: string
+  customer_name: string
+  customer_phone: string
+  customer_email: string | null
+  product_snapshot: { brand?: string; name?: string; spec?: string } | null
+  quantity: number
+  unit_price: number
+  discount_amount: number
+  total_amount: number
+  status: string
+  payment_method: string | null
+  notes: string | null
+  created_at: string
+  paid_at: string | null
+  imei: string | null
+  settings: Record<string, string> | null
 }
 
-export default function InvoicePage({ params }: { params: { id: string } }) {
-  const [invoice, setInvoice] = useState<any>(null);
+function formatNaira(value: number) {
+  return `₦${Number(value).toLocaleString('en-NG')}`
+}
+
+export default function InvoicePage() {
+  const { id } = useParams<{ id: string }>()
+  const [invoice, setInvoice] = useState<PublicInvoice | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    // Preserved logic: Fetch from Supabase RPC get_public_invoice
-    // Simulating data for preview
-    setInvoice({
-      invoice_number: 'FST-1024',
-      customer_name: 'Chioma Jide',
-      created_at: new Date().toISOString(),
-      status: 'paid',
-      total_amount: 850000,
-      unit_price: 850000,
-      quantity: 1,
-      payment_method: 'Bank Transfer',
-      product_snapshot: { name: 'iPhone 14 Pro Max', spec: '256GB - Deep Purple' },
-      imei: '358912345678901'
-    });
-  }, [params.id]);
+    let active = true
+    async function loadInvoice() {
+      const { data, error } = await supabase.rpc('get_public_invoice', {
+        p_invoice_id: id,
+      })
 
-  if (!invoice) return <div className="min-h-screen flex items-center justify-center font-mono animate-pulse" role="status" aria-label="Loading invoice">VERIFYING INVOICE...</div>;
+      if (!active) return
+      if (error) {
+        setErrorMessage(error.message)
+      } else {
+        const row = Array.isArray(data) ? data[0] : data
+        setInvoice((row as PublicInvoice | undefined) ?? null)
+      }
+      setLoading(false)
+    }
+
+    if (id) void loadInvoice()
+    return () => {
+      active = false
+    }
+  }, [id])
+
+  if (loading) {
+    return <main className="mx-auto max-w-3xl px-5 py-16 text-center text-slate-400">Loading invoice…</main>
+  }
+
+  if (errorMessage || !invoice) {
+    return (
+      <main className="mx-auto max-w-2xl px-5 py-16">
+        <div role="alert" className="flex gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+          <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+          <span>{errorMessage || 'This invoice could not be found.'}</span>
+        </div>
+        <Link href="/" className="mt-5 inline-block text-sm text-premiumYellow hover:underline">Return to Fonestack</Link>
+      </main>
+    )
+  }
+
+  const settings = invoice.settings ?? {}
+  const productName = `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
 
   return (
-    <>
-      <Script
-        id="invoice-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(invoiceSchema),
-        }}
-      />
-      
-      <div className="min-h-screen bg-[#050505] text-white p-4 md:p-8 flex items-center justify-center font-sans" role="main" aria-label="Invoice details">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-xl liquid-glass rounded-[2.5rem] border-white/10 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)]"
-        >
-          {/* Receipt Header */}
-          <div className="bg-gradient-to-b from-white/10 to-transparent p-10 text-center border-b border-white/5">
-            <div className="text-3xl font-display font-black tracking-tighter mb-2">
-              FONE<span className="text-premiumYellow">STACK</span>
-            </div>
-            <div className="text-[10px] font-mono uppercase tracking-[0.3em] opacity-40">Official Receipt</div>
-            
-            <motion.div 
-              initial={{ scale: 0 }} 
-              animate={{ scale: 1 }} 
-              transition={{ type: 'spring', delay: 0.3 }}
-              className="mt-8 inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 px-6 py-2 rounded-full text-xs font-bold"
-              aria-label={`Invoice status: ${invoice.status}`}
-            >
-              <CheckCircle2 className="w-4 h-4" aria-hidden="true" /> 
-              {invoice.status.toUpperCase()}
-            </motion.div>
-          </div>
-
-          {/* Receipt Content */}
-          <div className="p-8 md:p-10 space-y-8">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="text-[10px] font-mono uppercase tracking-widest opacity-40 mb-1">Invoice Number</div>
-                <div className="text-lg font-bold text-premiumYellow" aria-label={`Invoice number: ${invoice.invoice_number}`}>{invoice.invoice_number}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-[10px] font-mono uppercase tracking-widest opacity-40 mb-1">Date Issued</div>
-                <div className="text-sm font-medium" aria-label={`Date issued: ${new Date(invoice.created_at).toLocaleDateString()}`}>{new Date(invoice.created_at).toLocaleDateString()}</div>
-              </div>
-            </div>
-
-            {/* Item Box */}
-            <div className="bg-white/5 rounded-3xl p-6 border border-white/5">
-              <div className="text-[10px] font-mono uppercase tracking-widest opacity-40 mb-3">Item Purchased</div>
-              <div className="text-xl font-bold mb-1">{invoice.product_snapshot.name}</div>
-              <div className="text-xs opacity-50 mb-4">{invoice.product_snapshot.spec}</div>
-              <div className="flex items-center gap-2 text-[10px] font-mono bg-black/40 w-fit px-3 py-1 rounded-lg">
-                <span className="opacity-40 uppercase">IMEI:</span>
-                <span className="text-premiumYellow" aria-label={`IMEI: ${invoice.imei}`}>{invoice.imei}</span>
-              </div>
-            </div>
-
-            {/* Totals */}
-            <div className="space-y-3 px-2">
-              <div className="flex justify-between text-sm opacity-60">
-                <span>Subtotal (x{invoice.quantity})</span>
-                <span aria-label={`Subtotal: ₦${invoice.unit_price.toLocaleString()}`}>₦{invoice.unit_price.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm opacity-60">
-                <span>Payment Method</span>
-                <span aria-label={`Payment method: ${invoice.payment_method}`}>{invoice.payment_method}</span>
-              </div>
-              <div className="pt-4 flex justify-between items-end border-t border-white/10">
-                <span className="text-sm font-bold uppercase tracking-widest">Total Paid</span>
-                <span className="text-4xl font-display font-black text-premiumYellow" aria-label={`Total paid: ₦${invoice.total_amount.toLocaleString()}`}>₦{invoice.total_amount.toLocaleString()}</span>
-              </div>
-            </div>
-
-            {/* Warranty Info */}
-            <div className="bg-premiumYellow/5 border border-premiumYellow/10 rounded-2xl p-4 flex items-center gap-4" aria-label="Warranty information">
-               <ShieldCheck className="text-premiumYellow w-6 h-6 shrink-0" aria-hidden="true" />
-               <div className="text-[11px] leading-relaxed opacity-80">
-                 This device is covered under Fonestack Standard Warranty for 6 months from the date of purchase.
-               </div>
-            </div>
-          </div>
-
-          {/* Actions Footer */}
-          <div className="p-8 bg-white/5 border-t border-white/10 grid grid-cols-2 gap-4">
-            <button 
-              onClick={() => window.print()} 
-              className="flex items-center justify-center gap-2 bg-white/10 py-4 rounded-2xl font-bold text-sm hover:bg-white/20 transition-all"
-              aria-label="Print invoice"
-            >
-              <Printer className="w-4 h-4" aria-hidden="true" /> Print
-            </button>
-            <button 
-              className="flex items-center justify-center gap-2 bg-premiumYellow text-black py-4 rounded-2xl font-bold text-sm hover:scale-105 transition-all"
-              aria-label="Download invoice"
-            >
-              <Download className="w-4 h-4" aria-hidden="true" /> Download
-            </button>
-          </div>
-        </motion.div>
+    <main className="min-h-screen bg-slate-100 px-4 py-8 text-slate-900">
+      <div className="mx-auto mb-4 flex max-w-3xl justify-end print:hidden">
+        <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2 text-sm font-bold text-white">
+          <Printer className="h-4 w-4" aria-hidden="true" />
+          Print / Save PDF
+        </button>
       </div>
-    </>
+
+      <article className="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-xl md:p-10 print:max-w-none print:rounded-none print:p-0 print:shadow-none">
+        <header className="flex flex-wrap items-start justify-between gap-6 border-b border-slate-200 pb-6">
+          <div>
+            {settings.logo_url && (
+              <img src={settings.logo_url} alt="" className="mb-3 max-h-14 max-w-40 object-contain" />
+            )}
+            <p className="text-sm font-bold tracking-[0.2em] text-amber-600">{settings.business_name || 'FONESTACK'}</p>
+            {settings.invoice_tagline && <p className="mt-1 text-xs text-slate-500">{settings.invoice_tagline}</p>}
+            {settings.business_address && <p className="mt-2 text-xs text-slate-500">{settings.business_address}</p>}
+          </div>
+          <div className="text-right">
+            <h1 className="text-2xl font-black">Invoice</h1>
+            <p className="mt-2 font-mono text-sm">{invoice.invoice_number}</p>
+            <p className="mt-1 text-xs capitalize text-slate-500">{invoice.status}</p>
+            <p className="mt-1 text-xs text-slate-500">{new Date(invoice.created_at).toLocaleDateString('en-NG')}</p>
+          </div>
+        </header>
+
+        <section className="grid gap-5 py-6 sm:grid-cols-2">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Customer</h2>
+            <p className="mt-2 font-semibold">{invoice.customer_name}</p>
+            <p className="text-sm text-slate-600">{invoice.customer_phone}</p>
+            {invoice.customer_email && <p className="text-sm text-slate-600">{invoice.customer_email}</p>}
+          </div>
+          <div className="text-sm text-slate-600">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Payment details</h2>
+            <p className="mt-2 capitalize">Method: {invoice.payment_method ?? '—'}</p>
+            {invoice.paid_at && <p>Paid on: {new Date(invoice.paid_at).toLocaleDateString('en-NG')}</p>}
+            {invoice.imei && <p className="mt-1">IMEI / serial: {invoice.imei}</p>}
+          </div>
+        </section>
+
+        <table className="w-full border-y border-slate-200 text-left text-sm">
+          <thead>
+            <tr className="text-xs uppercase tracking-wider text-slate-500">
+              <th className="py-3">Description</th>
+              <th className="py-3 text-right">Qty</th>
+              <th className="py-3 text-right">Unit price</th>
+              <th className="py-3 text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="py-4">
+                <p className="font-semibold">{productName || 'Product details unavailable'}</p>
+                {invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-slate-500">{invoice.product_snapshot.spec}</p>}
+              </td>
+              <td className="py-4 text-right">{invoice.quantity}</td>
+              <td className="py-4 text-right">{formatNaira(invoice.unit_price)}</td>
+              <td className="py-4 text-right">{formatNaira(invoice.unit_price * invoice.quantity)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <dl className="ml-auto mt-6 grid max-w-sm gap-2 text-sm">
+          <div className="flex justify-between"><dt>Discount</dt><dd>{formatNaira(invoice.discount_amount)}</dd></div>
+          <div className="flex justify-between border-t border-slate-200 pt-3 text-base font-bold"><dt>Total</dt><dd>{formatNaira(invoice.total_amount)}</dd></div>
+        </dl>
+
+        {invoice.notes && <p className="mt-8 whitespace-pre-wrap border-t border-slate-200 pt-5 text-sm text-slate-600">{invoice.notes}</p>}
+        {settings.invoice_terms && <p className="mt-6 whitespace-pre-wrap text-xs text-slate-500">{settings.invoice_terms}</p>}
+        {settings.invoice_footer && <p className="mt-8 border-t border-slate-200 pt-4 text-center text-xs text-slate-500">{settings.invoice_footer}</p>}
+      </article>
+    </main>
   )
 }

@@ -107,7 +107,10 @@ export default function Storefront() {
         if (data) {
           setProducts(data.map(product => ({
             ...product,
-            category: getProductCategory(product.category),
+            spec: product.spec ?? '',
+            rating: product.rating ?? undefined,
+            stock_quantity: product.stock_quantity ?? 0,
+            category: getProductCategory(undefined),
           })))
         }
       } catch (err) {

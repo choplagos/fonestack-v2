@@ -1,7 +1,8 @@
 import { scrapeJiji } from '@/lib/scrapers/jiji';
 import { scrapeFacebookMarketplace } from '@/lib/scrapers/facebook';
 import { aggregateListings } from '@/lib/tradein/aggregator';
-import { supabase } from '@/lib/supabase';
+import type { AggregationResult } from '@/lib/tradein/aggregator'
+import type { Listing } from '@/lib/scrapers/jiji'
 
 export const runtime = 'edge';
 
@@ -31,30 +32,6 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ fromCache: true, source: 'memory', ...cached.value }), { headers: { 'Content-Type': 'application/json' } });
     }
 
-    // Try Supabase-backed cache (if available). If Supabase fails, fall back to web scraping.
-    try {
-      const { data: rows, error } = await supabase
-        .from('tradein_cache')
-        .select('key, result, created_at')
-        .eq('key', key)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (!error && rows && rows.length > 0) {
-        const row = rows[0];
-        const age = new Date().getTime() - new Date(row.created_at).getTime();
-        if (age < CACHE_TTL) {
-          const parsed = row.result;
-          // Update in-memory cache
-          cache.set(key, { ts: now, value: parsed });
-          return new Response(JSON.stringify({ fromCache: true, source: 'supabase', ...parsed }), { headers: { 'Content-Type': 'application/json' } });
-        }
-      }
-    } catch (e) {
-      // Supabase may not be configured or table missing; ignore and proceed to scraping
-      console.warn('Supabase cache check failed', e);
-    }
-
     const [jijiRes, fbRes] = await Promise.allSettled([
       scrapeJiji(query, 50),
       scrapeFacebookMarketplace(query, 50),
@@ -71,13 +48,6 @@ export async function POST(req: Request) {
 
     // Store in-memory
     cache.set(key, { ts: now, value: result });
-
-    // Try to persist to Supabase
-    try {
-      await supabase.from('tradein_cache').insert([{ key, query, result }]);
-    } catch (e) {
-      console.warn('Supabase cache write failed', e);
-    }
 
     return new Response(JSON.stringify(result), { headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {

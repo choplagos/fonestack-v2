@@ -30,7 +30,17 @@ export async function POST(req: Request) {
       has_charger,
     } = body
 
-    if (!customer_name || !customer_phone || !brand || !model || !condition_grade) {
+    if (
+      typeof customer_name !== 'string' ||
+      typeof customer_phone !== 'string' ||
+      typeof brand !== 'string' ||
+      typeof model !== 'string' ||
+      !customer_name.trim() ||
+      !customer_phone.trim() ||
+      !brand.trim() ||
+      !model.trim() ||
+      typeof condition_grade !== 'string'
+    ) {
       return NextResponse.json(
         { error: 'Missing required fields.' },
         { status: 400 }
@@ -38,15 +48,22 @@ export async function POST(req: Request) {
     }
 
     const grade = String(condition_grade).toLowerCase()
-    const multiplier = CONDITION_MULTIPLIER[grade] ?? 0.45
+    const multiplier = CONDITION_MULTIPLIER[grade]
+    if (multiplier === undefined) {
+      return NextResponse.json({ error: 'Select a valid device condition.' }, { status: 400 })
+    }
 
     // 1. Try to find a close catalog match (brand + model)
-    const { data: exactMatches } = await supabase
+    const { data: exactMatches, error: exactError } = await supabase
       .from('products')
       .select('name, brand, price')
       .ilike('brand', `%${brand}%`)
       .ilike('name', `%${model}%`)
+      .gt('price', 0)
+      .neq('status', 'demo')
       .limit(5)
+
+    if (exactError) throw exactError
 
     let anchorPrice: number | null = null
     let confidence: 'high' | 'medium' | 'low' = 'low'
@@ -60,11 +77,15 @@ export async function POST(req: Request) {
       matchLabel = exactMatches[0].name
     } else {
       // 2. Fall back to average price for the brand
-      const { data: brandMatches } = await supabase
+      const { data: brandMatches, error: brandError } = await supabase
         .from('products')
         .select('name, brand, price')
         .ilike('brand', `%${brand}%`)
+        .gt('price', 0)
+        .neq('status', 'demo')
         .limit(20)
+
+      if (brandError) throw brandError
 
       if (brandMatches && brandMatches.length > 0) {
         anchorPrice =
@@ -74,15 +95,22 @@ export async function POST(req: Request) {
         matchLabel = `average ${brand} pricing`
       } else {
         // 3. Fall back to overall catalog average
-        const { data: allProducts } = await supabase
+        const { data: allProducts, error: productsError } = await supabase
           .from('products')
           .select('price')
+          .gt('price', 0)
+          .neq('status', 'demo')
           .limit(200)
 
-        const prices = (allProducts || []).map((p) => Number(p.price))
-        anchorPrice = prices.length
-          ? prices.reduce((a, b) => a + b, 0) / prices.length
-          : 200000
+        if (productsError) throw productsError
+        const prices = (allProducts ?? []).map((p) => Number(p.price)).filter((price) => price > 0)
+        if (prices.length === 0) {
+          return NextResponse.json(
+            { error: 'Trade-in estimates are unavailable until priced products are added to the catalog.' },
+            { status: 503 }
+          )
+        }
+        anchorPrice = prices.reduce((a, b) => a + b, 0) / prices.length
         confidence = 'low'
         matchLabel = 'general market estimate'
       }

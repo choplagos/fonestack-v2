@@ -58,6 +58,19 @@ npm install
 npm run dev
 ```
 
+### Admin access and Supabase
+
+The admin console is available at `/admin` and requires Supabase email/password
+authentication. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+to the local environment and the Vercel project settings. Admin accounts must
+already exist in Supabase Auth and be listed in the `public.admin_users`
+allowlist; accounts not on that list are signed out and cannot open the console.
+
+Inventory, invoices, device requests, trade-in requests, and business settings
+are read from their existing Supabase tables. Missing Supabase configuration or
+query failures are shown as errors rather than replaced with sample dashboard
+values.
+
 ## 🌐 Custom domain and AdSense
 
 The canonical site URL is `https://fonestack.com.ng`; the app redirects `www.fonestack.com.ng` to the apex domain. Set the apex domain as the primary domain in Vercel and configure both domain DNS records to avoid a host redirect loop.

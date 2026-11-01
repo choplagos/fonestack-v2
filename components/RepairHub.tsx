@@ -5,6 +5,7 @@ import { Smartphone, Battery, Zap, Droplets, Camera, Speaker, Wrench, MessageCir
 import Script from 'next/script'
 import { SITE_URL } from '@/lib/constants'
 import { currentPage, track } from '@/lib/analytics'
+import { supabase } from '@/lib/supabase'
 
 const REPAIR_TYPES = [
   { id: 'screen', label: 'Screen', icon: Smartphone, desc: 'Cracked or bleeding display' },
@@ -38,9 +39,29 @@ const repairServiceSchema = {
 export default function RepairHub() {
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', model: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleRepairWhatsApp = (e: React.FormEvent) => {
+  const handleRepairWhatsApp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+
+    const whatsappWindow = window.open('about:blank', '_blank');
+    const { error } = await supabase.from('device_requests').insert({
+      customer_name: formData.name.trim(),
+      requested_device: formData.model.trim(),
+      source: `repair:${selectedIssue || 'General Diagnostic'}`,
+      status: 'new',
+    });
+
+    if (error) {
+      whatsappWindow?.close();
+      setSubmitError(`Your request could not be saved to Supabase: ${error.message}`);
+      setSubmitting(false);
+      return;
+    }
+
     track('repair_click')
     track('whatsapp_click', {
       page: currentPage(),
@@ -49,7 +70,13 @@ export default function RepairHub() {
     const waMsg = encodeURIComponent(
       `Hi Fonestack! 🔧\n\n*REPAIR REQUEST*\n👤 Name: ${formData.name}\n📱 Device: ${formData.model}\n🛠 Issue: ${selectedIssue || 'General Checkup'}\n\nWhat is the estimated cost?`
     );
-    window.open(`https://wa.me/2349029928322?text=${waMsg}`, '_blank');
+    const whatsappUrl = `https://wa.me/2349029928322?text=${waMsg}`;
+    if (whatsappWindow) {
+      whatsappWindow.location.href = whatsappUrl;
+    } else {
+      setSubmitError('Your request was saved, but the WhatsApp window was blocked. Please allow pop-ups and try again.');
+    }
+    setSubmitting(false);
   };
 
   return (
@@ -147,13 +174,16 @@ export default function RepairHub() {
                   </div>
                 </div>
 
+                {submitError && <p role="alert" className="text-sm text-red-300">{submitError}</p>}
+
                 <button 
                   type="submit"
-                  className="w-full py-5 rounded-2xl bg-premiumYellow text-black font-bold flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-premiumYellow/20 transition-all"
-                  aria-label="Book repair service on WhatsApp"
+                  disabled={submitting}
+                  className="w-full py-5 rounded-2xl bg-premiumYellow text-black font-bold flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-premiumYellow/20 transition-all disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label="Send a repair enquiry on WhatsApp"
                 >
                   <MessageCircle className="w-5 h-5" aria-hidden="true" />
-                  BOOK REPAIR ON WHATSAPP
+                  {submitting ? 'SAVING REQUEST…' : 'SEND REPAIR ENQUIRY ON WHATSAPP'}
                 </button>
               </form>
             </motion.div>
