@@ -71,6 +71,22 @@ are read from their existing Supabase tables. Missing Supabase configuration or
 query failures are shown as errors rather than replaced with sample dashboard
 values.
 
+Inventory admins can bulk import product lists from CSV, `.xlsx`, `.docx`
+tables, or a Google Sheets URL that is publicly accessible for export. Files
+and exported sheets are limited to 3 MB and 500 product rows. Include a header
+row; Word imports use tables only, and all product tables in a document must
+share the same column headers. Private Sheets that require Google sign-in are
+not supported.
+
+The import screen suggests field mappings from common headers and shows a
+row-by-row preview before saving. Required fields are brand, product name, and
+price. A matching normalized brand and product name updates the existing
+product; unmatched entries are added. Ambiguous catalog matches and duplicate
+source keys are skipped for review. New products default to zero stock, a
+low-stock threshold of 3, status `new`, condition grade `A`, and zero warranty
+months when those columns are omitted. Updates change only mapped, non-empty
+values; omitted or blank fields leave existing product values unchanged.
+
 Inventory product forms include an AI specification draft action. It uses
 `GEMINI_API_KEY` on the server, generates from the product brand and name, and
 fills the editable specifications field for review. The draft is saved only
