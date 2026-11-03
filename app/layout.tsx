@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import Footer from '@/components/Footer'
 import PoweredByOtprent from '@/components/PoweredByOtprent'
 import PostHogProvider from '@/components/PostHogProvider'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { BUSINESS_REGISTRATION_NUMBER, GOOGLE_BUSINESS_PROFILE_URL, SITE_URL } from '@/lib/constants'
 
 // Dynamic metadata configuration
@@ -180,6 +181,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <PostHogProvider>
+            <GoogleAnalytics />
             {children}
             <Footer />
             <PoweredByOtprent />

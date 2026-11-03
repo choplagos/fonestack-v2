@@ -64,11 +64,12 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-xl font-semibold text-white">Cookies, local storage, and advertising</h2>
           <p className="mt-3 leading-7">
-            The site uses browser storage to remember display preferences such as your selected theme. We do not
-            currently use a first-party analytics cookie. If Google AdSense is enabled for this site, Google and its
-            partners may use cookies or similar technologies to provide, measure, and personalize advertising, subject
-            to your settings and applicable Google policies. You can manage cookies through your browser and review
-            Google’s advertising controls and privacy information.
+            The site uses browser storage to remember display preferences such as your selected theme. Google
+            Analytics 4 may use first-party cookies or similar technologies to measure visits and page activity on
+            public-facing pages. If Google AdSense is enabled for this site, Google and its partners may also use
+            cookies or similar technologies to provide, measure, and personalize advertising, subject to your settings
+            and applicable Google policies. You can manage cookies through your browser and review Google’s privacy
+            information.
           </p>
         </section>
 
@@ -80,9 +81,10 @@ export default function PrivacyPolicyPage() {
             under their own terms and privacy notices. Links to third-party sites are not controlled by Fonestack.
           </p>
           <p className="mt-3 leading-7">
-            We use PostHog for website analytics and session recordings. Input values are masked, text marked as
-            sensitive is masked, and the repair and trade-in forms are excluded from recordings. Analytics events do
-            not include submitted names, phone numbers, email addresses, or IMEIs.
+            We use Google Analytics 4 for page-view analytics on public-facing pages and PostHog for website analytics
+            and session recordings. Input values are masked, text marked as sensitive is masked, and the repair and
+            trade-in forms are excluded from recordings. Analytics events do not include submitted names, phone
+            numbers, email addresses, or IMEIs.
           </p>
         </section>
 
