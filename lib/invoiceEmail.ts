@@ -7,6 +7,7 @@ type InvoiceEmailData = {
   customerPhone: string
   productName: string
   productSpec: string | null
+  items?: Array<{ name: string; brand: string | null; spec: string | null; imei: string | null; quantity: number; unitPrice: number }>
   quantity: number
   unitPrice: number
   discountAmount: number
@@ -54,7 +55,20 @@ export function renderInvoiceEmail(data: InvoiceEmailData) {
     ? `<p style="margin:20px 0 0;font-size:11px;line-height:1.8;color:#A5AAA0;white-space:pre-line;">${e(data.invoiceFooter)}</p>`
     : ''
   const date = e(new Date(data.createdAt).toLocaleDateString('en-NG'))
-  const subtotal = data.unitPrice * data.quantity
+  const rows = data.items?.length
+    ? data.items
+    : [{ name: data.productName, brand: null, spec: data.productSpec, imei: null, quantity: data.quantity, unitPrice: data.unitPrice }]
+  const subtotal = rows.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0)
+  const itemRows = rows.map((item) => {
+    const description = e([item.brand, item.name].filter(Boolean).join(' ') || 'Item')
+    const detail = [item.spec && e(item.spec), item.imei && `IMEI: ${e(item.imei)}`].filter(Boolean).join('<br>')
+    return `<tr>
+                  <td class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#191C17;">${description}${detail ? `<br><span style="font-size:11px;color:#62675E;">${detail}</span>` : ''}</td>
+                  <td align="center" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${item.quantity}</td>
+                  <td align="right" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${formatNaira(item.unitPrice)}</td>
+                  <td align="right" class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(item.unitPrice * item.quantity)}</td>
+                </tr>`
+  }).join('')
 
   return `<!doctype html>
 <html lang="en">
@@ -152,12 +166,7 @@ export function renderInvoiceEmail(data: InvoiceEmailData) {
                   <th align="right" class="item-padding" style="padding:12px 5px;font-size:11px;color:#656A60;font-weight:bold;">Price</th>
                   <th align="right" class="item-padding" style="padding:12px 10px;font-size:11px;color:#656A60;font-weight:bold;">Total</th>
                 </tr>
-                <tr>
-                  <td class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#191C17;">${e(productDescription)}</td>
-                  <td align="center" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${data.quantity}</td>
-                  <td align="right" class="item-padding" style="padding:16px 5px;border-bottom:1px solid #E9EBE6;font-size:13px;color:#62675E;">${formatNaira(data.unitPrice)}</td>
-                  <td align="right" class="item-padding" style="padding:16px 10px;border-bottom:1px solid #E9EBE6;font-size:13px;font-weight:bold;color:#191C17;">${formatNaira(subtotal)}</td>
-                </tr>
+                ${itemRows}
               </table>
             </td>
           </tr>
@@ -217,6 +226,7 @@ export function renderInvoiceEmail(data: InvoiceEmailData) {
 
 export function invoiceEmailProductName(snapshot: Json | null) {
   const product = asRecord(snapshot)
+  if (product.multi === true && typeof product.name === 'string') return product.name
   const brand = typeof product.brand === 'string' ? product.brand : ''
   const name = typeof product.name === 'string' ? product.name : ''
   return `${brand} ${name}`.trim() || 'Product details unavailable'
@@ -224,4 +234,25 @@ export function invoiceEmailProductName(snapshot: Json | null) {
 
 export function invoiceEmailProductSpec(snapshot: Json | null) {
   return snapshotText(snapshot, 'spec')
+}
+
+export function invoiceEmailItems(snapshot: Json | null) {
+  const product = asRecord(snapshot)
+  if (product.multi !== true || !Array.isArray(product.items)) return undefined
+  return product.items.flatMap((value) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return []
+    const item = value as Record<string, Json | undefined>
+    const number = (key: string, fallback: number) => typeof item[key] === 'number' && Number.isFinite(item[key]) ? item[key] as number : fallback
+    const text = (key: string) => typeof item[key] === 'string' ? item[key] as string : null
+    const name = text('name')
+    if (!name) return []
+    return [{
+      name,
+      brand: text('brand'),
+      spec: text('spec'),
+      imei: text('imei'),
+      quantity: Math.max(1, Math.floor(number('quantity', 1))),
+      unitPrice: Math.max(0, number('unit_price', 0)),
+    }]
+  })
 }

@@ -5,6 +5,7 @@ import { SITE_URL } from '@/lib/constants'
 import type { Database } from '@/lib/database.types'
 import {
   invoiceEmailProductName,
+  invoiceEmailItems,
   invoiceEmailProductSpec,
   renderInvoiceEmail,
 } from '@/lib/invoiceEmail'
@@ -129,6 +130,7 @@ export async function POST(request: Request) {
     customerPhone: invoice.customer_phone,
     productName: invoiceEmailProductName(invoice.product_snapshot),
     productSpec: invoiceEmailProductSpec(invoice.product_snapshot),
+    items: invoiceEmailItems(invoice.product_snapshot),
     quantity: invoice.quantity,
     unitPrice: Number(invoice.unit_price),
     discountAmount: Number(invoice.discount_amount),

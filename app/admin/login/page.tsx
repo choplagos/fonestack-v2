@@ -13,19 +13,59 @@ export default function AdminLoginPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const reportAttempt = async (emailAddress: string, deviceId: string, success: boolean, accessToken?: string) => {
+    try {
+      const response = await fetch('/api/admin/auth/report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify({ email: emailAddress, success, deviceId }),
+      })
+      if (!response.ok) console.warn('Could not report admin login attempt.')
+    } catch {
+      console.warn('Could not report admin login attempt.')
+    }
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage('')
     setLoading(true)
+    const normalizedEmail = email.trim().toLowerCase()
 
     try {
+      // Supabase Auth has built-in rate limits; this precheck adds an extra layer before sign-in.
+      const precheckResponse = await fetch('/api/admin/auth/precheck', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalizedEmail }),
+      })
+      const precheck = await precheckResponse.json() as { locked?: boolean; retry_after_seconds?: number; error?: string }
+      if (precheckResponse.status === 429 || precheck.locked) {
+        const minutes = Math.max(1, Math.ceil(Number(precheck.retry_after_seconds ?? 60) / 60))
+        setErrorMessage(`Too many attempts. Try again in ${minutes} minute${minutes === 1 ? '' : 's'}.`)
+        return
+      }
+      if (!precheckResponse.ok) throw new Error(precheck.error || 'Could not verify sign-in attempt status.')
+
+      let deviceId = window.localStorage.getItem('fs_device_id')
+      if (!deviceId) {
+        deviceId = window.crypto.randomUUID()
+        window.localStorage.setItem('fs_device_id', deviceId)
+      }
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
       })
 
-      if (error) throw error
+      if (error) {
+        void reportAttempt(normalizedEmail, deviceId, false)
+        throw error
+      }
       if (!data.user?.email) throw new Error('Supabase did not return a signed-in user.')
+      void reportAttempt(normalizedEmail, deviceId, true, data.session?.access_token)
 
       const { data: adminRecord, error: adminError } = await supabase
         .from('admin_users')

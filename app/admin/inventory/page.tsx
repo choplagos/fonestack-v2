@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { AlertCircle, FileSpreadsheet, Globe2, Loader2, Pencil, Plus, Search, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { AlertCircle, Download, FileSpreadsheet, Globe2, Loader2, Plus, Search, Upload, X } from 'lucide-react'
 
 import {
   INVENTORY_IMPORT_FIELDS,
@@ -11,43 +12,85 @@ import {
   type InventoryImportSource,
 } from '@/lib/inventoryImportTypes'
 import { supabase } from '@/lib/supabase'
+import { exportCsv, exportXlsx, type ExportColumn } from '@/lib/export'
+import InventoryProductForm, { type InventoryProductFormData } from '@/components/admin/InventoryProductForm'
+import InventorySummary from '@/components/admin/InventorySummary'
+import InventoryProductTable, { type InventoryProductRow } from '@/components/admin/InventoryProductTable'
+import InventoryBulkActions, { type BulkProduct } from '@/components/admin/InventoryBulkActions'
+import { useAdminRole } from '@/components/AdminLayoutClient'
+import { adminOperationError } from '@/lib/adminRole'
 
-type Product = {
-  id: number
-  name: string
+type Product = InventoryProductFormData & { id: number; created_at: string }
+type ProductForm = InventoryProductFormData
+type ImportResultSummary = { added: number; updated: number; skipped: number; failed: number }
+type InventoryExportRow = {
   brand: string
+  name: string
+  status: string
   price: number
-  spec: string | null
-  status: 'new' | 'used' | 'hot'
-  in_stock: boolean
-  image_url: string | null
-  stock_quantity: number
-  low_stock_threshold: number
-  condition_grade: 'S' | 'A' | 'B' | 'C' | null
-  warranty_months: number | null
-  imei: string | null
-  created_at: string
+  stock: number
+  grade: string
+  storage: string
+  ram: string
+  color: string
+  imei: string
+  warranty: string
 }
 
-type ProductForm = Omit<Product, 'id' | 'created_at' | 'in_stock'> & { id?: number }
-type ImportResultSummary = { added: number; updated: number; skipped: number; failed: number }
+const INVENTORY_EXPORT_COLUMNS: ExportColumn<InventoryExportRow>[] = [
+  { header: 'Brand', key: 'brand' },
+  { header: 'Name', key: 'name' },
+  { header: 'Status', key: 'status' },
+  { header: 'Price', key: 'price' },
+  { header: 'Stock', key: 'stock' },
+  { header: 'Grade', key: 'grade' },
+  { header: 'Storage', key: 'storage' },
+  { header: 'RAM', key: 'ram' },
+  { header: 'Color', key: 'color' },
+  { header: 'IMEI', key: 'imei' },
+  { header: 'Warranty', key: 'warranty' },
+]
 
 const EMPTY_PRODUCT: ProductForm = {
   name: '',
   brand: '',
   price: 0,
+  cost_price: null,
+  description: '',
+  seo_title: '',
+  seo_description: '',
   spec: '',
   status: 'new',
+  in_stock: false,
   image_url: '',
   stock_quantity: 0,
   low_stock_threshold: 3,
   condition_grade: 'A',
   warranty_months: 0,
   imei: '',
+  storage_gb: null,
+  ram_gb: null,
+  color: '',
+  processor: '',
+  screen_size: null,
+  battery_mah: null,
+  camera_mp: null,
 }
 
 function formatNaira(value: number) {
   return `₦${Number(value).toLocaleString('en-NG')}`
+}
+
+function getProductImagePath(imageUrl: string | null | undefined) {
+  if (!imageUrl) return null
+  try {
+    const url = new URL(imageUrl)
+    const marker = '/storage/v1/object/public/product-images/'
+    const index = url.pathname.indexOf(marker)
+    return index >= 0 ? decodeURIComponent(url.pathname.slice(index + marker.length)) : null
+  } catch {
+    return null
+  }
 }
 
 const EMPTY_IMPORT_MAPPING = Object.fromEntries(
@@ -55,15 +98,18 @@ const EMPTY_IMPORT_MAPPING = Object.fromEntries(
 ) as InventoryImportMapping
 
 export default function InventoryPage() {
+  const searchParams = useSearchParams()
+  const { canWrite: canManage, isOwner } = useAdminRole()
   const [products, setProducts] = useState<Product[]>([])
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<'all' | 'low-stock' | 'new' | 'used' | 'hot'>('all')
+  const [filter, setFilter] = useState<'all' | 'low-stock' | 'new' | 'used' | 'hot' | 'demo'>('all')
   const [form, setForm] = useState<ProductForm | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [generatingSpec, setGeneratingSpec] = useState(false)
   const [specMessage, setSpecMessage] = useState('')
   const [specError, setSpecError] = useState('')
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
   const [errorMessage, setErrorMessage] = useState('')
   const [importOpen, setImportOpen] = useState(false)
   const [importUrl, setImportUrl] = useState('')
@@ -83,7 +129,7 @@ export default function InventoryPage() {
 
     const { data, error } = await supabase
       .from('products')
-      .select('id, name, brand, price, spec, status, in_stock, image_url, stock_quantity, low_stock_threshold, condition_grade, warranty_months, imei, created_at')
+      .select('id, name, brand, price, cost_price, description, seo_title, seo_description, spec, status, in_stock, image_url, stock_quantity, low_stock_threshold, condition_grade, warranty_months, imei, storage_gb, ram_gb, color, processor, screen_size, battery_mah, camera_mp, created_at')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -100,6 +146,14 @@ export default function InventoryPage() {
     void loadProducts()
   }, [])
 
+  useEffect(() => {
+    setSearch(searchParams.get('q') ?? '')
+    const requestedFilter = searchParams.get('filter')
+    if (requestedFilter === 'low-stock' || requestedFilter === 'new' || requestedFilter === 'used' || requestedFilter === 'hot' || requestedFilter === 'demo') {
+      setFilter(requestedFilter)
+    }
+  }, [searchParams])
+
   const filteredProducts = useMemo(() => {
     const needle = search.trim().toLowerCase()
     return products.filter((product) => {
@@ -113,6 +167,31 @@ export default function InventoryPage() {
       return matchesSearch && matchesFilter
     })
   }, [products, search, filter])
+  const visibleIds = filteredProducts.map((product) => product.id)
+  const selectedProducts = products.filter((product) => selectedIds.includes(product.id)) as BulkProduct[]
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id))
+
+  const exportRows = filteredProducts.map((product) => ({
+    brand: product.brand,
+    name: product.name,
+    status: product.status,
+    price: product.price,
+    stock: product.stock_quantity,
+    grade: product.condition_grade ?? '',
+    storage: product.storage_gb == null ? '' : `${product.storage_gb} GB`,
+    ram: product.ram_gb == null ? '' : `${product.ram_gb} GB`,
+    color: product.color ?? '',
+    imei: product.imei ?? '',
+    warranty: product.warranty_months == null ? '' : `${product.warranty_months} months`,
+  }))
+
+  async function exportExcel() {
+    try {
+      await exportXlsx('fonestack-inventory.xlsx', INVENTORY_EXPORT_COLUMNS, exportRows)
+    } catch (error) {
+      setErrorMessage(`Could not export inventory to Excel: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
 
   function startEdit(product: Product) {
     setForm({
@@ -120,14 +199,26 @@ export default function InventoryPage() {
       name: product.name,
       brand: product.brand,
       price: product.price,
+      cost_price: product.cost_price,
+      description: product.description ?? '',
+      seo_title: product.seo_title ?? '',
+      seo_description: product.seo_description ?? '',
       spec: product.spec ?? '',
       status: product.status,
+      in_stock: product.in_stock,
       image_url: product.image_url ?? '',
       stock_quantity: product.stock_quantity,
       low_stock_threshold: product.low_stock_threshold,
       condition_grade: product.condition_grade ?? 'A',
       warranty_months: product.warranty_months ?? 0,
       imei: product.imei ?? '',
+      storage_gb: product.storage_gb ?? null,
+      ram_gb: product.ram_gb ?? null,
+      color: product.color ?? '',
+      processor: product.processor ?? '',
+      screen_size: product.screen_size ?? null,
+      battery_mah: product.battery_mah ?? null,
+      camera_mp: product.camera_mp ?? null,
     })
     setSpecMessage('')
     setSpecError('')
@@ -186,6 +277,10 @@ export default function InventoryPage() {
       name: form.name.trim(),
       brand: form.brand.trim(),
       price: Math.round(Number(form.price)),
+      cost_price: form.cost_price === null || form.cost_price === undefined ? null : Number(form.cost_price),
+      description: form.description.trim() || null,
+      seo_title: form.seo_title.trim() || null,
+      seo_description: form.seo_description.trim() || null,
       spec: form.spec?.trim() || null,
       status: form.status,
       in_stock: Number(form.stock_quantity) > 0,
@@ -195,23 +290,42 @@ export default function InventoryPage() {
       condition_grade: form.condition_grade,
       warranty_months: Math.max(0, Math.floor(Number(form.warranty_months ?? 0))),
       imei: form.imei?.trim() || null,
+      storage_gb: form.storage_gb ?? null,
+      ram_gb: form.ram_gb ?? null,
+      color: form.color?.trim() || null,
+      processor: form.processor?.trim() || null,
+      screen_size: form.screen_size ?? null,
+      battery_mah: form.battery_mah ?? null,
+      camera_mp: form.camera_mp ?? null,
     }
 
     if (!payload.name || !payload.brand || !Number.isFinite(payload.price) || payload.price < 0) {
       setErrorMessage('Enter a product name, brand, and valid non-negative price.')
       return
     }
+    if (payload.cost_price !== null && (!Number.isFinite(payload.cost_price) || payload.cost_price < 0)) {
+      setErrorMessage('Cost price must be a non-negative number.')
+      return
+    }
 
     setSaving(true)
     setErrorMessage('')
+    const previousImageUrl = form.id ? products.find((product) => product.id === form.id)?.image_url : null
     const result = form.id
       ? await supabase.from('products').update(payload).eq('id', form.id)
       : await supabase.from('products').insert(payload)
 
     if (result.error) {
-      setErrorMessage(`Could not save product: ${result.error.message}`)
+      setErrorMessage(`Could not save product: ${adminOperationError(result.error, 'save inventory changes')}`)
     } else {
+      const oldImagePath = getProductImagePath(previousImageUrl)
+      const newImagePath = getProductImagePath(payload.image_url)
+      if (oldImagePath && oldImagePath !== newImagePath) {
+        const { error: removeError } = await supabase.storage.from('product-images').remove([oldImagePath])
+        if (removeError) setErrorMessage(`Product saved, but the previous image could not be removed: ${removeError.message}`)
+      }
       setForm(null)
+      setSelectedIds([])
       await loadProducts()
     }
     setSaving(false)
@@ -222,7 +336,7 @@ export default function InventoryPage() {
 
     const { error } = await supabase.from('products').delete().eq('id', product.id)
     if (error) {
-      setErrorMessage(`Could not delete product: ${error.message}`)
+      setErrorMessage(`Could not delete product: ${adminOperationError(error, 'delete inventory items')}`)
       return
     }
     setProducts((current) => current.filter((item) => item.id !== product.id))
@@ -367,7 +481,7 @@ export default function InventoryPage() {
   }
 
   return (
-    <div className="space-y-6 p-1 md:p-4">
+    <div className="space-y-6 p-1 pb-24 md:p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="mb-2 text-xs font-mono uppercase tracking-[0.2em] text-premiumYellow">
@@ -377,7 +491,13 @@ export default function InventoryPage() {
           <p className="mt-1 text-sm text-slate-400">Manage the live catalog, prices, IMEI, and stock levels.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
+          <button type="button" onClick={() => exportCsv('fonestack-inventory.csv', INVENTORY_EXPORT_COLUMNS, exportRows)} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white hover:bg-white/10">
+            <Download className="h-4 w-4" aria-hidden="true" /> Export CSV
+          </button>
+          <button type="button" onClick={() => void exportExcel()} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white hover:bg-white/10">
+            <FileSpreadsheet className="h-4 w-4" aria-hidden="true" /> Export Excel
+          </button>
+          {canManage && <button
             type="button"
             onClick={() => {
               setImportOpen((current) => !current)
@@ -388,8 +508,8 @@ export default function InventoryPage() {
           >
             <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
             Import products
-          </button>
-          <button
+          </button>}
+          {canManage && <button
             type="button"
             onClick={() => {
               setForm({ ...EMPTY_PRODUCT })
@@ -401,7 +521,7 @@ export default function InventoryPage() {
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add product
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -411,6 +531,8 @@ export default function InventoryPage() {
           <span>{errorMessage}</span>
         </div>
       )}
+
+      <InventorySummary products={products} />
 
       {importOpen && (
         <section className="space-y-5 rounded-2xl border border-white/10 bg-white/5 p-5 md:p-6">
@@ -592,109 +714,13 @@ export default function InventoryPage() {
       )}
 
       {form && (
-        <form onSubmit={saveProduct} className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white">{form.id ? 'Edit product' : 'Add product'}</h3>
-            <button type="button" onClick={() => setForm(null)} className="text-sm text-slate-400 hover:text-white">
-              Close
-            </button>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {([
-              ['Brand', 'brand', 'text'],
-              ['Product name', 'name', 'text'],
-              ['Price (₦)', 'price', 'number'],
-              ['Stock quantity', 'stock_quantity', 'number'],
-              ['Low-stock threshold', 'low_stock_threshold', 'number'],
-              ['Warranty (months)', 'warranty_months', 'number'],
-              ['Image URL', 'image_url', 'url'],
-              ['IMEI / serial', 'imei', 'text'],
-            ] as const).map(([label, key, type]) => (
-              <label key={key} className="space-y-2 text-xs font-semibold text-slate-300">
-                {label}
-                <input
-                  type={type}
-                  min={type === 'number' ? 0 : undefined}
-                  value={form[key] ?? ''}
-                  onChange={(event) => {
-                    setForm((current) =>
-                      current
-                        ? { ...current, [key]: type === 'number' ? Number(event.target.value) : event.target.value }
-                        : current,
-                    )
-                    if (key === 'brand' || key === 'name') {
-                      setSpecMessage('')
-                      setSpecError('')
-                    }
-                  }}
-                  className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-premiumYellow/70"
-                  required={key === 'brand' || key === 'name' || key === 'price'}
-                />
-              </label>
-            ))}
-            <label className="space-y-2 text-xs font-semibold text-slate-300">
-              Status
-              <select
-                value={form.status}
-                onChange={(event) => setForm((current) => current ? { ...current, status: event.target.value as ProductForm['status'] } : current)}
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white"
-              >
-                <option value="new">New</option>
-                <option value="used">Used</option>
-                <option value="hot">Hot deal</option>
-              </select>
-            </label>
-            <label className="space-y-2 text-xs font-semibold text-slate-300">
-              Condition grade
-              <select
-                value={form.condition_grade ?? 'A'}
-                onChange={(event) => setForm((current) => current ? { ...current, condition_grade: event.target.value as ProductForm['condition_grade'] } : current)}
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white"
-              >
-                {['S', 'A', 'B', 'C'].map((grade) => <option key={grade} value={grade}>{grade}</option>)}
-              </select>
-            </label>
-            <div className="space-y-2 sm:col-span-2 lg:col-span-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <label htmlFor="product-specifications" className="text-xs font-semibold text-slate-300">
-                  Specifications
-                </label>
-                <button
-                  type="button"
-                  onClick={() => void generateProductSpec()}
-                  disabled={generatingSpec || saving || !form.brand.trim() || !form.name.trim()}
-                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-lg border border-premiumYellow/40 bg-premiumYellow/10 px-3 py-2 text-xs font-bold text-premiumYellow hover:bg-premiumYellow/20 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <Sparkles className="h-4 w-4" aria-hidden="true" />
-                  {generatingSpec ? 'Generating draft…' : 'Generate specs with AI'}
-                </button>
-              </div>
-              <textarea
-                id="product-specifications"
-                rows={4}
-                value={form.spec ?? ''}
-                onChange={(event) => {
-                  setForm((current) => current ? { ...current, spec: event.target.value } : current)
-                  setSpecMessage('')
-                  setSpecError('')
-                }}
-                aria-describedby={specError ? 'product-spec-error' : specMessage ? 'product-spec-status' : undefined}
-                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-premiumYellow/70"
-              />
-              <p className="text-xs text-slate-500">AI drafts can be inaccurate. Review and edit specifications before saving.</p>
-              {specError && <p id="product-spec-error" role="alert" className="text-xs text-red-300">{specError}</p>}
-              {specMessage && <p id="product-spec-status" role="status" className="text-xs text-green-300">{specMessage}</p>}
-            </div>
-          </div>
-          <div className="flex justify-end gap-3">
-            <button type="button" onClick={() => setForm(null)} className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300">
-              Cancel
-            </button>
-            <button type="submit" disabled={saving || generatingSpec} className="rounded-xl bg-premiumYellow px-5 py-2 text-sm font-bold text-black disabled:opacity-60">
-              {saving ? 'Saving…' : generatingSpec ? 'Generating specs…' : 'Save product'}
-            </button>
-          </div>
-        </form>
+        <InventoryProductForm
+          form={form}
+          onChange={setForm}
+          onSubmit={saveProduct}
+          onClose={() => setForm(null)}
+          saving={saving}
+        />
       )}
 
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
@@ -719,56 +745,47 @@ export default function InventoryPage() {
             <option value="new">New</option>
             <option value="used">Used</option>
             <option value="hot">Hot deals</option>
+            <option value="demo">Demo</option>
           </select>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left text-sm">
-            <thead className="text-xs uppercase tracking-wider text-slate-500">
-              <tr>
-                <th className="px-5 py-3">Product</th>
-                <th className="px-5 py-3">Price</th>
-                <th className="px-5 py-3">Condition</th>
-                <th className="px-5 py-3">Stock</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5 text-slate-200">
-              {loading ? (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-slate-400">Loading inventory from Supabase…</td></tr>
-              ) : filteredProducts.length === 0 ? (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-slate-400">No matching products found.</td></tr>
-              ) : filteredProducts.map((product) => {
-                const lowStock = product.stock_quantity <= product.low_stock_threshold
-                return (
-                  <tr key={product.id}>
-                    <td className="px-5 py-4">
-                      <div className="font-semibold text-white">{product.brand} {product.name}</div>
-                      <div className="mt-1 max-w-xs truncate text-xs text-slate-500">{product.spec}</div>
-                    </td>
-                    <td className="px-5 py-4">{formatNaira(product.price)}</td>
-                    <td className="px-5 py-4">{product.condition_grade ?? '—'}</td>
-                    <td className={`px-5 py-4 font-semibold ${lowStock ? 'text-amber-300' : ''}`}>
-                      {product.stock_quantity} {lowStock ? '· Low' : ''}
-                    </td>
-                    <td className="px-5 py-4 capitalize">{product.status}</td>
-                    <td className="px-5 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button type="button" onClick={() => startEdit(product)} aria-label={`Edit ${product.name}`} className="rounded-lg border border-white/10 p-2 text-slate-300 hover:text-premiumYellow">
-                          <Pencil className="h-4 w-4" aria-hidden="true" />
-                        </button>
-                        <button type="button" onClick={() => void deleteProduct(product)} aria-label={`Delete ${product.name}`} className="rounded-lg border border-white/10 p-2 text-slate-300 hover:text-red-400">
-                          <Trash2 className="h-4 w-4" aria-hidden="true" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+        {loading ? (
+          <p role="status" className="px-5 py-8 text-center text-sm text-slate-400">Loading inventory from Supabase…</p>
+        ) : (
+          <InventoryProductTable
+            products={filteredProducts as InventoryProductRow[]}
+            selectedIds={selectedIds}
+            allSelected={allVisibleSelected}
+            canSelect={canManage}
+            canManage={canManage}
+            isOwner={isOwner}
+            onSelectAll={(checked) => setSelectedIds((current) => checked
+              ? Array.from(new Set([...current, ...visibleIds]))
+              : current.filter((id) => !visibleIds.includes(id)))}
+            onSelect={(id, checked) => setSelectedIds((current) => checked
+              ? [...current, id]
+              : current.filter((selectedId) => selectedId !== id))}
+            onEdit={(row) => {
+              const product = products.find((item) => item.id === row.id)
+              if (product) startEdit(product)
+            }}
+            onDelete={(row) => {
+              const product = products.find((item) => item.id === row.id)
+              if (product) void deleteProduct(product)
+            }}
+          />
+        )}
       </section>
+      {canManage && selectedProducts.length > 0 && (
+        <InventoryBulkActions
+          selected={selectedProducts}
+          isOwner={isOwner}
+          onClose={() => setSelectedIds([])}
+          onComplete={async () => {
+            setSelectedIds([])
+            await loadProducts()
+          }}
+        />
+      )}
     </div>
   )
 }

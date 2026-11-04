@@ -13,11 +13,21 @@ type Table<Row, Insert, Update = Partial<Insert>> = {
   Relationships: []
 }
 
+type View<Row> = {
+  Row: Row
+  Relationships: []
+}
+
 type ProductRow = {
   id: number
   name: string
   brand: string
   price: number
+  category: string
+  cost_price: number | null
+  description: string | null
+  seo_title: string | null
+  seo_description: string | null
   spec: string | null
   rating: number | null
   reviews: number | null
@@ -51,6 +61,7 @@ type InvoiceRow = {
   product_snapshot: Json | null
   quantity: number
   unit_price: number
+  unit_cost: number | null
   discount_amount: number
   total_amount: number | null
   status: string
@@ -64,6 +75,7 @@ type InvoiceRow = {
   amount_due: number | null
   customer_id: string | null
   terms_snapshot: string | null
+  items_stock_applied: boolean
 }
 
 type InvoiceInsert = Partial<Omit<InvoiceRow, 'total_amount' | 'amount_due'>> &
@@ -131,9 +143,193 @@ export type Database = {
         Partial<ProductRow> & Pick<ProductRow, 'name' | 'brand' | 'price'>
       >
       invoices: Table<InvoiceRow, InvoiceInsert, InvoiceUpdate>
+      suppliers: Table<
+        {
+          id: number
+          name: string
+          phone: string | null
+          email: string | null
+          address: string | null
+          notes: string | null
+          created_at: string
+        },
+        {
+          id?: number
+          name: string
+          phone?: string | null
+          email?: string | null
+          address?: string | null
+          notes?: string | null
+          created_at?: string
+        }
+      >
+      purchases: Table<
+        {
+          id: number
+          supplier_id: number | null
+          purchase_date: string | null
+          reference: string | null
+          notes: string | null
+          total_cost: number | null
+          received_at: string | null
+          created_by: string | null
+          created_at: string
+        },
+        {
+          id?: number
+          supplier_id?: number | null
+          purchase_date?: string | null
+          reference?: string | null
+          notes?: string | null
+          total_cost?: number | null
+          received_at?: string | null
+          created_by?: string | null
+          created_at?: string
+        }
+      >
+      purchase_items: Table<
+        {
+          id: number
+          purchase_id: number
+          product_id: number | null
+          description: string | null
+          quantity: number
+          unit_cost: number
+          imei: string | null
+        },
+        {
+          id?: number
+          purchase_id: number
+          product_id?: number | null
+          description?: string | null
+          quantity: number
+          unit_cost: number
+          imei?: string | null
+        }
+      >
+      stock_movements: Table<
+        {
+          id: number
+          product_id: number | null
+          old_qty: number | null
+          new_qty: number | null
+          delta: number | null
+          reason: string | null
+          actor_email: string | null
+          created_at: string
+        },
+        {
+          id?: number
+          product_id?: number | null
+          old_qty?: number | null
+          new_qty?: number | null
+          delta?: number | null
+          reason?: string | null
+          actor_email?: string | null
+          created_at?: string
+        }
+      >
+      invoice_items: Table<
+        {
+          id: number
+          invoice_id: string
+          product_id: number | null
+          name: string
+          brand: string | null
+          spec: string | null
+          imei: string | null
+          quantity: number
+          unit_price: number
+          unit_cost: number | null
+          position: number | null
+          created_at: string
+        },
+        {
+          id?: number
+          invoice_id: string
+          product_id?: number | null
+          name: string
+          brand?: string | null
+          spec?: string | null
+          imei?: string | null
+          quantity?: number
+          unit_price: number
+          unit_cost?: number | null
+          position?: number | null
+          created_at?: string
+        }
+      >
+      whatsapp_templates: Table<
+        {
+          id: number
+          key: string
+          title: string
+          body: string
+          sort_order: number
+          is_active: boolean
+          updated_at: string
+        },
+        {
+          id?: number
+          key: string
+          title: string
+          body: string
+          sort_order?: number
+          is_active?: boolean
+          updated_at?: string
+        }
+      >
+      activity_log: Table<
+        {
+          id: number
+          created_at: string
+          actor_email: string | null
+          action: string
+          table_name: string
+          record_id: string | null
+          summary: string | null
+          changes: Json | null
+        },
+        {
+          id?: number
+          created_at?: string
+          actor_email?: string | null
+          action: string
+          table_name: string
+          record_id?: string | null
+          summary?: string | null
+          changes?: Json | null
+        }
+      >
+      login_events: Table<
+        {
+          id: number
+          created_at: string
+          email: string | null
+          ip: string | null
+          user_agent: string | null
+          device_hash: string | null
+          success: boolean
+          is_new_device: boolean
+        },
+        {
+          id?: number
+          created_at?: string
+          email?: string | null
+          ip?: string | null
+          user_agent?: string | null
+          device_hash?: string | null
+          success: boolean
+          is_new_device?: boolean
+        }
+      >
       admin_users: Table<
-        { id: string; email: string; created_at: string; role: string; name: string | null },
-        { id?: string; email: string; created_at?: string; role?: string; name?: string | null }
+        { id: string; email: string; created_at: string; role: string | null; name: string | null },
+        { id?: string; email: string; created_at?: string; role?: string | null; name?: string | null }
+      >
+      admin_rate_limit_events: Table<
+        { id: number; user_id: string; scope: string; created_at: string },
+        { id?: number; user_id: string; scope: string; created_at?: string }
       >
       device_requests: Table<
         {
@@ -170,8 +366,90 @@ export type Database = {
         { key: string; value?: string | null; updated_at?: string | null }
       >
     }
-    Views: Record<string, never>
+    Views: {
+      customer_directory: View<{
+        key: string
+        name: string | null
+        phone: string | null
+        email: string | null
+        invoice_count: number
+        total_billed: number
+        total_paid: number
+        balance_due: number
+        trade_in_count: number
+        request_count: number
+        first_seen: string | null
+        last_activity: string | null
+      }>
+      tradein_performance: View<{
+        id: number
+        brand: string
+        model: string
+        estimate_low: number | null
+        estimate_high: number | null
+        estimate_mid: number | null
+        final_offer: number | null
+        offer_vs_estimate_pct: number | null
+        listed_price: number | null
+        sold_price: number | null
+        sold_at: string | null
+        days_to_sell: number | null
+        profit: number | null
+      }>
+    }
     Functions: {
+      admin_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string | null
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_owner: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      can_write: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      receive_purchase: {
+        Args: { p_purchase_id: number }
+        Returns: undefined
+      }
+      sync_invoice_items_stock: {
+        Args: { p_invoice_id: string }
+        Returns: undefined
+      }
+      trigger_sync_invoice_items_stock: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      create_multi_item_invoice: {
+        Args: {
+          p_customer_name: string
+          p_customer_phone: string
+          p_customer_email: string | null
+          p_items: Json
+          p_discount: number
+          p_deposit: number
+          p_payment_method: string | null
+          p_notes: string | null
+          p_terms: string | null
+        }
+        Returns: InvoiceRow
+      }
+      admin_search: {
+        Args: { q: string }
+        Returns: {
+          kind: string
+          id: string
+          title: string
+          subtitle: string | null
+          url: string
+        }[]
+      }
       get_public_invoice: {
         Args: { p_invoice_id: string }
         Returns: PublicInvoiceRow[]
@@ -179,6 +457,36 @@ export type Database = {
       next_invoice_number: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      add_admin_user_by_email: {
+        Args: { p_email: string; p_name: string; p_role: string }
+        Returns: string
+      }
+      consume_admin_rate_limit: {
+        Args: { p_scope: string }
+        Returns: Json
+      }
+      login_attempt_status: {
+        Args: { p_email: string; p_ip: string }
+        Returns: Json
+      }
+      record_login_attempt: {
+        Args: {
+          p_email: string
+          p_ip: string
+          p_user_agent: string | null
+          p_device_hash: string | null
+          p_success: boolean
+        }
+        Returns: Json
+      }
+      log_stock_movement: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      log_activity: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
       }
     }
     Enums: Record<string, never>

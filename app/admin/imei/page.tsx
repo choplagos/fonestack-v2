@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react'
 import { AlertCircle, Package, Search, ShieldCheck } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import PhoneActions from '@/components/admin/PhoneActions'
 
 type ProductMatch = {
   id: number
@@ -22,6 +23,8 @@ type InvoiceMatch = {
   customer_phone: string
   status: string
   created_at: string
+  product_snapshot?: unknown
+  imei?: string | null
 }
 
 export default function ImeiLookupPage() {
@@ -48,22 +51,47 @@ export default function ImeiLookupPage() {
         .maybeSingle(),
       supabase
         .from('invoices')
-        .select('id, invoice_number, customer_name, customer_phone, status, created_at')
+        .select('id, invoice_number, customer_name, customer_phone, status, created_at, imei, product_snapshot')
         .eq('imei', query)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
     ])
 
-    if (productResult.error || invoiceResult.error) {
+    let multiInvoice: InvoiceMatch | null = null
+    let snapshotError: string | null = null
+    if (!invoiceResult.error && !invoiceResult.data) {
+      for (let offset = 0; ; offset += 1000) {
+        const { data, error } = await supabase.from('invoices')
+          .select('id,invoice_number,customer_name,customer_phone,status,created_at,imei,product_snapshot')
+          .order('created_at', { ascending: false })
+          .range(offset, offset + 999)
+        if (error) {
+          snapshotError = error.message
+          break
+        }
+        const page = (data ?? []) as InvoiceMatch[]
+        multiInvoice = page.find((row) => {
+          if (!row.product_snapshot || typeof row.product_snapshot !== 'object') return false
+          const snapshot = row.product_snapshot as { items?: unknown }
+          return Array.isArray(snapshot.items) && snapshot.items.some((item) =>
+            item && typeof item === 'object'
+            && 'imei' in item
+            && String((item as { imei?: unknown }).imei ?? '').trim().toLowerCase() === query.toLowerCase())
+        }) ?? null
+        if (multiInvoice || page.length < 1000) break
+      }
+    }
+
+    if (productResult.error || invoiceResult.error || snapshotError) {
       setErrorMessage(
-        [productResult.error?.message, invoiceResult.error?.message].filter(Boolean).join(' · '),
+        [productResult.error?.message, invoiceResult.error?.message, snapshotError].filter(Boolean).join(' · '),
       )
       setProduct(null)
       setInvoice(null)
     } else {
       setProduct((productResult.data as ProductMatch | null) ?? null)
-      setInvoice((invoiceResult.data as InvoiceMatch | null) ?? null)
+      setInvoice((invoiceResult.data as InvoiceMatch | null) ?? multiInvoice)
     }
 
     setSearched(true)
@@ -127,7 +155,8 @@ export default function ImeiLookupPage() {
                 <div>
                   <p className="text-xs uppercase tracking-wider text-slate-500">Sales record</p>
                   <h3 className="mt-1 font-bold text-white">{invoice.invoice_number}</h3>
-                  <p className="mt-2 text-sm text-slate-300">{invoice.customer_name} · {invoice.customer_phone}</p>
+                  <p className="mt-2 text-sm text-slate-300">{invoice.customer_name} · <PhoneActions phone={invoice.customer_phone} values={{ customer_name: invoice.customer_name, invoice_number: invoice.invoice_number }} /></p>
+                  {Boolean(invoice.product_snapshot && typeof invoice.product_snapshot === 'object' && Array.isArray((invoice.product_snapshot as { items?: unknown }).items)) && <p className="mt-1 text-sm text-slate-400">Matched an item IMEI in this multi-item invoice.</p>}
                   <p className="mt-1 text-sm capitalize text-slate-400">
                     Status: {invoice.status} · {new Date(invoice.created_at).toLocaleDateString('en-NG')}
                   </p>

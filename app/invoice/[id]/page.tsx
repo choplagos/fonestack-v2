@@ -13,7 +13,7 @@ type PublicInvoice = {
   customer_name: string
   customer_phone: string
   customer_email: string | null
-  product_snapshot: { brand?: string; name?: string; spec?: string } | null
+  product_snapshot: { multi?: boolean; brand?: string; name?: string; spec?: string; items?: PublicInvoiceItem[] } | null
   quantity: number
   unit_price: number
   discount_amount: number
@@ -26,6 +26,7 @@ type PublicInvoice = {
   imei: string | null
   settings: Record<string, string> | null
 }
+type PublicInvoiceItem = { name?: string; brand?: string; spec?: string; imei?: string; quantity?: number; unit_price?: number }
 
 function formatNaira(value: number) {
   return `₦${Number(value).toLocaleString('en-NG')}`
@@ -89,7 +90,14 @@ export default function InvoicePage() {
   }
 
   const settings = invoice.settings ?? {}
-  const productName = `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
+  const isMulti = invoice.product_snapshot?.multi === true && Array.isArray(invoice.product_snapshot.items)
+  const productName = isMulti
+    ? invoice.product_snapshot?.name ?? 'Multiple items'
+    : `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
+  const invoiceItems = isMulti ? invoice.product_snapshot!.items! : null
+  const subtotal = invoiceItems
+    ? invoiceItems.reduce((sum, item) => sum + Number(item.quantity ?? 1) * Number(item.unit_price ?? 0), 0)
+    : invoice.quantity * invoice.unit_price
 
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-8 text-slate-900">
@@ -129,7 +137,7 @@ export default function InvoicePage() {
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">Payment details</h2>
             <p className="mt-2 capitalize">Method: {invoice.payment_method ?? '—'}</p>
             {invoice.paid_at && <p>Paid on: {new Date(invoice.paid_at).toLocaleDateString('en-NG')}</p>}
-            {invoice.imei && <p className="mt-1">IMEI / serial: {invoice.imei}</p>}
+            {!isMulti && invoice.imei && <p className="mt-1">IMEI / serial: {invoice.imei}</p>}
           </div>
         </section>
 
@@ -143,19 +151,26 @@ export default function InvoicePage() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="py-4">
-                <p className="font-semibold">{productName || 'Product details unavailable'}</p>
-                {invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-slate-500">{invoice.product_snapshot.spec}</p>}
-              </td>
+            {invoiceItems ? invoiceItems.map((item, index) => {
+              const quantity = Number(item.quantity ?? 1)
+              const unitPrice = Number(item.unit_price ?? 0)
+              return <tr key={`${item.name}-${index}`}>
+                <td className="py-4"><p className="font-semibold">{[item.brand, item.name].filter(Boolean).join(' ') || 'Item'}</p>{item.spec && <p className="mt-1 text-xs text-slate-500">{item.spec}</p>}{item.imei && <p className="mt-1 text-xs text-slate-500">IMEI / serial: {item.imei}</p>}</td>
+                <td className="py-4 text-right">{quantity}</td>
+                <td className="py-4 text-right">{formatNaira(unitPrice)}</td>
+                <td className="py-4 text-right">{formatNaira(unitPrice * quantity)}</td>
+              </tr>
+            }) : <tr>
+              <td className="py-4"><p className="font-semibold">{productName || 'Product details unavailable'}</p>{invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-slate-500">{invoice.product_snapshot.spec}</p>}{invoice.imei && <p className="mt-1 text-xs text-slate-500">IMEI / serial: {invoice.imei}</p>}</td>
               <td className="py-4 text-right">{invoice.quantity}</td>
               <td className="py-4 text-right">{formatNaira(invoice.unit_price)}</td>
               <td className="py-4 text-right">{formatNaira(invoice.unit_price * invoice.quantity)}</td>
-            </tr>
+            </tr>}
           </tbody>
         </table>
 
         <dl className="ml-auto mt-6 grid max-w-sm gap-2 text-sm">
+          <div className="flex justify-between"><dt>Subtotal</dt><dd>{formatNaira(subtotal)}</dd></div>
           <div className="flex justify-between"><dt>Discount</dt><dd>{formatNaira(invoice.discount_amount)}</dd></div>
           <div className="flex justify-between border-t border-slate-200 pt-3 text-base font-bold"><dt>Total</dt><dd>{formatNaira(invoice.total_amount)}</dd></div>
         </dl>

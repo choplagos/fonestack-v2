@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react'
 import { AlertCircle, ArrowLeft, Mail, MessageCircle, Printer } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import PhoneActions from '@/components/admin/PhoneActions'
+import { loadWhatsAppConfiguration, makeWhatsAppUrl, renderTemplate } from '@/lib/whatsapp'
 
 type InvoiceDetails = {
   id: string
@@ -13,9 +15,10 @@ type InvoiceDetails = {
   customer_name: string
   customer_phone: string
   customer_email: string | null
-  product_snapshot: { brand?: string; name?: string; spec?: string; image_url?: string } | null
+  product_snapshot: { multi?: boolean; brand?: string; name?: string; spec?: string; image_url?: string; items?: InvoiceSnapshotItem[] } | null
   quantity: number
   unit_price: number
+  unit_cost: number | null
   discount_amount: number
   total_amount: number
   deposit_amount: number
@@ -28,6 +31,7 @@ type InvoiceDetails = {
   created_at: string
   paid_at: string | null
 }
+type InvoiceSnapshotItem = { name?: string; brand?: string; spec?: string; imei?: string; quantity?: number; unit_price?: number }
 
 function formatNaira(value: number) {
   return `₦${Number(value).toLocaleString('en-NG')}`
@@ -104,16 +108,39 @@ export default function AdminInvoiceDetailsPage() {
     }
   }
 
-  function getWhatsAppUrl() {
-    if (!invoice) return null
-    const digits = invoice.customer_phone.replace(/\D/g, '')
-    const internationalNumber = digits.startsWith('0')
-      ? `234${digits.slice(1)}`
-      : digits
-    if (internationalNumber.length < 10) return null
-
-    const message = `Hi ${invoice.customer_name}, please find invoice ${invoice.invoice_number} attached. Thank you for choosing Fonestack!`
-    return `https://wa.me/${internationalNumber}?text=${encodeURIComponent(message)}`
+  async function shareInvoiceOnWhatsApp() {
+    if (!invoice) return
+    const popup = window.open('about:blank', '_blank')
+    if (!popup) {
+      setShareError('Allow pop-ups to open WhatsApp.')
+      setShareMessage('')
+      return
+    }
+    try {
+      const configuration = await loadWhatsAppConfiguration()
+      const templateKey = Number(invoice.amount_due) > 0 ? 'payment_reminder' : 'invoice_share'
+      const template = configuration.templates.find((item) => item.key === templateKey)
+      if (!template) throw new Error(`The active ${templateKey.replace('_', ' ')} template is unavailable.`)
+      const link = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://fonestack.com.ng'}/invoice/${invoice.id}`
+      const message = renderTemplate(template.body, {
+        customer_name: invoice.customer_name,
+        business_name: configuration.businessName,
+        invoice_number: invoice.invoice_number,
+        total: formatNaira(invoice.total_amount),
+        amount_due: formatNaira(invoice.amount_due),
+        product_name: productName,
+        link,
+      })
+      const url = makeWhatsAppUrl(invoice.customer_phone, message)
+      if (!url) throw new Error('Customer phone is unavailable for WhatsApp.')
+      popup.location.href = url
+      setShareMessage('Opening WhatsApp with the saved invoice message.')
+      setShareError('')
+    } catch (error) {
+      popup.close()
+      setShareError(error instanceof Error ? error.message : 'WhatsApp message could not be opened.')
+      setShareMessage('')
+    }
   }
 
   if (loading) {
@@ -134,8 +161,11 @@ export default function AdminInvoiceDetailsPage() {
     )
   }
 
-  const productName = `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
-  const whatsappUrl = getWhatsAppUrl()
+  const isMulti = invoice.product_snapshot?.multi === true && Array.isArray(invoice.product_snapshot.items)
+  const productName = isMulti
+    ? invoice.product_snapshot?.name ?? 'Multiple items'
+    : `${invoice.product_snapshot?.brand ?? ''} ${invoice.product_snapshot?.name ?? ''}`.trim()
+  const profit = invoice.unit_cost == null ? null : Number(invoice.total_amount) - Number(invoice.unit_cost)
 
   return (
     <div className="space-y-5 p-1 md:p-4">
@@ -147,6 +177,9 @@ export default function AdminInvoiceDetailsPage() {
           <Link href={`/invoice/${invoice.id}`} target="_blank" className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white">
             Customer invoice
           </Link>
+          <Link href={`/admin/invoices/new?duplicate=${encodeURIComponent(invoice.id)}`} className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white">
+            Duplicate
+          </Link>
           <Link
             href={`/invoice/${invoice.id}?print=1`}
             target="_blank"
@@ -154,20 +187,27 @@ export default function AdminInvoiceDetailsPage() {
           >
             <Printer className="h-4 w-4" aria-hidden="true" /> Save PDF
           </Link>
-          {whatsappUrl ? (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-200 hover:bg-green-500/20"
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp message
-            </a>
-          ) : (
-            <span className="rounded-xl border border-white/10 px-4 py-2 text-sm text-slate-500">
-              Customer phone unavailable for WhatsApp
-            </span>
-          )}
+          <Link href={`/admin/invoices/${invoice.id}/receipt`} target="_blank" className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white">
+            <Printer className="h-4 w-4" aria-hidden="true" /> Print receipt
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (!emailRecipient.trim()) {
+                setShareError('Enter the customer email address before sending.')
+                document.getElementById('recipient-email')?.focus()
+              } else {
+                void sendInvoiceEmail()
+              }
+            }}
+            disabled={sendingEmail}
+            className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-300 hover:text-white disabled:opacity-50"
+          >
+            <Mail className="h-4 w-4" aria-hidden="true" /> Email
+          </button>
+          <button type="button" onClick={() => void shareInvoiceOnWhatsApp()} className="inline-flex items-center gap-2 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-200 hover:bg-green-500/20">
+            <MessageCircle className="h-4 w-4" aria-hidden="true" /> WhatsApp
+          </button>
           <button type="button" onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-xl bg-premiumYellow px-4 py-2 text-sm font-bold text-black">
             <Printer className="h-4 w-4" aria-hidden="true" /> Print / Save PDF
           </button>
@@ -183,6 +223,7 @@ export default function AdminInvoiceDetailsPage() {
           <label className="flex-1 space-y-1 text-xs font-semibold text-slate-300">
             Recipient email
             <input
+              id="recipient-email"
               type="email"
               required
               value={emailRecipient}
@@ -256,7 +297,8 @@ export default function AdminInvoiceDetailsPage() {
           <p className="mb-1 text-[15px] font-bold text-[#191C17]">{invoice.customer_name}</p>
           <p className="text-[13px] leading-7 text-[#62675E]">
             {invoice.customer_email && <>{invoice.customer_email}<br /></>}
-            {invoice.customer_phone}
+            <span className="print:hidden"><PhoneActions phone={invoice.customer_phone} values={{ customer_name: invoice.customer_name, invoice_number: invoice.invoice_number, total: formatNaira(invoice.total_amount), amount_due: formatNaira(invoice.amount_due), product_name: productName, link: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://fonestack.com.ng'}/invoice/${invoice.id}` }} defaultTemplateKey={invoice.amount_due > 0 ? 'payment_reminder' : 'invoice_share'} /></span>
+            <span className="hidden print:inline">{invoice.customer_phone}</span>
           </p>
         </section>
 
@@ -274,17 +316,21 @@ export default function AdminInvoiceDetailsPage() {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-[#E9EBE6] text-[13px]">
-                <td className="break-words px-2.5 py-4 text-[#191C17]">
-                  {productName || 'Product details unavailable'}
-                  {invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-[#62675E]">{invoice.product_snapshot.spec}</p>}
-                </td>
+              {isMulti ? invoice.product_snapshot!.items!.map((item, index) => {
+                const quantity = Number(item.quantity ?? 1)
+                const price = Number(item.unit_price ?? 0)
+                return <tr key={`${item.name}-${index}`} className="border-b border-[#E9EBE6] text-[13px]">
+                  <td className="break-words px-2.5 py-4 text-[#191C17]">{[item.brand, item.name].filter(Boolean).join(' ') || 'Item'}{item.spec && <p className="mt-1 text-xs text-[#62675E]">{item.spec}</p>}{item.imei && <p className="mt-1 text-xs text-[#62675E]">IMEI: {item.imei}</p>}</td>
+                  <td className="px-1.5 py-4 text-center text-[#62675E]">{quantity}</td>
+                  <td className="px-1.5 py-4 text-right text-[#62675E]">{formatNaira(price)}</td>
+                  <td className="px-2.5 py-4 text-right font-bold text-[#191C17]">{formatNaira(price * quantity)}</td>
+                </tr>
+              }) : <tr className="border-b border-[#E9EBE6] text-[13px]">
+                <td className="break-words px-2.5 py-4 text-[#191C17]">{productName || 'Product details unavailable'}{invoice.product_snapshot?.spec && <p className="mt-1 text-xs text-[#62675E]">{invoice.product_snapshot.spec}</p>}{invoice.imei && <p className="mt-1 text-xs text-[#62675E]">IMEI: {invoice.imei}</p>}</td>
                 <td className="px-1.5 py-4 text-center text-[#62675E]">{invoice.quantity}</td>
                 <td className="px-1.5 py-4 text-right text-[#62675E]">{formatNaira(invoice.unit_price)}</td>
-                <td className="px-2.5 py-4 text-right font-bold text-[#191C17]">
-                  {formatNaira(invoice.unit_price * invoice.quantity)}
-                </td>
-              </tr>
+                <td className="px-2.5 py-4 text-right font-bold text-[#191C17]">{formatNaira(invoice.unit_price * invoice.quantity)}</td>
+              </tr>}
             </tbody>
           </table>
         </section>
@@ -292,7 +338,7 @@ export default function AdminInvoiceDetailsPage() {
         <section className="px-5 pb-8 pt-5 sm:px-10">
           <dl className="ml-auto max-w-sm text-[13px]">
             <div className="flex justify-between gap-4 py-2 text-[#62675E]">
-              <dt>Subtotal</dt><dd className="text-[#191C17]">{formatNaira(invoice.unit_price * invoice.quantity)}</dd>
+              <dt>Subtotal</dt><dd className="text-[#191C17]">{formatNaira(isMulti ? invoice.product_snapshot!.items!.reduce((sum, item) => sum + Number(item.quantity ?? 1) * Number(item.unit_price ?? 0), 0) : invoice.unit_price * invoice.quantity)}</dd>
             </div>
             <div className="flex justify-between gap-4 py-2 text-[#62675E]">
               <dt>Discount</dt><dd className="text-[#191C17]">−{formatNaira(invoice.discount_amount)}</dd>
@@ -311,6 +357,8 @@ export default function AdminInvoiceDetailsPage() {
             </div>
           </dl>
         </section>
+
+        {profit !== null && <section className="px-5 pb-8 sm:px-10 print:hidden"><div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4"><h2 className="text-xs font-bold uppercase tracking-wider text-green-200">Profit</h2><p className="mt-2 text-sm text-slate-300">Cost: {formatNaira(Number(invoice.unit_cost))} <span className="mx-2">·</span> Profit: <strong className={profit >= 0 ? 'text-green-300' : 'text-red-300'}>{formatNaira(profit)}</strong></p></div></section>}
 
         <div className="px-5 pb-8 sm:px-10 print:hidden">
           <Link

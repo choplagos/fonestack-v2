@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle, Clock, Package, Plus, TrendingUp } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import PhoneActions from '@/components/admin/PhoneActions'
 
 type ProductStats = {
   id: number
@@ -17,6 +18,7 @@ type InvoiceSummary = {
   id: string
   invoice_number: string
   customer_name: string
+  customer_phone: string
   product_snapshot: { name?: string; brand?: string } | null
   total_amount: number | null
   deposit_amount: number
@@ -29,6 +31,9 @@ type DashboardData = {
   inventoryCount: number
   lowStockCount: number
   pendingInvoices: number
+  balanceDueInvoices: number
+  newDeviceRequests: number
+  unreviewedTradeIns: number
   paidInvoices30Days: number
   deviceRequests: number
   tradeInRequests: number
@@ -40,6 +45,9 @@ const EMPTY_DASHBOARD: DashboardData = {
   inventoryCount: 0,
   lowStockCount: 0,
   pendingInvoices: 0,
+  balanceDueInvoices: 0,
+  newDeviceRequests: 0,
+  unreviewedTradeIns: 0,
   paidInvoices30Days: 0,
   deviceRequests: 0,
   tradeInRequests: 0,
@@ -67,6 +75,11 @@ export default function AdminDashboard() {
           recentResult,
           requestsResult,
           tradeInsResult,
+          pendingInvoicesCount,
+          balanceDueCount,
+          newRequestsCount,
+          pendingTradeInsCount,
+          lowStockCount,
         ] = await Promise.all([
           supabase
             .from('products')
@@ -78,7 +91,7 @@ export default function AdminDashboard() {
             .gte('created_at', since),
           supabase
             .from('invoices')
-            .select('id, invoice_number, customer_name, product_snapshot, total_amount, deposit_amount, status, created_at')
+            .select('id, invoice_number, customer_name, customer_phone, product_snapshot, total_amount, deposit_amount, status, created_at')
             .order('created_at', { ascending: false })
             .limit(8),
           supabase.from('device_requests').select('id', { count: 'exact', head: true }),
@@ -86,6 +99,11 @@ export default function AdminDashboard() {
             .from('trade_in_requests')
             .select('id', { count: 'exact', head: true })
             .eq('status', 'pending'),
+          supabase.from('invoices').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('invoices').select('id', { count: 'exact', head: true }).gt('amount_due', 0).neq('status', 'cancelled'),
+          supabase.from('device_requests').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+          supabase.from('trade_in_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('products').select('id', { count: 'exact', head: true }).lte('stock_quantity', 3).neq('status', 'demo'),
         ])
 
         const failed = [
@@ -94,6 +112,11 @@ export default function AdminDashboard() {
           recentResult.error,
           requestsResult.error,
           tradeInsResult.error,
+          pendingInvoicesCount.error,
+          balanceDueCount.error,
+          newRequestsCount.error,
+          pendingTradeInsCount.error,
+          lowStockCount.error,
         ].find(Boolean)
         if (failed) throw failed
 
@@ -113,12 +136,13 @@ export default function AdminDashboard() {
           setDashboard({
             revenue30Days,
             inventoryCount: products.length,
-            lowStockCount: products.filter(
+            lowStockCount: lowStockCount.count ?? products.filter(
               (product) => (product.stock_quantity ?? 0) <= (product.low_stock_threshold ?? 3),
             ).length,
-            pendingInvoices: invoices.filter((invoice) =>
-              ['pending', 'deposit'].includes(invoice.status),
-            ).length,
+            pendingInvoices: pendingInvoicesCount.count ?? 0,
+            balanceDueInvoices: balanceDueCount.count ?? 0,
+            newDeviceRequests: newRequestsCount.count ?? 0,
+            unreviewedTradeIns: pendingTradeInsCount.count ?? 0,
             paidInvoices30Days: paidInvoices.length,
             deviceRequests: requestsResult.count ?? 0,
             tradeInRequests: tradeInsResult.count ?? 0,
@@ -135,9 +159,12 @@ export default function AdminDashboard() {
       }
     }
 
+    const handleFocus = () => void loadDashboard()
     void loadDashboard()
+    window.addEventListener('focus', handleFocus)
     return () => {
       active = false
+      window.removeEventListener('focus', handleFocus)
     }
   }, [])
 
@@ -199,6 +226,27 @@ export default function AdminDashboard() {
         </Link>
       </div>
 
+      <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div>
+          <h3 className="font-bold text-white">Needs action</h3>
+          <p className="mt-1 text-xs text-slate-400">Items that may need a follow-up from your team.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {[
+            { label: 'Pending invoices', count: dashboard.pendingInvoices, href: '/admin/invoices?status=pending', tone: 'text-amber-200' },
+            { label: 'Invoices with balance due', count: dashboard.balanceDueInvoices, href: '/admin/invoices?filter=balance-due', tone: 'text-orange-200' },
+            { label: 'New device requests', count: dashboard.newDeviceRequests, href: '/admin/leads?status=new', tone: 'text-sky-200' },
+            { label: 'Unreviewed trade-ins', count: dashboard.unreviewedTradeIns, href: '/admin/trade-ins?status=pending', tone: 'text-violet-200' },
+            { label: 'Low stock products', count: dashboard.lowStockCount, href: '/admin/inventory?filter=low-stock', tone: 'text-red-200' },
+          ].map((item) => (
+            <Link key={item.label} href={item.href} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-4 hover:border-premiumYellow/40">
+              <span className="text-sm text-slate-300">{item.label}</span>
+              <span className={`rounded-full bg-white/5 px-2.5 py-1 text-sm font-bold ${item.tone}`}>{loading ? '…' : item.count}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
           <h3 className="font-bold text-white">Recent invoices</h3>
@@ -207,11 +255,12 @@ export default function AdminDashboard() {
           </Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
+          <table className="w-full min-w-[800px] text-left text-sm">
             <thead className="text-xs uppercase tracking-wider text-slate-500">
               <tr>
                 <th className="px-5 py-3">Invoice</th>
                 <th className="px-5 py-3">Customer</th>
+                <th className="px-5 py-3">Phone</th>
                 <th className="px-5 py-3">Product</th>
                 <th className="px-5 py-3">Total</th>
                 <th className="px-5 py-3">Status</th>
@@ -220,7 +269,7 @@ export default function AdminDashboard() {
             <tbody className="divide-y divide-white/5 text-slate-200">
               {!loading && dashboard.recentInvoices.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-slate-400">
+                  <td colSpan={6} className="px-5 py-8 text-center text-slate-400">
                     No invoices found in Supabase.
                   </td>
                 </tr>
@@ -233,6 +282,7 @@ export default function AdminDashboard() {
                     </Link>
                   </td>
                   <td className="px-5 py-4">{invoice.customer_name}</td>
+                  <td className="px-5 py-4"><PhoneActions phone={invoice.customer_phone} values={{ customer_name: invoice.customer_name, invoice_number: invoice.invoice_number }} /></td>
                   <td className="px-5 py-4">
                     {invoice.product_snapshot?.name
                       ? `${invoice.product_snapshot.brand ?? ''} ${invoice.product_snapshot.name}`.trim()

@@ -2,8 +2,11 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { AlertCircle, Search } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 
 import { supabase } from '@/lib/supabase'
+import { adminOperationError } from '@/lib/adminRole'
+import PhoneActions from '@/components/admin/PhoneActions'
 
 type DeviceRequest = {
   id: number
@@ -22,8 +25,10 @@ function formatNaira(value: number) {
 }
 
 export default function DeviceRequestsPage() {
+  const searchParams = useSearchParams()
   const [requests, setRequests] = useState<DeviceRequest[]>([])
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -51,20 +56,28 @@ export default function DeviceRequestsPage() {
     }
   }, [])
 
+  useEffect(() => {
+    const requestedStatus = searchParams.get('status')
+    setStatusFilter(requestedStatus && ['new', 'pending', 'contacted', 'completed', 'closed'].includes(requestedStatus)
+      ? requestedStatus
+      : 'all')
+  }, [searchParams])
+
   const visibleRequests = useMemo(() => {
     const needle = search.trim().toLowerCase()
     return requests.filter((request) =>
-      !needle ||
-      `${request.customer_name} ${request.phone} ${request.requested_device} ${request.source ?? ''}`
-        .toLowerCase()
-        .includes(needle),
+      (statusFilter === 'all' || request.status === statusFilter)
+      && (!needle ||
+        `${request.customer_name} ${request.phone} ${request.requested_device} ${request.source ?? ''}`
+          .toLowerCase()
+          .includes(needle)),
     )
-  }, [requests, search])
+  }, [requests, search, statusFilter])
 
   async function updateStatus(request: DeviceRequest, status: string) {
     const { error } = await supabase.from('device_requests').update({ status }).eq('id', request.id)
     if (error) {
-      setErrorMessage(`Could not update request status: ${error.message}`)
+      setErrorMessage(`Could not update request status: ${adminOperationError(error, 'update device requests')}`)
       return
     }
     setRequests((current) => current.map((item) => item.id === request.id ? { ...item, status } : item))
@@ -89,7 +102,8 @@ export default function DeviceRequestsPage() {
 
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
         <div className="border-b border-white/10 p-4">
-          <label className="relative block">
+          <div className="flex flex-col gap-3 sm:flex-row">
+          <label className="relative block min-w-0 flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
             <input
               type="search"
@@ -99,6 +113,11 @@ export default function DeviceRequestsPage() {
               className="w-full rounded-xl border border-white/10 bg-black/30 py-2.5 pl-10 pr-3 text-sm text-white outline-none focus:border-premiumYellow/70"
             />
           </label>
+          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Filter device requests by status" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-white">
+            <option value="all">All statuses</option>
+            {['new', 'pending', 'contacted', 'completed', 'closed'].map((value) => <option key={value} value={value}>{value}</option>)}
+          </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[800px] text-left text-sm">
@@ -121,7 +140,7 @@ export default function DeviceRequestsPage() {
                 <tr key={request.id}>
                   <td className="px-5 py-4">
                     <div className="font-semibold text-white">{request.customer_name}</div>
-                    <a href={`tel:${request.phone}`} className="text-xs text-premiumYellow hover:underline">{request.phone}</a>
+                    <PhoneActions phone={request.phone} values={{ customer_name: request.customer_name, product_name: request.requested_device }} />
                   </td>
                   <td className="px-5 py-4">{request.requested_device}</td>
                   <td className="px-5 py-4">{request.budget ? formatNaira(request.budget) : 'Not specified'}</td>
