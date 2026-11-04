@@ -298,7 +298,7 @@ BEGIN
   WHERE ip = p_ip
     AND created_at >= now() - interval '1 hour';
 
-  IF v_event_count > 200 THEN
+  IF v_event_count >= 200 THEN
     RETURN jsonb_build_object('is_new_device', false);
   END IF;
 
