@@ -5,9 +5,10 @@ STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT coalesce(au.role, 'owner')
+  SELECT au.role
   FROM public.admin_users AS au
   WHERE lower(au.email) = lower(auth.jwt() ->> 'email')
+    AND au.role IS NOT NULL
   LIMIT 1;
 $$;
 
