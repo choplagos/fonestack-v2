@@ -147,6 +147,17 @@ CREATE TABLE IF NOT EXISTS public.stock_movements (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- Older installations may have a legacy stock_movements table. Add the columns
+-- used by this migration's trigger without replacing or dropping existing data.
+ALTER TABLE public.stock_movements
+  ADD COLUMN IF NOT EXISTS product_id bigint REFERENCES public.products (id) ON DELETE SET NULL,
+  ADD COLUMN IF NOT EXISTS old_qty integer,
+  ADD COLUMN IF NOT EXISTS new_qty integer,
+  ADD COLUMN IF NOT EXISTS delta integer,
+  ADD COLUMN IF NOT EXISTS reason text,
+  ADD COLUMN IF NOT EXISTS actor_email text DEFAULT (auth.jwt() ->> 'email'),
+  ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT now();
+
 ALTER TABLE public.stock_movements ENABLE ROW LEVEL SECURITY;
 GRANT SELECT ON public.stock_movements TO authenticated;
 
