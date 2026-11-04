@@ -186,8 +186,8 @@ BEGIN
       RAISE EXCEPTION 'Each item must have a unit price';
     END IF;
     v_unit_price := (v_item ->> 'unit_price')::numeric;
-    IF v_unit_price <= 0 THEN
-      RAISE EXCEPTION 'Item prices must be positive';
+    IF v_unit_price < 0 THEN
+      RAISE EXCEPTION 'Item prices cannot be negative';
     END IF;
 
     v_product_id := nullif(v_item ->> 'product_id', '')::bigint;
